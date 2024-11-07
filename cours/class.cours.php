@@ -6,19 +6,22 @@ class Cours {
     private $libcours;
     private $hdebut;
     private $hfin;
+    private $jour;
 
-    function __construct($idc = null, $libc = null, $hdeb = null, $hfin = null) {
+    function __construct($idc = null, $libc = null, $hdeb = null, $hfin = null, $jo = null) {
         $this->idcours = $idc;
         $this->libcours = $libc;
         $this->hdebut = $hdeb;
         $this->hfin = $hfin;
+        $this->jour = $jo;
     }
 
     public function getCours() {
         return "idcours : $this->idcours,
                 libcours : $this->libcours,
                 hdebut : $this->hdebut,
-                hfin : $this->hfin";
+                hfin : $this->hfin",
+                jour : $this->jour;
     }
 
     public function getIdcours() {
@@ -37,6 +40,10 @@ class Cours {
         return $this->hfin;
     }
 
+    public function getJour() {
+        return $this->jour;
+    }
+
     public function setLibcours($libc) {
         $this->libcours = $libc;
     }
@@ -48,6 +55,9 @@ class Cours {
     public function setHfin($hfin) {
         $this->hfin = $hfin;
     }
+
+    public function setJour($jo) {
+        $this->jour = $jo;
 
     // Requêtes
 
@@ -62,17 +72,18 @@ class Cours {
 }
 
     // Modèle UPDATE : modifier
-    public function update($id, $libcours, $hdebut, $hfin) {
+    public function update($id, $libcours, $hdebut, $hfin, $jour) {
         $con = connexionPDO();
         $data = [
             ':libcours' => $libcours,
             ':hdebut' => $hdebut,
             ':hfin' => $hfin,
+            ':jour' => $jour,
             ':id' => $id
         ];
 
         $sql = "UPDATE cours
-                SET libcours = :libcours, hdebut = :hdebut, hfin = :hfin
+                SET libcours = :libcours, hdebut = :hdebut, hfin = :hfin, jour = :jour
                 WHERE idcours = :id;";
         $stmm = $con->prepare($sql);
 
@@ -108,15 +119,16 @@ class Cours {
 
 
     // Modèle INSERT : créer
-    public function create($libcours, $hdebut, $hfin) {
+    public function create($libcours, $hdebut, $hfin, $jour) {
         $con = connexionPDO();
         $data = [
             ':libcours' => $libcours,
             ':hdebut' => $hdebut,
-            ':hfin' => $hfin
+            ':hfin' => $hfin,
+            ':jour' => $jour
         ];
 
-        $sql = "INSERT INTO cours (libcours, hdebut, hfin) VALUES (:libcours, :hdebut, :hfin);";
+        $sql = "INSERT INTO cours (libcours, hdebut, hfin, jour) VALUES (:libcours, :hdebut, :hfin, :jour);";
         $stmm = $con->prepare($sql);
 
         if ($stmm->execute($data)) {
