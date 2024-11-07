@@ -7,7 +7,8 @@ if (isset($_POST['create'])) {
     $libcours = $_POST['libcours'];
     $hdebut = $_POST['hdebut'];
     $hfin = $_POST['hfin'];
-    $success = $cours->create($libcours, $hdebut, $hfin) ? 1 : 0;
+    $jour = $_POST['jour'];
+    $success = $cours->create($libcours, $hdebut, $hfin, $jour) ? 1 : 0;
     header("Location: vue.cours.php?success=$success");
 }
 
@@ -16,6 +17,7 @@ if (isset($_POST['update'])) {
     $libcours = $_POST['libcours'];
     $hdebut = $_POST['hdebut'];
     $hfin = $_POST['hfin'];
+    $jour = $_POST['jour'];
     $success = $cours->update($idcours, $libcours, $hdebut, $hfin) ? 1 : 0;
     header("Location: vue.cours.php?success=$success");
 }
