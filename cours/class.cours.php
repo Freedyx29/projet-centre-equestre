@@ -53,13 +53,13 @@ class Cours {
 
     // Modèle SELECT : lire
     public function read() {
-        $con = connexionPDO();
-        $sql = "SELECT * FROM cours;";
-        $executesql = $con->prepare($sql);
-        $executesql->execute();
-        $resultat = $executesql->fetchAll();
-        return $resultat;
-    }
+    $con = connexionPDO();
+    $sql = "SELECT * FROM cours WHERE supprime = 0;";
+    $executesql = $con->prepare($sql);
+    $executesql->execute();
+    $resultat = $executesql->fetchAll();
+    return $resultat;
+}
 
     // Modèle UPDATE : modifier
     public function update($id, $libcours, $hdebut, $hfin) {
@@ -87,23 +87,25 @@ class Cours {
 
     // Modèle DELETE : supprimer
     public function delete($id) {
-        $con = connexionPDO();
-        $data = [
-            ':id' => $id
-        ];
+    $con = connexionPDO();
+    $data = [
+        ':id' => $id
+    ];
 
-        $sql = "DELETE FROM cours WHERE idcours = :id;";
-        $stmm = $con->prepare($sql);
+    // Met à jour la colonne 'supprime' à 1 au lieu de supprimer la ligne
+    $sql = "UPDATE cours SET supprime = 1 WHERE idcours = :id;";
+    $stmm = $con->prepare($sql);
 
-        if ($stmm->execute($data)) {
-            echo "Suppression réussie";
-            return true;
-        } else {
-            $errorInfo = $stmm->errorInfo();
-            echo "Erreur lors de la suppression : " . $errorInfo[2];
-            return false;
-        }
+    if ($stmm->execute($data)) {
+        echo "Cours marqué comme supprimé";
+        return true;
+    } else {
+        $errorInfo = $stmm->errorInfo();
+        echo "Erreur lors de la suppression : " . $errorInfo[2];
+        return false;
     }
+}
+
 
     // Modèle INSERT : créer
     public function create($libcours, $hdebut, $hfin) {
