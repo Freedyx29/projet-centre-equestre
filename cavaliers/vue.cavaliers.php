@@ -1,3 +1,25 @@
+<script>
+    function toggleForm() {
+        var form = document.getElementById("ajoutForm");
+        form.classList.toggle("show");
+
+        if (form.classList.contains("show")) {
+            document.getElementById("formAnchor").scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function showAlert(message) {
+        alert(message);
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === '1') {
+        showAlert("update des données réussie !");
+    } else if (urlParams.get('success') === '0') {
+        showAlert("Erreur lors de la suppression.");
+    }
+</script>
+
 <?php
 
 include_once 'class.cavaliers.php';
@@ -223,27 +245,5 @@ $reqcavaliers = $ocavaliers->CavaliersALL();
         </form>
     </div>
 </div>
-
-<script>
-    function toggleForm() {
-        var form = document.getElementById("ajoutForm");
-        form.classList.toggle("show");
-
-        if (form.classList.contains("show")) {
-            document.getElementById("formAnchor").scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-
-    function showAlert(message) {
-        alert(message);
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('success') === '1') {
-        showAlert("update des données réussie !");
-    } else if (urlParams.get('success') === '0') {
-        showAlert("Erreur lors de la suppression.");
-    }
-</script>
 </body>
 </html>
