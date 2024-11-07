@@ -43,6 +43,12 @@ $reqGalop = $oGalop->GalopALL(); // Assuming you have a method to get all galops
             font-size: 28px;
             font-weight: bold;
         }
+
+        /* CSS for Button Layout */
+        .button-container {
+            display: flex;  /* Use Flexbox to align the buttons in one row */
+            gap: 10px;      /* Add space between the buttons */
+        }
     </style>
 </head>
 <body>
@@ -52,7 +58,11 @@ $reqGalop = $oGalop->GalopALL(); // Assuming you have a method to get all galops
 
     <section class="form-section">
         <h2>Ajouter un galop</h2>
-        <button onclick="openPopup('addPopup')">Ajouter</button>
+        <div class="button-container">
+            <button onclick="openPopup('addPopup')">Ajouter</button>
+            <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier</button>
+            <button id="deleteButton" onclick="openPopup('deletePopup')" disabled>Supprimer</button>
+        </div>
     </section>
 
     <section class="cards-section">
@@ -79,8 +89,6 @@ $reqGalop = $oGalop->GalopALL(); // Assuming you have a method to get all galops
                     ?>
                 </tbody>
             </table>
-            <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier</button>
-            <button id="deleteButton" onclick="openPopup('deletePopup')" disabled>Supprimer</button>
         </div>
     </section>
 
