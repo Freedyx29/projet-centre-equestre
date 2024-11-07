@@ -54,6 +54,16 @@ $coursList = $cours->read();
             <label>Libellé:</label><input type="text" name="libcours" required>
             <label>Heure de Début:</label><input type="time" name="hdebut" required>
             <label>Heure de Fin:</label><input type="time" name="hfin" required>
+            <label>Jour:</label>
+            <select name="jour" required>
+                <option value="Lundi">Lundi</option>
+                <option value="Mardi">Mardi</option>
+                <option value="Mercredi">Mercredi</option>
+                <option value="Jeudi">Jeudi</option>
+                <option value="Vendredi">Vendredi</option>
+                <option value="Samedi">Samedi</option>
+                <option value="Dimanche">Dimanche</option>
+            </select>
             <button type="submit" name="create" class="btn-primary">Ajouter</button>
         </form>
     </div>
@@ -67,6 +77,16 @@ $coursList = $cours->read();
             <label>Libellé:</label><input type="text" name="libcours" id="edit_libcours" required>
             <label>Heure de Début:</label><input type="time" name="hdebut" id="edit_hdebut" required>
             <label>Heure de Fin:</label><input type="time" name="hfin" id="edit_hfin" required>
+            <label>Jour:</label>
+            <select name="jour" id="edit_jour" required>
+                <option value="Lundi">Lundi</option>
+                <option value="Mardi">Mardi</option>
+                <option value="Mercredi">Mercredi</option>
+                <option value="Jeudi">Jeudi</option>
+                <option value="Vendredi">Vendredi</option>
+                <option value="Samedi">Samedi</option>
+                <option value="Dimanche">Dimanche</option>
+            </select>
             <button type="submit" name="update" class="btn-primary">Mettre à jour</button>
         </form>
     </div>
@@ -93,6 +113,7 @@ $coursList = $cours->read();
                     <th>Libellé</th>
                     <th>Heure de Début</th>
                     <th>Heure de Fin</th>
+                    <th>Jour</th> <!-- Nouvelle colonne pour le jour -->
                 </tr>
             </thead>
             <tbody>
@@ -102,12 +123,14 @@ $coursList = $cours->read();
                         data-idcours="<?= htmlspecialchars($coursItem['idcours']) ?>"
                         data-libcours="<?= htmlspecialchars($coursItem['libcours']) ?>"
                         data-hdebut="<?= htmlspecialchars($coursItem['hdebut']) ?>"
-                        data-hfin="<?= htmlspecialchars($coursItem['hfin']) ?>">
+                        data-hfin="<?= htmlspecialchars($coursItem['hfin']) ?>"
+                        data-jour="<?= htmlspecialchars($coursItem['jour']) ?>"> <!-- Ajout de data-jour -->
                     </td>
                     <td><?php echo htmlspecialchars($coursItem['idcours']); ?></td>
                     <td><?php echo htmlspecialchars($coursItem['libcours']); ?></td>
                     <td><?php echo htmlspecialchars($coursItem['hdebut']); ?></td>
                     <td><?php echo htmlspecialchars($coursItem['hfin']); ?></td>
+                    <td><?php echo htmlspecialchars($coursItem['jour']); ?></td> <!-- Affichage du jour -->
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -136,6 +159,7 @@ $coursList = $cours->read();
                     $('#edit_libcours').val($(this).data('libcours'));
                     $('#edit_hdebut').val($(this).data('hdebut'));
                     $('#edit_hfin').val($(this).data('hfin'));
+                    $('#edit_jour').val($(this).data('jour')); // Remplir le champ jour
                     $('#delete_idcours').val($(this).data('idcours'));
                     $('#editButton').prop('disabled', false);
                     $('#deleteButton').prop('disabled', false);
