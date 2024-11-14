@@ -1,8 +1,8 @@
 <?php 
-include_once 'class.robe.php'; // Ensure the path is correct
+include_once 'class.galop.php'; // Ensure the path is correct
 
-$oRobe = new Robe();
-$reqRobe = $oRobe->RobeALL(); // Assuming you have a method to get all robes
+$oGalop = new Galop();
+$reqGalop = $oGalop->GalopALL(); // Assuming you have a method to get all galops
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +10,7 @@ $reqRobe = $oRobe->RobeALL(); // Assuming you have a method to get all robes
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Robes</title>
+    <title>Gestion des Galops</title>
     <link rel="stylesheet" href="css.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -47,91 +47,89 @@ $reqRobe = $oRobe->RobeALL(); // Assuming you have a method to get all robes
 </head>
 <body>
     <header>
-        <h1>Gestion des Robes</h1>
+        <h1>Gestion des Galops</h1>
     </header>
- <section class="form-section">
-        <h2>Actions</h2>
+
+    <section class="form-section">
+        <h2>Ajouter/Modifier/Supprimer un galop</h2>
         <button onclick="openPopup('addPopup')">Ajouter</button>
         <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier</button>
         <button id="deleteButton" onclick="openPopup('deletePopup')" disabled>Supprimer</button>
     </section>
 
     <section class="cards-section">
-        <h2>Modifier/Supprimer une robe</h2>
         <div class="cards-container">
-            <table id="robeTable" class="display">
+            <table id="galopTable" class="display">
                 <thead>
                     <tr>
                         <th>Sélectionner</th>
                         <th>ID</th>
-                        <th>Nom de la robe</th>
+                        <th>Nom du galop</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    $robes = $oRobe->RobeALL(); // Call method to get all robes
-                    foreach ($robes as $robe) {
+                    $galops = $oGalop->GalopALL(); // Call method to get all galops
+                    foreach ($galops as $galop) {
                         echo "<tr>
-                            <td><input type='radio' name='selectedRobe' class='robe-radio' value='" . htmlspecialchars($robe['idrobe']) . "'></td>
-                            <td>" . htmlspecialchars($robe['idrobe']) . "</td>
-                            <td>" . htmlspecialchars($robe['librobe']) . "</td>
+                            <td><input type='radio' name='selectedGalop' class='galop-radio' value='" . htmlspecialchars($galop['idgalop']) . "'></td>
+                            <td>" . htmlspecialchars($galop['idgalop']) . "</td>
+                            <td>" . htmlspecialchars($galop['libgalop']) . "</td>
                         </tr>";
                     }
                     ?>
                 </tbody>
             </table>
-            <button id="editButton" onclick="openPopup('editPopup')">Modifier</button>
-            <button id="deleteButton" onclick="openPopup('deletePopup')">Supprimer</button>
         </div>
     </section>
 
-    <!-- Popup for Adding a Robe -->
+    <!-- Popup for Adding a Galop -->
     <div id="addPopup" class="popup">
         <div class="popup-content">
             <span class="close" onclick="closePopup('addPopup')">&times;</span>
-            <h2>Ajouter une robe</h2>
-            <form action="traitement.robe.php" method="POST">
-                <input type="text" name="librobe" placeholder="Nom de la robe" required>
+            <h2>Ajouter un galop</h2>
+            <form action="traitement.galop.php" method="POST">
+                <input type="text" name="libgalop" placeholder="Nom du galop" required>
                 <button type="submit" name="ajouter">Ajouter</button>
             </form>
         </div>
     </div>
 
-    <!-- Popup for Editing a Robe -->
+    <!-- Popup for Editing a Galop -->
     <div id="editPopup" class="popup">
         <div class="popup-content">
             <span class="close" onclick="closePopup('editPopup')">&times;</span>
-            <h2>Modifier une robe</h2>
-            <form id="editForm" action="traitement.robe.php" method="POST">
-                <input type="hidden" name="idrobe" id="editId">
-                <input type="text" name="librobe" id="editLibrobe" placeholder="Nom de la robe" required>
+            <h2>Modifier un galop</h2>
+            <form id="editForm" action="traitement.galop.php" method="POST">
+                <input type="hidden" name="idgalop" id="editId">
+                <input type="text" name="libgalop" id="editLibgalop" placeholder="Nom du galop" required>
                 <button type="submit" name="modifier">Modifier</button>
             </form>
         </div>
     </div>
 
-    <!-- Popup for Deleting a Robe -->
+    <!-- Popup for Deleting a Galop -->
     <div id="deletePopup" class="popup">
         <div class="popup-content">
             <span class="close" onclick="closePopup('deletePopup')">&times;</span>
-            <h2>Êtes-vous sûr de vouloir supprimer cette robe ?</h2>
+            <h2>Êtes-vous sûr de vouloir supprimer ce galop ?</h2>
             <button id="confirmDelete">Supprimer</button>
             <button onclick="closePopup('deletePopup')">Annuler</button>
         </div>
     </div>
 
     <script>
-        // Activation de DataTables sur la table des robes
+        // Activate DataTables on the galop table
         $(document).ready(function() {
-            $('#robeTable').DataTable();
+            $('#galopTable').DataTable();
         });
 
-        // Handler for radio button change
-        $('input[name="selectedRobe"]').on('change', function() {
-            const selectedRobe = $('input[name="selectedRobe"]:checked');
-            if (selectedRobe.length > 0) {
-                $('#editId').val(selectedRobe.val()); // Set the ID of the selected robe for editing
-                $('#editLibrobe').val(selectedRobe.closest('tr').find('td:eq(2)').text().trim()); // Get the name of the selected robe
+        // Enable buttons only when a galop is selected
+        $('input[name="selectedGalop"]').on('change', function() {
+            const selectedGalop = $('input[name="selectedGalop"]:checked');
+            if (selectedGalop.length > 0) {
+                $('#editId').val(selectedGalop.val()); // Set the ID of the selected galop for editing
+                $('#editLibgalop').val(selectedGalop.closest('tr').find('td:eq(2)').text().trim()); // Get the name of the selected galop
                 
                 $('#editButton').prop('disabled', false);
                 $('#deleteButton').prop('disabled', false);
@@ -139,10 +137,10 @@ $reqRobe = $oRobe->RobeALL(); // Assuming you have a method to get all robes
         });
 
         $('#confirmDelete').on('click', function() {
-            const selectedRobe = $('input[name="selectedRobe"]:checked');
-            if (selectedRobe.length > 0) {
-                const id = selectedRobe.val(); // Get the ID of the selected robe
-                $.post('traitement.robe.php', { supprimer: true, idrobe: id }, function() {
+            const selectedGalop = $('input[name="selectedGalop"]:checked');
+            if (selectedGalop.length > 0) {
+                const id = selectedGalop.val(); // Get the ID of the selected galop
+                $.post('traitement.galop.php', { supprimer: true, idgalop: id }, function() {
                     window.location.reload(); // Refresh the page after delete
                 });
             }
