@@ -26,7 +26,7 @@ $reqgalop = $ogalop->GalopAll();
         if ($reqgalop [$i]['supprime'] == '0') {
             $unreqgalop = new Galop($reqgalop[$i]["idgalop"],$reqgalop[$i]["libgalop"]);
     ?>
-        <form name="modifier" action="traitement.galop.php" method="POST" class="entry">
+        <form name="modifier" action="../traitement/traitement.galop.php" method="POST" class="entry">
             <div class="form-header">
             <span>ID Galop : <?php echo $unreqgalop->getidgalop(); ?></span>
                 <div class="form-buttons">
@@ -56,7 +56,7 @@ $reqgalop = $ogalop->GalopAll();
     <a id="formAnchor"></a>
 
     <div class="form-popup" id="ajoutForm">
-        <form action="traitement.galop.php" method="POST" class="form-container">
+        <form action="../traitement/traitement.galop.php" method="POST" class="form-container">
             <h3>Ajouter un pays</h3>
 
             <div class="form-group">
