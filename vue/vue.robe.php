@@ -1,6 +1,6 @@
 <?php
 
-include 'class.robe.php';
+include '../class/class.robe.php';
 /*include '../includes/bdd.inc.php'; */
 
 $orobe = new Robe("", "");
