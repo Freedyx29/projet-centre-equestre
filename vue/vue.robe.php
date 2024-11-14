@@ -26,7 +26,7 @@ $reqrobe = $orobe->RobeALL();
         if ($reqrobe [$i]['supprime'] == '0') {
             $unreqrobe = new Robe($reqrobe[$i]["idrobe"],$reqrobe[$i]["librobe"]);
     ?>
-        <form name="modifier" action="traitement.robe.php" method="POST" class="entry">
+        <form name="modifier" action="../traitement/traitement.robe.php" method="POST" class="entry">
             <div class="form-header">
             <span>ID Race : <?php echo $unreqrobe->getidrobe(); ?></span>
                 <div class="form-buttons">
@@ -56,7 +56,7 @@ $reqrobe = $orobe->RobeALL();
     <a id="formAnchor"></a>
 
     <div class="form-popup" id="ajoutForm">
-        <form action="traitement.robe.php" method="POST" class="form-container">
+        <form action="../traitement/traitement.robe.php" method="POST" class="form-container">
             <h3>Ajouter un cours</h3>
 
             <div class="form-group">
