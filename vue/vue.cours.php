@@ -1,6 +1,6 @@
 <?php
 
-include 'class.cours.php';
+include '../class/class.cours.php';
 /*include '../includes/bdd.inc.php'; */
 
 $ocours = new Cours("", "", "", "");
