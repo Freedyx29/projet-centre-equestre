@@ -26,7 +26,7 @@ $reqcours = $ocours->CoursAll();
         if ($reqcours [$i]['supprime'] == '0') {
             $unreqcours = new Cours($reqcours[$i]["idcours"],$reqcours[$i]["libcours"],$reqcours[$i]["hdebut"],$reqcours[$i]["hfin"]);
     ?>
-        <form name="modifier" action="traitement.cours.php" method="POST" class="entry">
+        <form name="modifier" action="../traitement/traitement.cours.php" method="POST" class="entry">
             <div class="form-header">
             <span>ID Cours : <?php echo $unreqcours->getidcours(); ?></span>
                 <div class="form-buttons">
@@ -66,7 +66,7 @@ $reqcours = $ocours->CoursAll();
     <a id="formAnchor"></a>
 
     <div class="form-popup" id="ajoutForm">
-        <form action="traitement.cours.php" method="POST" class="form-container">
+        <form action="../traitement/traitement.cours.php" method="POST" class="form-container">
             <h3>Ajouter un cours</h3>
 
             <div class="form-group">
