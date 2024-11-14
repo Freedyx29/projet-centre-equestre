@@ -1,6 +1,6 @@
 <?php
 
-include_once 'class.cavaliers.php';
+include_once '../class/class.cavaliers.php';
 
 $ocavaliers = new Cavaliers("","", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
 $reqcavaliers = $ocavaliers->CavaliersALL();
