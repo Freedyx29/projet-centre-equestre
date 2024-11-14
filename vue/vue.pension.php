@@ -22,7 +22,7 @@
 
 <?php
 
-include_once 'class.pension.php';
+include_once '../class/class.pension.php';
 
 $opension = new Pension("","", "");
 $reqpension = $opension->PensionALL();
