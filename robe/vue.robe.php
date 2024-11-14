@@ -49,10 +49,11 @@ $reqRobe = $oRobe->RobeALL(); // Assuming you have a method to get all robes
     <header>
         <h1>Gestion des Robes</h1>
     </header>
-
-    <section class="form-section">
-        <h2>Ajouter une robe</h2>
+ <section class="form-section">
+        <h2>Actions</h2>
         <button onclick="openPopup('addPopup')">Ajouter</button>
+        <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier</button>
+        <button id="deleteButton" onclick="openPopup('deletePopup')" disabled>Supprimer</button>
     </section>
 
     <section class="cards-section">
