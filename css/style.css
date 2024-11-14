@@ -1,0 +1,200 @@
+/* Définition des couleurs principales */
+:root {
+    --primary-color: #003b6f; /* Bleu foncé */
+    --primary-light-color: #4a90e2; /* Bleu clair */
+    --primary-hover-color: #002c4f; /* Bleu encore plus foncé */
+    --danger-color: #e57373; /* Rouge clair */
+    --danger-hover-color: #ef5350;
+    --background-color: #f5f5f5; /* Gris très clair */
+    --card-background: #ffffff; /* Blanc */
+    --border-color: #e0e0e0; /* Gris clair */
+    --text-color: #333333; /* Gris foncé */
+    --label-color: #555555; /* Gris moyen */
+    --shadow-color: rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+}
+
+/* Style global du body */
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Style pour le conteneur principal */
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background: linear-gradient(135deg, #ffffff, #f1f1f1);
+    border-radius: 16px;
+    box-shadow: 0 12px 24px var(--shadow-color);
+}
+
+/* Style pour l'en-tête de la page */
+h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    font-size: 2.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Style pour chaque bloc produit */
+.entry {
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    background-color: var(--card-background);
+    box-shadow: 0 6px 12px var(--shadow-color);
+    position: relative;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.entry::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light-color));
+    border-radius: 16px 16px 0 0;
+    z-index: 0;
+}
+
+.entry:hover {
+    box-shadow: 0 12px 24px var(--shadow-color);
+    transform: translateY(-8px);
+}
+
+/* Style pour les groupes de formulaires */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Style pour les labels de formulaires */
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--label-color);
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+/* Style pour les champs de texte */
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-light-color);
+    box-shadow: 0 0 8px rgba(0, 59, 111, 0.3);
+    outline: none;
+}
+
+/* Style pour les boutons */
+.btn-primary, .btn-danger {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #003b6f, #4a90e2); /* Dégradé bleu foncé à bleu clair */
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #002c4f, #003b6f); /* Dégradé bleu plus foncé au survol */
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px var(--shadow-color);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color), var(--danger-hover-color));
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, var(--danger-hover-color), var(--danger-color));
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px var(--shadow-color);
+}
+
+/* Style pour l'en-tête de chaque formulaire */
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Style pour les boutons dans l'en-tête de formulaire */
+.form-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+/* Style pour le bouton central */
+.center-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+/* Style pour le formulaire popup */
+.form-popup {
+    display: none;
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px var(--shadow-color);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.form-popup.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.form-popup.hide {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .btn-primary, .btn-danger {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
