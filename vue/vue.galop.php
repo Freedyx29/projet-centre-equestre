@@ -1,6 +1,6 @@
 <?php
 
-include 'class.galop.php';
+include '../class/class.galop.php';
 /*include '../includes/bdd.inc.php'; */
 
 $ogalop = new Galop("", "");
