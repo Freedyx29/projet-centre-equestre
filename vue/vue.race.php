@@ -26,7 +26,7 @@ $reqrace = $orace->RaceALL();
         if ($reqrace [$i]['supprime'] == '0') {
             $unreqrace = new Race($reqrace[$i]["idrace"],$reqrace[$i]["librace"]);
     ?>
-        <form name="modifier" action="traitement.race.php" method="POST" class="entry">
+        <form name="modifier" action="../traitement/traitement.race.php" method="POST" class="entry">
             <div class="form-header">
             <span>ID Race : <?php echo $unreqrace->getidrace(); ?></span>
                 <div class="form-buttons">
@@ -56,7 +56,7 @@ $reqrace = $orace->RaceALL();
     <a id="formAnchor"></a>
 
     <div class="form-popup" id="ajoutForm">
-        <form action="traitement.race.php" method="POST" class="form-container">
+        <form action="../traitement/traitement.race.php" method="POST" class="form-container">
             <h3>Ajouter un cours</h3>
 
             <div class="form-group">
