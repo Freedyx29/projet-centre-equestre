@@ -51,12 +51,13 @@ $reqRace = $oRace->RaceALL(); // Assuming you have a method to get all races
     </header>
 
     <section class="form-section">
-        <h2>Ajouter une race</h2>
+        <h2>Gestion des Races</h2>
         <button onclick="openPopup('addPopup')">Ajouter</button>
+        <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier</button>
+        <button id="deleteButton" onclick="openPopup('deletePopup')" disabled>Supprimer</button>
     </section>
 
     <section class="cards-section">
-        <h2>Modifier/Supprimer une race</h2>
         <div class="cards-container">
             <table id="raceTable" class="display">
                 <thead>
@@ -79,8 +80,6 @@ $reqRace = $oRace->RaceALL(); // Assuming you have a method to get all races
                     ?>
                 </tbody>
             </table>
-            <button id="editButton" onclick="openPopup('editPopup')">Modifier</button>
-            <button id="deleteButton" onclick="openPopup('deletePopup')">Supprimer</button>
         </div>
     </section>
 
