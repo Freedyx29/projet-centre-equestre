@@ -22,7 +22,7 @@
 
 <?php
 
-include_once 'class.prend.php';
+include_once '../class/class.prend.php';
 
 $oprend = new Prend();
 $reqprend = $oprend->PrendAll();
