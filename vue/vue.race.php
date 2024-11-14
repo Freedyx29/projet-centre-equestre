@@ -1,6 +1,6 @@
 <?php
 
-include 'class.race.php';
+include '../class/class.race.php';
 /*include '../includes/bdd.inc.php'; */
 
 $orace = new Race("", "");
