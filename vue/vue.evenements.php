@@ -1,6 +1,6 @@
 <?php
 
-include_once 'class.evenements.php';
+include_once '../class/class.evenements.php';
 
 $evenement = new Evenements();
 $reqEvenements = $evenement->getAllEvenements();
