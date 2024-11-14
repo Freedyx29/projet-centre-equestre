@@ -1,5 +1,5 @@
 <?php
-require_once 'class.cavalerie.php';
+require_once '../class/class.cavalerie.php';
 $cavalerie = new Cavalerie();
 $cavalerieList = $cavalerie->CavalerieALL();
 ?>
