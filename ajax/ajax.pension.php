@@ -13,9 +13,9 @@ $req->execute();
 $list = $req->fetchAll();
 
 foreach ($list as $res) {
-    $Listecavalerie = str_replace($_POST['keyword'], '<b>'.$_POST['keyword'].'</b>', $res['nomche']);
+    $Listepension = str_replace($_POST['keyword'], '<b>'.$_POST['keyword'].'</b>', $res['nomche']);
     // Utilise l'index `id` pour l'élément HTML, qui est passé depuis la fonction autocomplet() dans le JavaScript
-    echo '<li onclick="set_item(\''.str_replace("'", "\'", $res['nomche']).'\', '.$_POST['index'].', '.$res['nomche'].')">'.$Listecavalerie.'</li>';
+    echo '<li onclick="set_item_pension(\''.str_replace("'", "\'", $res['nomche']).'\', '.$_POST['index'].', '.$res['numsire'].')">'.$Listepension.'</li>';
     }
 }
 ?>
