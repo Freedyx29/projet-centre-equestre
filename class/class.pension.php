@@ -14,40 +14,38 @@ class Pension {
         $this->numsire = $nums;
     }
 
-
     public function getPension() {
-        return "idpen: $this->idpen,
-                libpen: $this->libpen,
-                numsire: $this->numsire";
+        return "ID Pension : $this->idpen,
+                Lib Pension : $this->libpen,
+                Num sire : $this->numsire";
     }
 
     public function getidpen() {
         return $this->idpen;
     }
-    
+
     public function getlibpen() {
         return $this->libpen;
     }
-    
+
     public function getnumsire() {
         return $this->numsire;
     }
-    
 
 
     public function setlibpen($libp) {
         $this->libpen = $libp;
     }
-    
+
     public function setnumsire($nums) {
         $this->numsire = $nums;
     }
-    
 
 
     public function PensionALL() {
         $con = connexionPDO();
-        $sql = "SELECT * FROM pension;";
+        $sql = "SELECT *
+                FROM pension";
         $executesql = $con->prepare($sql);
         $executesql->execute();
         $resultat = $executesql->fetchAll();
@@ -130,7 +128,7 @@ class Pension {
         }
     }
     
-    public function selectNomChe(){
+    public function selectTypeChe(){
         $con = connexionPDO();
         $sql="SELECT * FROM numsire;";
         $executesql = $con->query($sql);                   
