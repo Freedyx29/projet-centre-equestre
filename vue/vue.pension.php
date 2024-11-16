@@ -49,9 +49,9 @@ $reqpension = $opension->PensionALL();
     $i = 0;
     foreach($reqpension as $unereqpension) {
         if ($reqpension [$i]['supprime'] == '0') {
-            $unereqpension = new Pension($reqpension[$i]["idpen"],$reqpension[$i]["libpen"], $reqpension[$i]["numsire"]);                                          
+            $unereqpension = new Pension($reqpension[$i]["idpen"],$reqpension[$i]["libpen"],$reqpension[$i]["numsire"]);
     ?>
-        <form name="modifier" action="traitement.pension.php" method="POST" class="entry">
+        <form name="modifier" action="../traitement/traitement.pension.php" method="POST" class="entry">
             <div class="form-header">
             <span>ID Pension : <?php echo $unereqpension->getidpen(); ?></span>
 
@@ -64,15 +64,15 @@ $reqpension = $opension->PensionALL();
             </div>
 
                 <div class="form-group">
-                    <label for="libpen-<?php echo $i; ?>">Libellé pension :</label>
+                    <label for="libpen-<?php echo $i; ?>">Libellé de la pension :</label>
                     <input type="text" id="libpen-<?php echo $i; ?>" name="libpen" value="<?php echo $unereqpension->getlibpen(); ?>"required>
                 </div>
 
-                <!-- Autocomplet de NomChe -->
+
                 <div class="form-group">
-                    <label for="nomche<?php echo $i; ?>">Libellé galop :</label>
-                    <input id="nomche<?php echo $i; ?>" name="nomche" type="text" value="<?php echo $opension->PensionNumsire($unereqpension->getnumsire()); ?>" onkeyup="autocompletNomche(<?php echo $i; ?>)"required>
-                    <ul id="nom_list_nomche_id<?php echo $i; ?>"></ul>
+                    <label for="nomche<?php echo $i; ?>">Nom du cheval :</label>
+                    <input id="nomche<?php echo $i; ?>" name="nomche" type="text" value="<?php echo $opension->PensionNumsire($unereqpension->getnumsire()); ?>" onkeyup="autocompletPension(<?php echo $i; ?>)"required>
+                    <ul id="nom_list_pension_id<?php echo $i; ?>"></ul>
                 </div>
 
                 <input type="hidden" id="num_sire<?php echo $i; ?>" name="numsire" value="<?php echo $unereqpension->getnumsire(); ?>">
@@ -86,35 +86,33 @@ $reqpension = $opension->PensionALL();
     ?>
 
     <div class="center-button">
-        <button class="btn-primary" onclick="toggleForm()">Ajouter une pension</button>
+        <button class="btn-primary" onclick="toggleForm()">Ajouter une Pension</button>
     </div>
 
     <a id="formAnchor"></a>
 
     <div class="form-popup" id="ajoutForm">
-        <form action="traitement.pension.php" method="POST" class="form-container">
-            <h3>Ajouter une pension</h3>
+        <form action="../traitement/traitement.pension.php" method="POST" class="form-container">
+            <h3>Ajouter une Pension</h3>
 
             <div class="form-group">
-                <label for="libpen"><b>Libellé pension :</b></label>
-                <input type="text" id="nomche" name="libpen" placeholder="Entrer le libellé de la pension" required>
+                <label for="libpen"><b>Libellé de la pension :</b></label>
+                <input type="text" id="libpen" name="libpen" placeholder="Entrer la libellé de la pension" required>
             </div>
 
 
-            <!-- Autocomplet de numsire -->
             <div class="form-group">
                 <label for="nomche"><b>Nom du cheval :</b></label>
-                <input id="nomche" name="nomche" type="text" placeholder="Entrer le nom du cheval"  onkeyup="autocompletNomcheajout()" required>
-                <ul id="nom_list_nomche_id"></ul>
+                <input id="nomche" name="nomche" type="text" placeholder="Entrer le nom du cheval"  onkeyup="autocompletPensionajout()" required>
+                <ul id="nom_list_pension_id"></ul>
             </div>
 
-            <input type="hidden" id="num_sire" name="numsire" value="<?php echo $unereqpension->getnumsire(); ?>">
+            <input type="hidden" id="num_sire" name="numsire">
 
 
             <button type="submit" name="ajouter" class="btn-primary">Ajouter</button>
         </form>
     </div>
 </div>
-
 </body>
 </html>
