@@ -16,6 +16,7 @@ $cavalerieList = $cavalerie->CavalerieALL();
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="../js/script_cavalerie.race.js"></script>
     <script src="../js/script_cavalerie.robe.js"></script>
+    <script src="../js/script_cavalerie.js"></script>
 
     <style>
         .form-popup {
