@@ -56,7 +56,7 @@ $reqRace = $oRace->RaceALL(); // Supposons que vous avez une méthode pour obten
     <section class="form-section">
         <h2>Gestion des Races</h2>
         <button onclick="openPopup('addPopup')">Ajouter</button>
-        <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier La,Race</button>
+        <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier La Race</button>
         <button id="deleteButton" onclick="openPopup('deletePopup')" disabled>Supprimer La Race</button>
     </section>
 
