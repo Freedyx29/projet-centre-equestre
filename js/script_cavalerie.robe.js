@@ -1,61 +1,31 @@
-// autocompletion
+// Autocompletion pour la robe
 function autocompletRobe(id) {
     var min_length = 1;
-    var keyword = $('#librobe' + id).val();
+    var keyword = $('#' + id + 'librobe').val();
 
     if (keyword.length >= min_length) {
         $.ajax({
-            url: 'ajax.cavalerie.robe.php', 
+            url: '../ajax/ajax.cavalerie.robe.php',
             type: 'POST',
-            data: { 
+            data: {
                 keyword: keyword,
-                index: id // Envoie l'index à ajax_produit.php
+                index: id
             },
             success: function(data) {
-                $('#nom_list_robe_id' + id).show();
-                $('#nom_list_robe_id' + id).html(data);
+                $('#' + id + 'nom_list_robe_id').show();
+                $('#' + id + 'nom_list_robe_id').html(data);
             },
         });
     } else {
-        $('#nom_list_robe_id' + id).hide();
+        $('#' + id + 'nom_list_robe_id').hide();
     }
 }
-
-function autocompletRobeajout() {
-    var min_length = 1;
-    var keyword = $('#librobe').val();
-
-    if (keyword.length >= min_length) {
-        $.ajax({
-            url: 'ajax.cavalerie.robeajout.php', 
-            type: 'POST',
-            data: { 
-                keyword: keyword,
-                // Envoie l'index à ajax_produit.php
-            },
-            success: function(data) {
-                $('#nom_list_robe_id').show();
-                $('#nom_list_robe_id').html(data);
-            },
-        });
-    } else {
-        $('#nom_list_robe_id').hide();
-    }
-}
-
 
 // Lors du choix dans la liste
-function set_item(item, id, id_robe) {
-    // Mettre à jour le champ librobe avec la valeur sélectionnée
-    $('#librobe' + id).val(item);
-    // Cacher la liste de suggestions
-    $('#nom_list_robe_id' + id).hide();
-    // Mettre à jour le champ caché id_robe avec l'ID de la catégorie sélectionnée
-    $('#id_robe' + id).val(id_robe);
-}
-
-function set_item_ajout(item, id_robe) {
-    $('#librobe').val(item);
-    $('#nom_list_robe_id').hide();
-    $('#id_robe').val(id_robe);
+function set_item(item, id, id_robe, type) {
+    if (type === 'robe') {
+        $('#' + id + 'librobe').val(item);
+        $('#' + id + 'nom_list_robe_id').hide();
+        $('#' + id + 'id_robe').val(id_robe);
+    }
 }
