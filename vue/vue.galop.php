@@ -15,7 +15,6 @@ $reqGalop = $oGalop->GalopALL(); // Assuming you have a method to get all galops
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="js/script.js"></script>
     <style>
         /* CSS for Pop-ups */
         .popup {
