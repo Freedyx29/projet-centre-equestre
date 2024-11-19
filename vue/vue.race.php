@@ -107,7 +107,7 @@ $reqRace = $oRace->RaceALL(); // Supposons que vous avez une méthode pour obten
             <form id="editForm" action="../traitement/traitement.race.php" method="POST">
                 <input type="hidden" name="idrace" id="editId">
                 <input type="text" name="librace" id="editLibrace" placeholder="Nom de la race" required>
-                <button type="submit" name="modifier">Modifier</button>
+                <button type="submit" name="modifier">Modifier La Race</button>
             </form>
         </div>
     </div>
@@ -117,7 +117,7 @@ $reqRace = $oRace->RaceALL(); // Supposons que vous avez une méthode pour obten
         <div class="popup-content">
             <span class="close" onclick="closePopup('deletePopup')">&times;</span>
             <h2>Êtes-vous sûr de vouloir supprimer cette race ?</h2>
-            <button id="confirmDelete">Supprimer</button>
+            <button id="confirmDelete">Supprimer La Race </button>
             <button onclick="closePopup('deletePopup')">Annuler</button>
         </div>
     </div>
