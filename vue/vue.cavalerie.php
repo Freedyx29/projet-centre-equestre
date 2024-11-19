@@ -38,6 +38,16 @@ $cavalerieList = $cavalerie->CavalerieALL();
             cursor: pointer;
             font-size: 20px;
         }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -118,52 +128,54 @@ $cavalerieList = $cavalerie->CavalerieALL();
     </form>
 </div>
 
+<!-- Formulaire de suppression -->
+<div class="form-popup" id="supprimerForm">
+    <span class="close-btn" onclick="fermerFormulaire('supprimerForm')">&times;</span>
+    <form action="../traitement/traitement.cavalerie.php" method="POST" class="form-container">
+        <h3>Supprimer une cavalerie</h3>
+        <input type="hidden" id="supprimer_numsire" name="numsire">
+        <button type="submit" name="supprimer" class="btn-danger">Supprimer</button>
+    </form>
+</div>
 
-    <!-- Formulaire de suppression -->
-    <div class="form-popup" id="supprimerForm">
-        <span class="close-btn" onclick="fermerFormulaire('supprimerForm')">&times;</span>
-        <form action="../traitement/traitement.cavalerie.php" method="POST" class="form-container">
-            <h3>Supprimer une cavalerie</h3>
-            <input type="hidden" id="supprimer_numsire" name="numsire">
-            <button type="submit" name="supprimer" class="btn-danger">Supprimer</button>
-        </form>
-    </div>
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
 
-    <!-- Tableau des cavaleries -->
-    <h2>Liste des Cavaleries</h2>
-    <table id="cavalerieTable" class="display">
-        <thead>
-            <tr>
-                <th>Sélectionner</th>
-                <th>Numsire</th>
-                <th>Nom du Cheval</th>
-                <th>Date de Naissance</th>
-                <th>Garrot</th>
-                <th>Race</th>
-                <th>Robe</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($cavalerieList as $cavalerieItem): ?>
-            <tr>
-                <td><input type="checkbox" class="select-cavalerie"
-                    data-numsire="<?= htmlspecialchars($cavalerieItem['numsire']) ?>"
-                    data-nomche="<?= htmlspecialchars($cavalerieItem['nomche']) ?>"
-                    data-datenache="<?= htmlspecialchars($cavalerieItem['datenache']) ?>"
-                    data-garrot="<?= htmlspecialchars($cavalerieItem['garrot']) ?>"
-                    data-race="<?= htmlspecialchars($cavalerie->CavalerieRace($cavalerieItem['idrace'])) ?>"
-                    data-robe="<?= htmlspecialchars($cavalerie->CavalerieRobe($cavalerieItem['idrobe'])) ?>">
-                </td>
-                <td><?= htmlspecialchars($cavalerieItem['numsire']) ?></td>
-                <td><?= htmlspecialchars($cavalerieItem['nomche']) ?></td>
-                <td><?= htmlspecialchars($cavalerieItem['datenache']) ?></td>
-                <td><?= htmlspecialchars($cavalerieItem['garrot']) ?></td>
-                <td><?= htmlspecialchars($cavalerie->CavalerieRace($cavalerieItem['idrace'])) ?></td>
-                <td><?= htmlspecialchars($cavalerie->CavalerieRobe($cavalerieItem['idrobe'])) ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<!-- Tableau des cavaleries -->
+<h2>Liste des Cavaleries</h2>
+<table id="cavalerieTable" class="display">
+    <thead>
+        <tr>
+            <th>Sélectionner</th>
+            <th>Numsire</th>
+            <th>Nom du Cheval</th>
+            <th>Date de Naissance</th>
+            <th>Garrot</th>
+            <th>Race</th>
+            <th>Robe</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($cavalerieList as $cavalerieItem): ?>
+        <tr>
+            <td><input type="radio" class="select-cavalerie" name="selectedCavalerie"
+                data-numsire="<?= htmlspecialchars($cavalerieItem['numsire']) ?>"
+                data-nomche="<?= htmlspecialchars($cavalerieItem['nomche']) ?>"
+                data-datenache="<?= htmlspecialchars($cavalerieItem['datenache']) ?>"
+                data-garrot="<?= htmlspecialchars($cavalerieItem['garrot']) ?>"
+                data-race="<?= htmlspecialchars($cavalerie->CavalerieRace($cavalerieItem['idrace'])) ?>"
+                data-robe="<?= htmlspecialchars($cavalerie->CavalerieRobe($cavalerieItem['idrobe'])) ?>">
+            </td>
+            <td><?= htmlspecialchars($cavalerieItem['numsire']) ?></td>
+            <td><?= htmlspecialchars($cavalerieItem['nomche']) ?></td>
+            <td><?= htmlspecialchars($cavalerieItem['datenache']) ?></td>
+            <td><?= htmlspecialchars($cavalerieItem['garrot']) ?></td>
+            <td><?= htmlspecialchars($cavalerie->CavalerieRace($cavalerieItem['idrace'])) ?></td>
+            <td><?= htmlspecialchars($cavalerie->CavalerieRobe($cavalerieItem['idrobe'])) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
 
 </div>
 
@@ -195,34 +207,30 @@ $(document).ready(function() {
         var race = $(this).data('race');
         var robe = $(this).data('robe');
 
-        if ($(this).is(':checked')) {
-            $('#modifier_numsire').val(numsire);
-            $('#modifier_nomche').val(nomche);
-            $('#modifier_datenache').val(datenache);
-            $('#modifier_garrot').val(garrot);
-            $('#modifier_librace').val(race);
-            $('#modifier_librobe').val(robe);
-            $('#supprimer_numsire').val(numsire);
-            $('#modifierButton').prop('disabled', false);
-            $('#supprimerButton').prop('disabled', false);
-        } else {
-            $('#modifierButton').prop('disabled', true);
-            $('#supprimerButton').prop('disabled', true);
-        }
+        $('#modifier_numsire').val(numsire);
+        $('#modifier_nomche').val(nomche);
+        $('#modifier_datenache').val(datenache);
+        $('#modifier_garrot').val(garrot);
+        $('#modifier_librace').val(race);
+        $('#modifier_librobe').val(robe);
+        $('#supprimer_numsire').val(numsire);
+        $('#modifierButton').prop('disabled', false);
+        $('#supprimerButton').prop('disabled', false);
     });
 });
 
+function basculerFormulaire(formId) {
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('ajoutForm').style.display = 'none';
+    document.getElementById('modifierForm').style.display = 'none';
+    document.getElementById('supprimerForm').style.display = 'none';
+    document.getElementById(formId).style.display = 'block';
+}
 
-    function basculerFormulaire(formId) {
-        document.getElementById('ajoutForm').style.display = 'none';
-        document.getElementById('modifierForm').style.display = 'none';
-        document.getElementById('supprimerForm').style.display = 'none';
-        document.getElementById(formId).style.display = 'block';
-    }
-
-    function fermerFormulaire(formId) {
-        document.getElementById(formId).style.display = 'none';
-    }
+function fermerFormulaire(formId) {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById(formId).style.display = 'none';
+}
 </script>
 
 </body>
