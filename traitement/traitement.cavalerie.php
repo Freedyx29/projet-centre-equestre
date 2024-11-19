@@ -1,5 +1,5 @@
 <?php
-include 'class.cavalerie.php';
+include '../class/class.cavalerie.php';
 
 $ocavalerie = new Cavalerie();
 
@@ -12,7 +12,7 @@ if (isset($_POST['ajouter'])) {
 
     if (!empty($idrace) && !empty($idrobe)) {
         $success = $ocavalerie->CavalerieAjt($nomche, $datenache, $garrot, $idrace, $idrobe) ? 1 : 0;
-        header("Location: vue.cavalerie.php?success=$success");
+        header("Location: ../vue/vue.cavalerie.php?success=$success");
     } else {
         echo "Les champs idrace et idrobe ne peuvent pas être vides.";
     }
@@ -40,13 +40,13 @@ if (isset($_POST['modifier'])) {
     }
 
     $success = $ocavalerie->Modifier($numsire, $nomche, $datenache, $garrot, $idrace, $idrobe) ? 1 : 0;
-    header("Location: vue.cavalerie.php?success=$success");
+    header("Location: ../vue/vue.cavalerie.php?success=$success");
 }
 
 if (isset($_POST['supprimer'])) {
     $numsire = $_POST['numsire'];
     $success = $ocavalerie->Supprimer($numsire) ? 1 : 0;
-    header("Location: vue.cavalerie.php?success=$success");
+    header("Location: ../vue/vue.cavalerie.php?success=$success");
 }
 
 
