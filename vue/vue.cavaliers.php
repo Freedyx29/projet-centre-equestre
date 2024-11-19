@@ -1,249 +1,337 @@
 <?php
+include 'class.cavaliers.php'; // Assurez-vous que ce chemin est correct
 
-include_once '../class/class.cavaliers.php';
+$oCavalier = new Cavaliers();
+$reqCavalier = $oCavalier->CavaliersALL();
 
-$ocavaliers = new Cavaliers("","", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
-$reqcavaliers = $ocavaliers->CavaliersALL();
+if ($reqCavalier === null) {
+    echo "Erreur : Aucun cavalier trouvé.";
+} else {
+    ?>
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestion des Cavaliers</title>
+        <link rel="stylesheet" href="#">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="script_cavaliers.js"></script>
+        <style>
+            .form-popup {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: white;
+                padding: 20px;
+                border: 1px solid #ccc;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+            .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
+                font-size: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Gestion des Cavaliers</h2>
 
+            <div class="center-button">
+                <button class="btn-primary" onclick="basculerFormulaire('ajoutForm')">Ajouter un cavalier</button>
+                <button class="btn-primary" id="modifierButton" onclick="basculerFormulaire('modifierForm')" disabled>Modifier un cavalier</button>
+                <button class="btn-danger" id="supprimerButton" onclick="basculerFormulaire('supprimerForm')" disabled>Supprimer un cavalier</button>
+            </div>
 
+            <!-- Formulaire d'ajout -->
+            <div class="form-popup" id="ajoutForm">
+                <span class="close-btn" onclick="fermerFormulaire('ajoutForm')">&times;</span>
+                <form action="traitement.cavaliers.php" method="POST" class="form-container">
+                    <h3>Ajouter un cavalier</h3>
+                    <div class="form-group">
+                        <label for="nomcava"><b>Nom :</b></label>
+                        <input type="text" id="nomcava" name="nomcava" placeholder="Entrer le nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prenomcava"><b>Prénom :</b></label>
+                        <input type="text" id="prenomcava" name="prenomcava" placeholder="Entrer le prénom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="datenacava"><b>Date de naissance :</b></label>
+                        <input type="date" id="datenacava" name="datenacava" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numlic"><b>Numéro de licence :</b></label>
+                        <input type="text" id="numlic" name="numlic" placeholder="Entrer le numéro de licence" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="photo"><b>Photo :</b></label>
+                        <input type="text" id="photo" name="photo" placeholder="Entrer le lien de la photo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nomresp"><b>Nom du responsable :</b></label>
+                        <input type="text" id="nomresp" name="nomresp" placeholder="Entrer le nom du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prenomresp"><b>Prénom du responsable :</b></label>
+                        <input type="text" id="prenomresp" name="prenomresp" placeholder="Entrer le prénom du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rueresp"><b>Adresse du responsable :</b></label>
+                        <input type="text" id="rueresp" name="rueresp" placeholder="Entrer l'adresse du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vilresp"><b>Ville du responsable :</b></label>
+                        <input type="text" id="vilresp" name="vilresp" placeholder="Entrer la ville du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpresp"><b>Code postal du responsable :</b></label>
+                        <input type="text" id="cpresp" name="cpresp" placeholder="Entrer le code postal du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telresp"><b>Téléphone du responsable :</b></label>
+                        <input type="text" id="telresp" name="telresp" placeholder="Entrer le téléphone du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailresp"><b>Email du responsable :</b></label>
+                        <input type="email" id="emailresp" name="emailresp" placeholder="Entrer l'email du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="assurance"><b>Assurance :</b></label>
+                        <input type="text" id="assurance" name="assurance" placeholder="Entrer l'assurance" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="motdepasse"><b>Mot de passe :</b></label>
+                        <input type="password" id="motdepasse" name="motdepasse" placeholder="Entrer le mot de passe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="libgalop"><b>Galop :</b></label>
+                        <input type="text" id="libgalop" name="libgalop" placeholder="Rechercher un galop" onkeyup="autocompletGalopajout()" required>
+                        <ul id="nom_list_galop_id"></ul>
+                    </div>
+                    <input type="hidden" id="idgalop" name="idgalop">
+                    <button type="submit" name="ajouter" class="btn-primary">Ajouter</button>
+                </form>
+            </div>
+
+            <!-- Formulaire de modification -->
+            <div class="form-popup" id="modifierForm">
+                <span class="close-btn" onclick="fermerFormulaire('modifierForm')">&times;</span>
+                <form action="traitement.cavaliers.php" method="POST" class="form-container">
+                    <h3>Modifier un cavalier</h3>
+                    <input type="hidden" id="modifier_idcava" name="idcava">
+                    <div class="form-group">
+                        <label for="modifier_nomcava"><b>Nom :</b></label>
+                        <input type="text" id="modifier_nomcava" name="nomcava" placeholder="Entrer le nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_prenomcava"><b>Prénom :</b></label>
+                        <input type="text" id="modifier_prenomcava" name="prenomcava" placeholder="Entrer le prénom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_datenacava"><b>Date de naissance :</b></label>
+                        <input type="date" id="modifier_datenacava" name="datenacava" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_numlic"><b>Numéro de licence :</b></label>
+                        <input type="text" id="modifier_numlic" name="numlic" placeholder="Entrer le numéro de licence" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_photo"><b>Photo :</b></label>
+                        <input type="text" id="modifier_photo" name="photo" placeholder="Entrer le lien de la photo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_nomresp"><b>Nom du responsable :</b></label>
+                        <input type="text" id="modifier_nomresp" name="nomresp" placeholder="Entrer le nom du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_prenomresp"><b>Prénom du responsable :</b></label>
+                        <input type="text" id="modifier_prenomresp" name="prenomresp" placeholder="Entrer le prénom du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_rueresp"><b>Adresse du responsable :</b></label>
+                        <input type="text" id="modifier_rueresp" name="rueresp" placeholder="Entrer l'adresse du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_vilresp"><b>Ville du responsable :</b></label>
+                        <input type="text" id="modifier_vilresp" name="vilresp" placeholder="Entrer la ville du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_cpresp"><b>Code postal du responsable :</b></label>
+                        <input type="text" id="modifier_cpresp" name="cpresp" placeholder="Entrer le code postal du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_telresp"><b>Téléphone du responsable :</b></label>
+                        <input type="text" id="modifier_telresp" name="telresp" placeholder="Entrer le téléphone du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_emailresp"><b>Email du responsable :</b></label>
+                        <input type="email" id="modifier_emailresp" name="emailresp" placeholder="Entrer l'email du responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_assurance"><b>Assurance :</b></label>
+                        <input type="text" id="modifier_assurance" name="assurance" placeholder="Entrer l'assurance" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_motdepasse"><b>Mot de passe :</b></label>
+                        <input type="password" id="modifier_motdepasse" name="motdepasse" placeholder="Entrer le mot de passe (laisser vide pour ne pas modifier)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier_libgalop"><b>Galop :</b></label>
+                        <input type="text" id="modifier_libgalop" name="libgalop" placeholder="Rechercher un galop" onkeyup="autocompletGalopModif()" required>
+                        <ul id="modifier_nom_list_galop_id"></ul>
+                    </div>
+                    <input type="hidden" id="modifier_idgalop" name="idgalop">
+                    <button type="submit" name="modifier" class="btn-primary">Modifier</button>
+                </form>
+            </div>
+
+            <!-- Formulaire de suppression -->
+            <div class="form-popup" id="supprimerForm">
+                <span class="close-btn" onclick="fermerFormulaire('supprimerForm')">&times;</span>
+                <form action="traitement.cavaliers.php" method="POST" class="form-container">
+                    <h3>Supprimer un cavalier</h3>
+                    <input type="hidden" id="supprimer_idcava" name="idcava">
+                    <button type="submit" name="supprimer" class="btn-danger">Supprimer</button>
+                </form>
+            </div>
+
+            <!-- Tableau des cavaliers -->
+            <h2>Liste des Cavaliers</h2>
+            <table id="cavalierTable" class="display">
+                <thead>
+                    <tr>
+                        <th>Sélectionner</th>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Date de naissance</th>
+                        <th>Numéro de licence</th>
+                        <th>Photo</th>
+                        <th>Nom du responsable</th>
+                        <th>Prénom du responsable</th>
+                        <th>Adresse du responsable</th>
+                        <th>Ville du responsable</th>
+                        <th>Code postal du responsable</th>
+                        <th>Téléphone du responsable</th>
+                        <th>Email du responsable</th>
+                        <th>Assurance</th>
+                        <th>Galop</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($reqCavalier as $cavalier) {
+                        if ($cavalier['supprime'] == '0') {
+                    ?>
+                    <tr>
+                        <td><input type="checkbox" class="select-cavalier" data-idcava="<?= htmlspecialchars($cavalier['idcava']) ?>" data-nomcava="<?= htmlspecialchars($cavalier['nomcava']) ?>" data-prenomcava="<?= htmlspecialchars($cavalier['prenomcava']) ?>" data-datenacava="<?= htmlspecialchars($cavalier['datenacava']) ?>" data-numlic="<?= htmlspecialchars($cavalier['numlic']) ?>" data-photo="<?= htmlspecialchars($cavalier['photo']) ?>" data-nomresp="<?= htmlspecialchars($cavalier['nomresp']) ?>" data-prenomresp="<?= htmlspecialchars($cavalier['prenomresp']) ?>" data-rueresp="<?= htmlspecialchars($cavalier['rueresp']) ?>" data-vilresp="<?= htmlspecialchars($cavalier['vilresp']) ?>" data-cpresp="<?= htmlspecialchars($cavalier['cpresp']) ?>" data-telresp="<?= htmlspecialchars($cavalier['telresp']) ?>" data-emailresp="<?= htmlspecialchars($cavalier['emailresp']) ?>" data-assurance="<?= htmlspecialchars($cavalier['assurance']) ?>" data-idgalop="<?= htmlspecialchars($cavalier['idgalop']) ?>"></td>
+                        <td><?= htmlspecialchars($cavalier['idcava']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['nomcava']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['prenomcava']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['datenacava']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['numlic']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['photo']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['nomresp']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['prenomresp']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['rueresp']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['vilresp']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['cpresp']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['telresp']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['emailresp']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['assurance']) ?></td>
+                        <td><?= htmlspecialchars($oCavalier->CavaliersGalop($cavalier['idgalop'])) ?></td>
+                    </tr>
+                    <?php
+                        }
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                $('#cavalierTable').DataTable({
+                    "language": {
+                        "search": "Rechercher",
+                        "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        "lengthMenu": "Afficher _MENU_ entrées",
+                        "paginate": {
+                            "first": "Premier",
+                            "last": "Dernier",
+                            "next": "Suivant",
+                            "previous": "Précédent"
+                        }
+                    }
+                });
+
+                $(document).on('change', '.select-cavalier', function() {
+                    var idcava = $(this).data('idcava');
+                    var nomcava = $(this).data('nomcava');
+                    var prenomcava = $(this).data('prenomcava');
+                    var datenacava = $(this).data('datenacava');
+                    var numlic = $(this).data('numlic');
+                    var photo = $(this).data('photo');
+                    var nomresp = $(this).data('nomresp');
+                    var prenomresp = $(this).data('prenomresp');
+                    var rueresp = $(this).data('rueresp');
+                    var vilresp = $(this).data('vilresp');
+                    var cpresp = $(this).data('cpresp');
+                    var telresp = $(this).data('telresp');
+                    var emailresp = $(this).data('emailresp');
+                    var assurance = $(this).data('assurance');
+                    var idgalop = $(this).data('idgalop');
+
+                    if ($(this).is(':checked')) {
+                        $('#modifier_idcava').val(idcava);
+                        $('#modifier_nomcava').val(nomcava);
+                        $('#modifier_prenomcava').val(prenomcava);
+                        $('#modifier_datenacava').val(datenacava);
+                        $('#modifier_numlic').val(numlic);
+                        $('#modifier_photo').val(photo);
+                        $('#modifier_nomresp').val(nomresp);
+                        $('#modifier_prenomresp').val(prenomresp);
+                        $('#modifier_rueresp').val(rueresp);
+                        $('#modifier_vilresp').val(vilresp);
+                        $('#modifier_cpresp').val(cpresp);
+                        $('#modifier_telresp').val(telresp);
+                        $('#modifier_emailresp').val(emailresp);
+                        $('#modifier_assurance').val(assurance);
+                        $('#modifier_idgalop').val(idgalop);
+                        $('#modifier_libgalop').val($(this).data('libgalop')); // Charger le libgalop
+                        $('#supprimer_idcava').val(idcava);
+                        $('#modifierButton').prop('disabled', false);
+                        $('#supprimerButton').prop('disabled', false);
+                    } else {
+                        $('#modifierButton').prop('disabled', true);
+                        $('#supprimerButton').prop('disabled', true);
+                    }
+                });
+            });
+
+            function basculerFormulaire(formId) {
+                document.getElementById('ajoutForm').style.display = 'none';
+                document.getElementById('modifierForm').style.display = 'none';
+                document.getElementById('supprimerForm').style.display = 'none';
+                document.getElementById(formId).style.display = 'block';
+            }
+
+            function fermerFormulaire(formId) {
+                document.getElementById(formId).style.display = 'none';
+            }
+        </script>
+
+    </body>
+    </html>
+    <?php
+}
 ?>
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Cavaliers</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <script type="text/javascript" src="../js/jquery.min.js"></script>
-    <script type="text/javascript" src="../js/script_cavaliers.js"></script>
-
-</head>
-<body>
-<div class="container">
-    <h2>CRUD Cavaliers</h2>
-
-    <?php
-    $i = 0;
-    foreach($reqcavaliers as $unereqcavaliers) {
-        if ($reqcavaliers [$i]['supprime'] == '0') {
-            $unereqcavaliers = new Cavaliers($reqcavaliers[$i]["idcava"],$reqcavaliers[$i]["nomcava"],$reqcavaliers[$i]["prenomcava"],$reqcavaliers[$i]["datenacava"],$reqcavaliers[$i]["numlic"],$reqcavaliers[$i]["photo"],
-                                               $reqcavaliers[$i]["nomresp"],$reqcavaliers[$i]["prenomresp"],$reqcavaliers[$i]["rueresp"],$reqcavaliers[$i]["vilresp"],$reqcavaliers[$i]["cpresp"],$reqcavaliers[$i]["telresp"],
-                                               $reqcavaliers[$i]["emailresp"],$reqcavaliers[$i]["password"],$reqcavaliers[$i]["assurance"],$reqcavaliers[$i]["idgalop"]);
-    ?>
-        <form name="modifier" action="../traitement/traitement.cavaliers.php" method="POST" class="entry">
-            <div class="form-header">
-            <span>ID Cavaliers : <?php echo $unereqcavaliers->getidcava(); ?></span>
-
-                <div class="form-buttons">
-                    <input type="hidden" name="idcava" value="<?php echo $unereqcavaliers->getidcava(); ?>">
-                    <button class="btn-primary" type="submit" name="modifier">Modifier</button>
-                    <button class="btn-danger" type="submit" name="supprimer">Supprimer</button>
-                </div>
-
-            </div>
-
-                <div class="form-group">
-                    <label for="nomcava-<?php echo $i; ?>">Nom cavaliers :</label>
-                    <input type="text" id="nomcava-<?php echo $i; ?>" name="nomcava" value="<?php echo $unereqcavaliers->getnomcava(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="prenomcava-<?php echo $i; ?>">Prénom cavaliers :</label>
-                    <input type="text" id="prenomcava-<?php echo $i; ?>" name="prenomcava" value="<?php echo $unereqcavaliers->getprenomcava(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="datenacava-<?php echo $i; ?>">Date de naissance cavaliers :</label>
-                    <input type="text" id="datenacava-<?php echo $i; ?>" name="datenacava" value="<?php echo $unereqcavaliers->getdatenacava(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="numlic-<?php echo $i; ?>">Numéro licence :</label>
-                    <input type="text" id="numlic-<?php echo $i; ?>" name="numlic" value="<?php echo $unereqcavaliers->getnumlic(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="photo-<?php echo $i; ?>">Photo :</label>
-                    <input type="text" id="photo-<?php echo $i; ?>" name="photo" value="<?php echo $unereqcavaliers->getphoto(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="nomresp-<?php echo $i; ?>">Nom responsable :</label>
-                    <input type="text" id="nomresp-<?php echo $i; ?>" name="nomresp" value="<?php echo $unereqcavaliers->getnomresp(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="prenomresp-<?php echo $i; ?>">Prénom responsable :</label>
-                    <input type="text" id="prenomresp-<?php echo $i; ?>" name="prenomresp" value="<?php echo $unereqcavaliers->getprenomresp(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="rueresp-<?php echo $i; ?>">Rue responsable :</label>
-                    <input type="text" id="rueresp-<?php echo $i; ?>" name="rueresp" value="<?php echo $unereqcavaliers->getrueresp(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="vilresp-<?php echo $i; ?>">Ville responsable :</label>
-                    <input type="text" id="vilresp-<?php echo $i; ?>" name="vilresp" value="<?php echo $unereqcavaliers->getvilresp(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="cpresp-<?php echo $i; ?>">Code postal responsable :</label>
-                    <input type="text" id="cpresp-<?php echo $i; ?>" name="cpresp" value="<?php echo $unereqcavaliers->getcpresp(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="telresp-<?php echo $i; ?>">Téléphone responsable :</label>
-                    <input type="text" id="telresp-<?php echo $i; ?>" name="telresp" value="<?php echo $unereqcavaliers->gettelresp(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="emailresp-<?php echo $i; ?>">Email responsable :</label>
-                    <input type="text" id="emailresp-<?php echo $i; ?>" name="emailresp" value="<?php echo $unereqcavaliers->getemailresp(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password-<?php echo $i; ?>">password :</label>
-                    <input type="text" id="password-<?php echo $i; ?>" name="password" value="<?php echo $unereqcavaliers->getpassword(); ?>"required>
-                </div>
-
-                <div class="form-group">
-                    <label for="assurance-<?php echo $i; ?>">Assurance :</label>
-                    <input type="text" id="assurance-<?php echo $i; ?>" name="assurance" value="<?php echo $unereqcavaliers->getassurance(); ?>"required>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="libgalop<?php echo $i; ?>">Libellé galop :</label>
-                    <input id="libgalop<?php echo $i; ?>" name="libgalop" type="text" value="<?php echo $ocavaliers->CavaliersGalop($unereqcavaliers->getidgalop()); ?>" onkeyup="autocompletGalop(<?php echo $i; ?>)"required>
-                    <ul id="nom_list_galop_id<?php echo $i; ?>"></ul>
-                </div>
-
-                <input type="hidden" id="id_galop<?php echo $i; ?>" name="idgalop" value="<?php echo $unereqcavaliers->getidgalop(); ?>">
-
-        </form>
-    
-    <?php
-        }
-        $i++;
-    }
-    ?>
-
-    <div class="center-button">
-        <button class="btn-primary" onclick="toggleForm()">Ajouter un cavaliers</button>
-    </div>
-
-    <a id="formAnchor"></a>
-
-    <div class="form-popup" id="ajoutForm">
-        <form action="../traitement/traitement.cavaliers.php" method="POST" class="form-container">
-            <h3>Ajouter une modele</h3>
-
-            <div class="form-group">
-                <label for="nomcava"><b>Nom cavaliers :</b></label>
-                <input type="text" id="nomcava" name="nomcava" placeholder="Entrer le nom du cavaliers" required>
-            </div>
-
-            <div class="form-group">
-                <label for="prenomcava"><b>Prénom cavaliers:</b></label>
-                <input type="text" id="prenomcava" name="prenomcava" placeholder="Entrer le prénom cavaliers" required>
-            </div>
-
-            <div class="form-group">
-                <label for="datenacava"><b>Date naissance cavaliers :</b></label>
-                <input type="text" id="datenacava" name="datenacava" placeholder="Entrer la date de naissance du cavaliers" required>
-            </div>
-
-            <div class="form-group">
-                <label for="numlic"><b>Numéro licence :</b></label>
-                <input type="text" id="numlic" name="numlic" placeholder="Entrer le numéro de licence" required>
-            </div>
-
-            <div class="form-group">
-                <label for="photo"><b>Photo :</b></label>
-                <input type="text" id="photo" name="photo" placeholder="Entrer le lien de la photo" required>
-            </div>
-
-            <div class="form-group">
-                <label for="nomresp"><b>Nom responsable :</b></label>
-                <input type="text" id="nomresp" name="nomresp" placeholder="Entrer le nom du responsable" required>
-            </div>
-
-            <div class="form-group">
-                <label for="prenomresp"><b>Prénom du responsable :</b></label>
-                <input type="text" id="prenomresp" name="prenomresp" placeholder="Entrer le prénom du responsable" required>
-            </div>
-
-            <div class="form-group">
-                <label for="rueresp"><b>Rue responsable :</b></label>
-                <input type="text" id="rueresp" name="rueresp" placeholder="Entrer la rue du responsablee" required>
-            </div>
-
-            <div class="form-group">
-                <label for="vilresp"><b>Ville du responsable :</b></label>
-                <input type="text" id="vilresp" name="vilresp" placeholder="Entrer la ville du responsable" required>
-            </div>
-
-            <div class="form-group">
-                <label for="cpresp"><b>Code postal responsable :</b></label>
-                <input type="text" id="cpresp" name="cpresp" placeholder="Entrer le code postal du responsable" required>
-            </div>
-
-            <div class="form-group">
-                <label for="telresp"><b>Téléphone responsable :</b></label>
-                <input type="text" id="telresp" name="telresp" placeholder="Entrer le téléphone du responsable" required>
-            </div>
-
-            <div class="form-group">
-                <label for="emailresp"><b>Email du responsable :</b></label>
-                <input type="text" id="emailresp" name="emailresp" placeholder="Entrer l'email du responsable" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password"><b>Password :</b></label>
-                <input type="text" id="password" name="password" placeholder="Entrer le password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="assurance"><b>Assurance :</b></label>
-                <input type="text" id="assurance" name="assurance" placeholder="Entrer l'assurance" required>
-            </div>
-
-            <div class="form-group">
-                <label for="libgalop"><b>Libellé galop :</b></label>
-                <input id="libgalop" name="libgalop" type="text" placeholder="Entrer le libellé galop"  onkeyup="autocompletGalopajout()" required>
-                <ul id="nom_list_galop_id"</ul>
-            </div>
-
-            <input type="hidden" id="id_galop" name="idgalop" value="<?php echo $unereqcavaliers->getidgalop(); ?>">
-
-
-            <button type="submit" name="ajouter" class="btn-primary">Ajouter</button>
-        </form>
-    </div>
-</div>
-
-<script>
-    function toggleForm() {
-        var form = document.getElementById("ajoutForm");
-        form.classList.toggle("show");
-
-        if (form.classList.contains("show")) {
-            document.getElementById("formAnchor").scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-
-    function showAlert(message) {
-        alert(message);
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('success') === '1') {
-        showAlert("update des données réussie !");
-    } else if (urlParams.get('success') === '0') {
-        showAlert("Erreur lors de la suppression.");
-    }
-</script>
-</body>
-</html>
