@@ -37,6 +37,19 @@ $reqEvenements = $evenement->getAllEvenements();
             cursor: pointer;
             font-size: 20px;
         }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .select-column {
+            width: 50px; /* Ajustez cette valeur selon vos besoins */
+        }
     </style>
 </head>
 <body>
@@ -53,7 +66,7 @@ $reqEvenements = $evenement->getAllEvenements();
     <!-- Formulaire d'ajout -->
     <div class="form-popup" id="ajoutForm">
         <span class="close-btn" onclick="fermerFormulaire('ajoutForm')">&times;</span>
-        <form action="traitement.evenements.php" method="POST" class="form-container">
+        <form action="../traitement/traitement.evenements.php" method="POST" class="form-container">
             <h3>Ajouter un évènement</h3>
             <div class="form-group">
                 <label for="titre"><b>Titre :</b></label>
@@ -70,7 +83,7 @@ $reqEvenements = $evenement->getAllEvenements();
     <!-- Formulaire de modification -->
     <div class="form-popup" id="modifierForm">
         <span class="close-btn" onclick="fermerFormulaire('modifierForm')">&times;</span>
-        <form action="traitement.evenements.php" method="POST" class="form-container">
+        <form action="../traitement/traitement.evenements.php" method="POST" class="form-container">
             <h3>Modifier un évènement</h3>
             <input type="hidden" id="modifier_ideve" name="ideve">
             <div class="form-group">
@@ -88,19 +101,22 @@ $reqEvenements = $evenement->getAllEvenements();
     <!-- Formulaire de suppression -->
     <div class="form-popup" id="supprimerForm">
         <span class="close-btn" onclick="fermerFormulaire('supprimerForm')">&times;</span>
-        <form action="traitement.evenements.php" method="POST" class="form-container">
+        <form action="../traitement/traitement.evenements.php" method="POST" class="form-container">
             <h3>Supprimer un évènement</h3>
             <input type="hidden" id="supprimer_ideve" name="ideve">
             <button type="submit" name="supprimer" class="btn-danger">Supprimer</button>
         </form>
     </div>
 
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- Tableau des évènements -->
     <h2>Liste des Evénements</h2>
     <table id="evenementTable" class="display">
         <thead>
             <tr>
-                <th>Sélectionner</th>
+                <th class="select-column">Sélectionner</th>
                 <th>ID</th>
                 <th>Titre</th>
                 <th>Commentaire</th>
@@ -111,7 +127,7 @@ $reqEvenements = $evenement->getAllEvenements();
             foreach ($reqEvenements as $unEvenement) {
             ?>
             <tr>
-                <td><input type="checkbox" class="select-evenement" data-ideve="<?= htmlspecialchars($unEvenement['ideve']) ?>" data-titre="<?= htmlspecialchars($unEvenement['titre']) ?>" data-commentaire="<?= htmlspecialchars($unEvenement['commentaire']) ?>"></td>
+                <td><input type="radio" class="select-evenement" name="selectedEvenement" data-ideve="<?= htmlspecialchars($unEvenement['ideve']) ?>" data-titre="<?= htmlspecialchars($unEvenement['titre']) ?>" data-commentaire="<?= htmlspecialchars($unEvenement['commentaire']) ?>"></td>
                 <td><?= htmlspecialchars($unEvenement['ideve']) ?></td>
                 <td><?= htmlspecialchars($unEvenement['titre']) ?></td>
                 <td><?= htmlspecialchars($unEvenement['commentaire']) ?></td>
@@ -145,21 +161,17 @@ $reqEvenements = $evenement->getAllEvenements();
             var titre = $(this).data('titre');
             var commentaire = $(this).data('commentaire');
 
-            if ($(this).is(':checked')) {
-                $('#modifier_ideve').val(ideve);
-                $('#modifier_titre').val(titre);
-                $('#modifier_commentaire').val(commentaire);
-                $('#supprimer_ideve').val(ideve);
-                $('#modifierButton').prop('disabled', false);
-                $('#supprimerButton').prop('disabled', false);
-            } else {
-                $('#modifierButton').prop('disabled', true);
-                $('#supprimerButton').prop('disabled', true);
-            }
+            $('#modifier_ideve').val(ideve);
+            $('#modifier_titre').val(titre);
+            $('#modifier_commentaire').val(commentaire);
+            $('#supprimer_ideve').val(ideve);
+            $('#modifierButton').prop('disabled', false);
+            $('#supprimerButton').prop('disabled', false);
         });
     });
 
     function basculerFormulaire(formId) {
+        document.getElementById('overlay').style.display = 'block';
         document.getElementById('ajoutForm').style.display = 'none';
         document.getElementById('modifierForm').style.display = 'none';
         document.getElementById('supprimerForm').style.display = 'none';
@@ -167,6 +179,7 @@ $reqEvenements = $evenement->getAllEvenements();
     }
 
     function fermerFormulaire(formId) {
+        document.getElementById('overlay').style.display = 'none';
         document.getElementById(formId).style.display = 'none';
     }
 </script>
