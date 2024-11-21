@@ -20,7 +20,7 @@ if (isset($_POST['ajouter'])) {
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
     $success = $ocavaliers->CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic, $photo, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp, $emailresp, $password, $assurance, $idgalop) ? 1 : 0;
-    header("Location: vue.cavaliers.php?success=$success");
+    header("Location: ../vue/vue.cavaliers.php?success=$success");
     exit();
 }
 
@@ -42,14 +42,14 @@ if (isset($_POST['modifier'])) {
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
     $success = $ocavaliers->Modifier($idcava, $nomcava, $prenomcava, $datenacava, $numlic, $photo, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp, $emailresp, $password, $assurance, $idgalop) ? 1 : 0;
-    header("Location: vue.cavaliers.php?success=$success");
+    header("Location: ../vue/vue.cavaliers.php?success=$success");
     exit();
 }
 
 if (isset($_POST['supprimer'])) {
     $idcava = $_POST['idcava'];
     $success = $ocavaliers->Supprimer($idcava) ? 1 : 0;
-    header("Location: vue.cavaliers.php?success=$success");
+    header("Location: ../vue/vue.cavaliers.php?success=$success");
     exit();
 }
 ?>
