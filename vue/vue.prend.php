@@ -112,7 +112,7 @@ $reqprend = $oprend->PrendAll();
 
         <div class="form-group">
             <label for="libpen"><b>Libellé de la pension :</b></label>
-            <input id="libpen" name="libpen" type="text" placeholder="Entrer la pension" onkeyup="autocompletPrendPenajout(<?php echo $i; ?>)" required>
+            <input id="libpen" name="libpen" type="text" placeholder="Entrer la pension" onkeyup="autocompletPrendPenajout()" required>
             <ul id="nom_list_prend_pen_id"</ul>
         </div>
 
