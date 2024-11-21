@@ -1,6 +1,6 @@
 <?php
 
-include 'class.prend.php';
+include '../class/class.prend.php';
 
 $oprend = new Prend();
 
