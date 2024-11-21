@@ -22,6 +22,7 @@ if ($reqCavalier === null) {
     </head>
     <body>
         <div class="container">
+
             <h2>Listes des Cavaliers</h2>
 
             <div class="center-button">
@@ -188,22 +189,15 @@ if ($reqCavalier === null) {
             <table id="cavalierTable" class="display">
                 <thead>
                     <tr>
-                        <th>Sélectionner</th>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Date de naissance</th>
-                        <th>Numéro de licence</th>
-                        <th>Photo</th>
-                        <th>Nom du responsable</th>
-                        <th>Prénom du responsable</th>
-                        <th>Adresse du responsable</th>
-                        <th>Ville du responsable</th>
-                        <th>Code postal du responsable</th>
-                        <th>Téléphone du responsable</th>
-                        <th>Email du responsable</th>
-                        <th>Assurance</th>
-                        <th>Galop</th>
+                        <th class="col-select">Sélectionner</th>
+                        <th class="col-id">ID</th>
+                        <th class="col-nom">Nom</th>
+                        <th class="col-prenom">Prénom</th>
+                        <th class="col-date-naissance">Date de naissance</th>
+                        <th class="col-numlic">Numéro de licence</th>
+                        <th class="col-assurance">Assurance</th>
+                        <th class="col-nomresp">Nom du responsable</th>
+                        <th class="col-galop">Galop</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -212,41 +206,32 @@ if ($reqCavalier === null) {
                         if ($cavalier['supprime'] == '0') {
                     ?>
                     <tr>
-                    <td>
-    <input type="radio" class="select-cavalier" name="cavalier" 
-        data-idcava="<?= htmlspecialchars($cavalier['idcava']) ?>" 
-        data-nomcava="<?= htmlspecialchars($cavalier['nomcava']) ?>" 
-        data-prenomcava="<?= htmlspecialchars($cavalier['prenomcava']) ?>" 
-        data-datenacava="<?= htmlspecialchars($cavalier['datenacava']) ?>" 
-        data-numlic="<?= htmlspecialchars($cavalier['numlic']) ?>" 
-        data-photo="<?= htmlspecialchars($cavalier['photo']) ?>" 
-        data-nomresp="<?= htmlspecialchars($cavalier['nomresp']) ?>" 
-        data-prenomresp="<?= htmlspecialchars($cavalier['prenomresp']) ?>" 
-        data-rueresp="<?= htmlspecialchars($cavalier['rueresp']) ?>" 
-        data-vilresp="<?= htmlspecialchars($cavalier['vilresp']) ?>" 
-        data-cpresp="<?= htmlspecialchars($cavalier['cpresp']) ?>" 
-        data-telresp="<?= htmlspecialchars($cavalier['telresp']) ?>" 
-        data-emailresp="<?= htmlspecialchars($cavalier['emailresp']) ?>" 
-        data-assurance="<?= htmlspecialchars($cavalier['assurance']) ?>" 
-        data-idgalop="<?= htmlspecialchars($cavalier['idgalop']) ?>">
-</td>
-
-                            
-                        <td><?= htmlspecialchars($cavalier['idcava']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['nomcava']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['prenomcava']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['datenacava']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['numlic']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['photo']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['nomresp']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['prenomresp']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['rueresp']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['vilresp']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['cpresp']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['telresp']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['emailresp']) ?></td>
-                        <td><?= htmlspecialchars($cavalier['assurance']) ?></td>
-                        <td><?= htmlspecialchars($ocavaliers->CavaliersGalop($cavalier['idgalop'])) ?></td>
+                        <td class="col-select">
+                            <input type="radio" class="select-cavalier" name="cavalier"
+                                data-idcava="<?= htmlspecialchars($cavalier['idcava']) ?>"
+                                data-nomcava="<?= htmlspecialchars($cavalier['nomcava']) ?>"
+                                data-prenomcava="<?= htmlspecialchars($cavalier['prenomcava']) ?>"
+                                data-datenacava="<?= htmlspecialchars($cavalier['datenacava']) ?>"
+                                data-numlic="<?= htmlspecialchars($cavalier['numlic']) ?>"
+                                data-photo="<?= htmlspecialchars($cavalier['photo']) ?>"
+                                data-nomresp="<?= htmlspecialchars($cavalier['nomresp']) ?>"
+                                data-prenomresp="<?= htmlspecialchars($cavalier['prenomresp']) ?>"
+                                data-rueresp="<?= htmlspecialchars($cavalier['rueresp']) ?>"
+                                data-vilresp="<?= htmlspecialchars($cavalier['vilresp']) ?>"
+                                data-cpresp="<?= htmlspecialchars($cavalier['cpresp']) ?>"
+                                data-telresp="<?= htmlspecialchars($cavalier['telresp']) ?>"
+                                data-emailresp="<?= htmlspecialchars($cavalier['emailresp']) ?>"
+                                data-assurance="<?= htmlspecialchars($cavalier['assurance']) ?>"
+                                data-idgalop="<?= htmlspecialchars($cavalier['idgalop']) ?>">
+                        </td>
+                        <td class="col-id"><?= htmlspecialchars($cavalier['idcava']) ?></td>
+                        <td class="col-nom"><?= htmlspecialchars($cavalier['nomcava']) ?></td>
+                        <td class="col-prenom"><?= htmlspecialchars($cavalier['prenomcava']) ?></td>
+                        <td class="col-date-naissance"><?= htmlspecialchars($cavalier['datenacava']) ?></td>
+                        <td class="col-numlic"><?= htmlspecialchars($cavalier['numlic']) ?></td>
+                        <td class="col-assurance"><?= htmlspecialchars($cavalier['assurance']) ?></td>
+                        <td class="col-nomresp"><?= htmlspecialchars($cavalier['nomresp']) ?></td>
+                        <td class="col-galop"><?= htmlspecialchars($ocavaliers->CavaliersGalop($cavalier['idgalop'])) ?></td>
                     </tr>
                     <?php
                         }
@@ -258,86 +243,84 @@ if ($reqCavalier === null) {
 
         <script>
             $(document).ready(function() {
-    // Initialiser DataTable
-    if ($.fn.DataTable.isDataTable('#cavalierTable')) {
-        $('#cavalierTable').DataTable().destroy();
-    }
+                // Initialiser DataTable
+                if ($.fn.DataTable.isDataTable('#cavalierTable')) {
+                    $('#cavalierTable').DataTable().destroy();
+                }
 
-    $('#cavalierTable').DataTable({
-        "language": {
-            "search": "Rechercher",
-            "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-            "lengthMenu": "Afficher _MENU_ entrées",
-            "paginate": {
-                "first": "Premier",
-                "last": "Dernier",
-                "next": "Suivant",
-                "previous": "Précédent"
+                $('#cavalierTable').DataTable({
+                    "language": {
+                        "search": "Rechercher",
+                        "info": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                        "lengthMenu": "Afficher _MENU_ entrées",
+                        "paginate": {
+                            "first": "Premier",
+                            "last": "Dernier",
+                            "next": "Suivant",
+                            "previous": "Précédent"
+                        }
+                    }
+                });
+
+                // Quand un cavalier est sélectionné
+                $(document).on('click', '.select-cavalier', function() {
+                    // On désactive les boutons au début, puis on les active si un cavalier est sélectionné
+                    $('#modifierButton').prop('disabled', true);
+                    $('#supprimerButton').prop('disabled', true);
+
+                    var idcava = $(this).data('idcava');
+                    var nomcava = $(this).data('nomcava');
+                    var prenomcava = $(this).data('prenomcava');
+                    var datenacava = $(this).data('datenacava');
+                    var numlic = $(this).data('numlic');
+                    var photo = $(this).data('photo');
+                    var nomresp = $(this).data('nomresp');
+                    var prenomresp = $(this).data('prenomresp');
+                    var rueresp = $(this).data('rueresp');
+                    var vilresp = $(this).data('vilresp');
+                    var cpresp = $(this).data('cpresp');
+                    var telresp = $(this).data('telresp');
+                    var emailresp = $(this).data('emailresp');
+                    var assurance = $(this).data('assurance');
+                    var idgalop = $(this).data('idgalop');
+
+                    // Si un cavalier est sélectionné, on remplit les champs
+                    $('#modifier_idcava').val(idcava);
+                    $('#modifier_nomcava').val(nomcava);
+                    $('#modifier_prenomcava').val(prenomcava);
+                    $('#modifier_datenacava').val(datenacava);
+                    $('#modifier_numlic').val(numlic);
+                    $('#modifier_photo').val(photo);
+                    $('#modifier_nomresp').val(nomresp);
+                    $('#modifier_prenomresp').val(prenomresp);
+                    $('#modifier_rueresp').val(rueresp);
+                    $('#modifier_vilresp').val(vilresp);
+                    $('#modifier_cpresp').val(cpresp);
+                    $('#modifier_telresp').val(telresp);
+                    $('#modifier_emailresp').val(emailresp);
+                    $('#modifier_assurance').val(assurance);
+                    $('#modifier_idgalop').val(idgalop);
+                    $('#modifier_libgalop').val($(this).data('libgalop')); // Charger le libgalop
+                    $('#supprimer_idcava').val(idcava);
+
+                    // Activer les boutons "Modifier" et "Supprimer"
+                    $('#modifierButton').prop('disabled', false);
+                    $('#supprimerButton').prop('disabled', false);
+                });
+            });
+
+            // Fonction pour basculer l'affichage des formulaires
+            function basculerFormulaire(formId) {
+                document.getElementById('ajoutForm').style.display = 'none';
+                document.getElementById('modifierForm').style.display = 'none';
+                document.getElementById('supprimerForm').style.display = 'none';
+                document.getElementById(formId).style.display = 'block';
             }
-        }
-    });
 
-    // Quand un cavalier est sélectionné
-    $(document).on('click', '.select-cavalier', function() {
-        // On désactive les boutons au début, puis on les active si un cavalier est sélectionné
-        $('#modifierButton').prop('disabled', true);
-        $('#supprimerButton').prop('disabled', true);
-
-        var idcava = $(this).data('idcava');
-        var nomcava = $(this).data('nomcava');
-        var prenomcava = $(this).data('prenomcava');
-        var datenacava = $(this).data('datenacava');
-        var numlic = $(this).data('numlic');
-        var photo = $(this).data('photo');
-        var nomresp = $(this).data('nomresp');
-        var prenomresp = $(this).data('prenomresp');
-        var rueresp = $(this).data('rueresp');
-        var vilresp = $(this).data('vilresp');
-        var cpresp = $(this).data('cpresp');
-        var telresp = $(this).data('telresp');
-        var emailresp = $(this).data('emailresp');
-        var assurance = $(this).data('assurance');
-        var idgalop = $(this).data('idgalop');
-
-        // Si un cavalier est sélectionné, on remplit les champs
-        $('#modifier_idcava').val(idcava);
-        $('#modifier_nomcava').val(nomcava);
-        $('#modifier_prenomcava').val(prenomcava);
-        $('#modifier_datenacava').val(datenacava);
-        $('#modifier_numlic').val(numlic);
-        $('#modifier_photo').val(photo);
-        $('#modifier_nomresp').val(nomresp);
-        $('#modifier_prenomresp').val(prenomresp);
-        $('#modifier_rueresp').val(rueresp);
-        $('#modifier_vilresp').val(vilresp);
-        $('#modifier_cpresp').val(cpresp);
-        $('#modifier_telresp').val(telresp);
-        $('#modifier_emailresp').val(emailresp);
-        $('#modifier_assurance').val(assurance);
-        $('#modifier_idgalop').val(idgalop);
-        $('#modifier_libgalop').val($(this).data('libgalop')); // Charger le libgalop
-        $('#supprimer_idcava').val(idcava);
-
-        // Activer les boutons "Modifier" et "Supprimer"
-        $('#modifierButton').prop('disabled', false);
-        $('#supprimerButton').prop('disabled', false);
-    });
-});
-
-// Fonction pour basculer l'affichage des formulaires
-function basculerFormulaire(formId) {
-    document.getElementById('ajoutForm').style.display = 'none';
-    document.getElementById('modifierForm').style.display = 'none';
-    document.getElementById('supprimerForm').style.display = 'none';
-    document.getElementById(formId).style.display = 'block';
-}
-
-// Fonction pour fermer un formulaire
-function fermerFormulaire(formId) {
-    document.getElementById(formId).style.display = 'none';
-}
-
-
+            // Fonction pour fermer un formulaire
+            function fermerFormulaire(formId) {
+                document.getElementById(formId).style.display = 'none';
+            }
         </script>
 
     </body>
