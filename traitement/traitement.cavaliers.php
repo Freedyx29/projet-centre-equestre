@@ -1,5 +1,5 @@
 <?php
-include 'class.cavaliers.php'; // Assurez-vous que ce chemin est correct
+include '../class/class.cavaliers.php'; // Assurez-vous que ce chemin est correct
 
 $ocavaliers = new Cavaliers();
 
