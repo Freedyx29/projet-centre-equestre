@@ -26,8 +26,8 @@ if ($reqCavalier === null) {
 
             <div class="center-button">
                 <button class="btn-primary" onclick="basculerFormulaire('ajoutForm')">Ajouter un cavalier</button>
-                <button class="btn-primary" id="modifierButton" onclick="basculerFormulaire('modifierForm')" disabled>Modifier un cavalier</button>
-                <button class="btn-danger" id="supprimerButton" onclick="basculerFormulaire('supprimerForm')" disabled>Supprimer un cavalier</button>
+                <button class="btn-primary" id="modifierButton" onclick="verifierSelection('modifierForm')" disabled>Modifier un cavalier</button>
+                <button class="btn-danger" id="supprimerButton" onclick="verifierSelection('supprimerForm')" disabled>Supprimer un cavalier</button>
                 <button class="btn-info" id="detailsButton" onclick="afficherDetails()" disabled>Plus de détails</button>
             </div>
 
@@ -390,6 +390,16 @@ if ($reqCavalier === null) {
                     $('#detailsButton').prop('disabled', false);
                 });
             });
+
+            // Fonction pour vérifier la sélection
+            function verifierSelection(formId) {
+                var selectedCavalier = $('input[name="cavalier"]:checked').length;
+                if (selectedCavalier === 0) {
+                    alert('Veuillez sélectionner un cavalier.');
+                } else {
+                    basculerFormulaire(formId);
+                }
+            }
 
             // Fonction pour basculer l'affichage des formulaires
             function basculerFormulaire(formId) {
