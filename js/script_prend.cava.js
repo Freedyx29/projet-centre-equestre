@@ -5,7 +5,7 @@ function autocompletPrendCava(id) {
 
     if (keyword.length >= min_length) {
         $.ajax({
-            url: 'ajax.prend.idcava.php', 
+            url: '../ajax/ajax.prend.idcava.php', 
             type: 'POST',
             data: { 
                 keyword: keyword,
@@ -27,7 +27,7 @@ function autocompletPrendCavaajout() {
 
     if (keyword && keyword.length >= min_length) {
         $.ajax({
-            url: 'ajax.prend.idcavaajout.php', 
+            url: '../ajax/ajax.prend.idcavaajout.php', 
             type: 'POST',
             data: { 
                 keyword: keyword,
