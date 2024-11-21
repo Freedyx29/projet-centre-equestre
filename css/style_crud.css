@@ -15,6 +15,7 @@ body {
     font-family: 'Crimson Pro', serif;
     margin: 0;
     padding: 0;
+    color: var(--brown-dark);
 }
 
 .container {
@@ -55,7 +56,7 @@ h2::after { right: 20%; }
     margin: 2.5rem 0;
 }
 
-.btn-primary, .btn-danger {
+.btn-primary, .btn-danger, .btn-info {
     padding: 0.8rem 1.8rem;
     font-family: 'Crimson Pro', serif;
     font-size: 1.1rem;
@@ -65,13 +66,13 @@ h2::after { right: 20%; }
     border: none;
     position: relative;
     border-radius: 5px;
+    box-shadow: 3px 3px 0 var(--brown-dark);
 }
 
 .btn-primary {
     background: var(--green);
     color: var(--cream);
     border: 2px solid var(--green);
-    box-shadow: 3px 3px 0 var(--brown-dark);
 }
 
 .btn-primary:hover {
@@ -83,7 +84,6 @@ h2::after { right: 20%; }
     background: var(--red-brick);
     color: var(--cream);
     border: 2px solid var(--red-brick);
-    box-shadow: 3px 3px 0 var(--brown-dark);
 }
 
 .btn-danger:hover {
@@ -91,8 +91,19 @@ h2::after { right: 20%; }
     box-shadow: 1px 1px 0 var(--brown-dark);
 }
 
+.btn-info {
+    background: var(--gold);
+    color: var(--cream);
+    border: 2px solid var(--gold);
+}
+
+.btn-info:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--brown-dark);
+}
+
 /* Tableau style box */
-#pensionTable {
+#cavalierTable {
     width: 100%;
     background: var(--cream);
     border-collapse: separate;
@@ -103,7 +114,7 @@ h2::after { right: 20%; }
     box-shadow: 0 4px 12px rgba(74, 55, 40, 0.15);
 }
 
-#pensionTable thead th {
+#cavalierTable thead th {
     background: var(--brown-dark);
     color: var(--cream);
     padding: 1.2rem;
@@ -113,13 +124,13 @@ h2::after { right: 20%; }
     text-align: left;
 }
 
-#pensionTable tbody td {
+#cavalierTable tbody td {
     padding: 1rem;
     color: var(--brown-dark);
     border-bottom: 1px solid rgba(74, 55, 40, 0.2);
 }
 
-#pensionTable tbody tr:hover {
+#cavalierTable tbody tr:hover {
     background: rgba(191, 155, 48, 0.1);
 }
 
@@ -137,6 +148,8 @@ h2::after { right: 20%; }
     box-shadow: 0 4px 20px rgba(74, 55, 40, 0.2);
     width: 90%;
     max-width: 500px;
+    max-height: 90vh; /* Limite la hauteur maximale */
+    overflow-y: auto; /* Ajoute le défilement vertical */
     z-index: 9999;
 }
 
@@ -241,31 +254,14 @@ h2::after { right: 20%; }
         flex-direction: column;
     }
 
-    .btn-primary, .btn-danger {
+    .btn-primary, .btn-danger, .btn-info {
         width: 100%;
     }
 }
 
-/* Correction z-index et position des popups */
-.form-popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--cream);
-    padding: 2.5rem;
-    border-radius: 10px;
-    border: 3px solid var(--brown-dark);
-    box-shadow: 0 4px 20px rgba(74, 55, 40, 0.2);
-    width: 90%;
-    max-width: 500px;
-    z-index: 9999;
-}
-
 /* Style de la sélection du tableau */
-#pensionTable tbody tr.selected,
-#pensionTable tbody tr.selected td {
+#cavalierTable tbody tr.selected,
+#cavalierTable tbody tr.selected td {
     background-color: rgba(45, 90, 39, 0.1) !important;
     color: var(--brown-dark) !important;
 }
@@ -356,23 +352,23 @@ h2::after { right: 20%; }
 }
 
 /* Amélioration du tableau */
-#pensionTable {
+#cavalierTable {
     margin: 0 !important;
     border-collapse: separate !important;
     border-spacing: 0 !important;
 }
 
-#pensionTable tbody tr {
+#cavalierTable tbody tr {
     transition: background-color 0.3s ease;
 }
 
-#pensionTable tbody tr:hover td {
+#cavalierTable tbody tr:hover td {
     background-color: rgba(191, 155, 48, 0.1);
 }
 
 /* Style des cellules du tableau */
-#pensionTable td, 
-#pensionTable th {
+#cavalierTable td,
+#cavalierTable th {
     padding: 1rem 1.5rem !important;
 }
 
@@ -391,7 +387,7 @@ h2::after { right: 20%; }
 }
 
 /* Amélioration du contraste pour la lisibilité */
-#pensionTable thead th {
+#cavalierTable thead th {
     background: var(--brown-dark) !important;
     color: var(--cream) !important;
     font-weight: 600 !important;
