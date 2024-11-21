@@ -5,7 +5,7 @@ function autocompletPrendPen(id) {
 
     if (keyword.length >= min_length) {
         $.ajax({
-            url: 'ajax.prend.idpen.php', 
+            url: '../ajax/ajax.prend.idpen.php', 
             type: 'POST',
             data: { 
                 keyword: keyword,
@@ -27,7 +27,7 @@ function autocompletPrendPenajout() {
 
     if (keyword && keyword.length >= min_length) {
         $.ajax({
-            url: 'ajax.prend.idpenajout.php', 
+            url: '../ajax/ajax.prend.idpenajout.php', 
             type: 'POST',
             data: { 
                 keyword: keyword,
