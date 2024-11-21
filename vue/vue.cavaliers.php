@@ -29,6 +29,7 @@ if ($reqCavalier === null) {
                 <button class="btn-primary" onclick="basculerFormulaire('ajoutForm')">Ajouter un cavalier</button>
                 <button class="btn-primary" id="modifierButton" onclick="basculerFormulaire('modifierForm')" disabled>Modifier un cavalier</button>
                 <button class="btn-danger" id="supprimerButton" onclick="basculerFormulaire('supprimerForm')" disabled>Supprimer un cavalier</button>
+                <button class="btn-info" id="ficheDetailButton" onclick="afficherFicheDetail()" disabled>Fiche détail</button>
             </div>
 
             <!-- Formulaire d'ajout -->
@@ -184,6 +185,74 @@ if ($reqCavalier === null) {
                 </form>
             </div>
 
+            <!-- Pop-up pour la fiche détail -->
+            <div class="form-popup" id="ficheDetailPopup">
+                <span class="close-btn" onclick="fermerFormulaire('ficheDetailPopup')">&times;</span>
+                <div class="form-container">
+                    <h3>Fiche détail du cavalier</h3>
+                    <div class="form-group">
+                        <label><b>ID :</b></label>
+                        <span id="fiche_idcava"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Nom :</b></label>
+                        <span id="fiche_nomcava"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Prénom :</b></label>
+                        <span id="fiche_prenomcava"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Date de naissance :</b></label>
+                        <span id="fiche_datenacava"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Numéro de licence :</b></label>
+                        <span id="fiche_numlic"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Photo :</b></label>
+                        <span id="fiche_photo"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Nom du responsable :</b></label>
+                        <span id="fiche_nomresp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Prénom du responsable :</b></label>
+                        <span id="fiche_prenomresp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Adresse du responsable :</b></label>
+                        <span id="fiche_rueresp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Ville du responsable :</b></label>
+                        <span id="fiche_vilresp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Code postal du responsable :</b></label>
+                        <span id="fiche_cpresp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Téléphone du responsable :</b></label>
+                        <span id="fiche_telresp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Email du responsable :</b></label>
+                        <span id="fiche_emailresp"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Assurance :</b></label>
+                        <span id="fiche_assurance"></span>
+                    </div>
+                    <div class="form-group">
+                        <label><b>Galop :</b></label>
+                        <span id="fiche_libgalop"></span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tableau des cavaliers -->
             <h2>Liste des Cavaliers</h2>
             <table id="cavalierTable" class="display">
@@ -222,7 +291,8 @@ if ($reqCavalier === null) {
                                 data-telresp="<?= htmlspecialchars($cavalier['telresp']) ?>"
                                 data-emailresp="<?= htmlspecialchars($cavalier['emailresp']) ?>"
                                 data-assurance="<?= htmlspecialchars($cavalier['assurance']) ?>"
-                                data-idgalop="<?= htmlspecialchars($cavalier['idgalop']) ?>">
+                                data-idgalop="<?= htmlspecialchars($cavalier['idgalop']) ?>"
+                                data-libgalop="<?= htmlspecialchars($ocavaliers->CavaliersGalop($cavalier['idgalop'])) ?>">
                         </td>
                         <td class="col-id"><?= htmlspecialchars($cavalier['idcava']) ?></td>
                         <td class="col-nom"><?= htmlspecialchars($cavalier['nomcava']) ?></td>
@@ -267,6 +337,7 @@ if ($reqCavalier === null) {
                     // On désactive les boutons au début, puis on les active si un cavalier est sélectionné
                     $('#modifierButton').prop('disabled', true);
                     $('#supprimerButton').prop('disabled', true);
+                    $('#ficheDetailButton').prop('disabled', true);
 
                     var idcava = $(this).data('idcava');
                     var nomcava = $(this).data('nomcava');
@@ -283,6 +354,7 @@ if ($reqCavalier === null) {
                     var emailresp = $(this).data('emailresp');
                     var assurance = $(this).data('assurance');
                     var idgalop = $(this).data('idgalop');
+                    var libgalop = $(this).data('libgalop');
 
                     // Si un cavalier est sélectionné, on remplit les champs
                     $('#modifier_idcava').val(idcava);
@@ -300,12 +372,13 @@ if ($reqCavalier === null) {
                     $('#modifier_emailresp').val(emailresp);
                     $('#modifier_assurance').val(assurance);
                     $('#modifier_idgalop').val(idgalop);
-                    $('#modifier_libgalop').val($(this).data('libgalop')); // Charger le libgalop
+                    $('#modifier_libgalop').val(libgalop); // Charger le libgalop
                     $('#supprimer_idcava').val(idcava);
 
                     // Activer les boutons "Modifier" et "Supprimer"
                     $('#modifierButton').prop('disabled', false);
                     $('#supprimerButton').prop('disabled', false);
+                    $('#ficheDetailButton').prop('disabled', false);
                 });
             });
 
@@ -314,12 +387,52 @@ if ($reqCavalier === null) {
                 document.getElementById('ajoutForm').style.display = 'none';
                 document.getElementById('modifierForm').style.display = 'none';
                 document.getElementById('supprimerForm').style.display = 'none';
+                document.getElementById('ficheDetailPopup').style.display = 'none';
                 document.getElementById(formId).style.display = 'block';
             }
 
             // Fonction pour fermer un formulaire
             function fermerFormulaire(formId) {
                 document.getElementById(formId).style.display = 'none';
+            }
+
+            // Fonction pour afficher la fiche détail
+            function afficherFicheDetail() {
+                var idcava = $('#modifier_idcava').val();
+                var nomcava = $('#modifier_nomcava').val();
+                var prenomcava = $('#modifier_prenomcava').val();
+                var datenacava = $('#modifier_datenacava').val();
+                var numlic = $('#modifier_numlic').val();
+                var photo = $('#modifier_photo').val();
+                var nomresp = $('#modifier_nomresp').val();
+                var prenomresp = $('#modifier_prenomresp').val();
+                var rueresp = $('#modifier_rueresp').val();
+                var vilresp = $('#modifier_vilresp').val();
+                var cpresp = $('#modifier_cpresp').val();
+                var telresp = $('#modifier_telresp').val();
+                var emailresp = $('#modifier_emailresp').val();
+                var assurance = $('#modifier_assurance').val();
+                var libgalop = $('#modifier_libgalop').val();
+
+                // Remplir les champs de la fiche détail
+                $('#fiche_idcava').text(idcava);
+                $('#fiche_nomcava').text(nomcava);
+                $('#fiche_prenomcava').text(prenomcava);
+                $('#fiche_datenacava').text(datenacava);
+                $('#fiche_numlic').text(numlic);
+                $('#fiche_photo').text(photo);
+                $('#fiche_nomresp').text(nomresp);
+                $('#fiche_prenomresp').text(prenomresp);
+                $('#fiche_rueresp').text(rueresp);
+                $('#fiche_vilresp').text(vilresp);
+                $('#fiche_cpresp').text(cpresp);
+                $('#fiche_telresp').text(telresp);
+                $('#fiche_emailresp').text(emailresp);
+                $('#fiche_assurance').text(assurance);
+                $('#fiche_libgalop').text(libgalop);
+
+                // Afficher le pop-up
+                basculerFormulaire('ficheDetailPopup');
             }
         </script>
 
