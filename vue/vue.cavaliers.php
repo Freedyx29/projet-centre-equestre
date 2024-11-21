@@ -22,14 +22,13 @@ if ($reqCavalier === null) {
     </head>
     <body>
         <div class="container">
-
-            <h2>Listes des Cavaliers</h2>
+            <h2>Liste des Cavaliers</h2>
 
             <div class="center-button">
                 <button class="btn-primary" onclick="basculerFormulaire('ajoutForm')">Ajouter un cavalier</button>
-                <button class="btn-primary" id="modifierButton" onclick="basculerFormulaire('modifierForm')" disabled>Modifier un cavalier</button>
-                <button class="btn-danger" id="supprimerButton" onclick="basculerFormulaire('supprimerForm')" disabled>Supprimer un cavalier</button>
-                <button class="btn-info" id="ficheDetailButton" onclick="afficherFicheDetail()" disabled>Fiche détail</button>
+                <button class="btn-primary" id="modifierButton" onclick="verifierSelection('modifierForm')" disabled>Modifier un cavalier</button>
+                <button class="btn-danger" id="supprimerButton" onclick="verifierSelection('supprimerForm')" disabled>Supprimer un cavalier</button>
+                <button class="btn-info" id="detailsButton" onclick="afficherDetails()" disabled>Plus de détails</button>
             </div>
 
             <!-- Formulaire d'ajout -->
@@ -185,70 +184,66 @@ if ($reqCavalier === null) {
                 </form>
             </div>
 
-            <!-- Pop-up pour la fiche détail -->
-            <div class="form-popup" id="ficheDetailPopup">
-                <span class="close-btn" onclick="fermerFormulaire('ficheDetailPopup')">&times;</span>
+            <!-- Formulaire de détails -->
+            <div class="form-popup" id="detailsForm">
+                <span class="close-btn" onclick="fermerFormulaire('detailsForm')">&times;</span>
                 <div class="form-container">
-                    <h3>Fiche détail du cavalier</h3>
+                    <h3>Détails du cavalier</h3>
                     <div class="form-group">
-                        <label><b>ID :</b></label>
-                        <span id="fiche_idcava"></span>
+                        <label for="details_nomcava"><b>Nom :</b></label>
+                        <input type="text" id="details_nomcava" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Nom :</b></label>
-                        <span id="fiche_nomcava"></span>
+                        <label for="details_prenomcava"><b>Prénom :</b></label>
+                        <input type="text" id="details_prenomcava" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Prénom :</b></label>
-                        <span id="fiche_prenomcava"></span>
+                        <label for="details_datenacava"><b>Date de naissance :</b></label>
+                        <input type="text" id="details_datenacava" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Date de naissance :</b></label>
-                        <span id="fiche_datenacava"></span>
+                        <label for="details_numlic"><b>Numéro de licence :</b></label>
+                        <input type="text" id="details_numlic" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Numéro de licence :</b></label>
-                        <span id="fiche_numlic"></span>
+                        <label for="details_photo"><b>Photo :</b></label>
+                        <input type="text" id="details_photo" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Photo :</b></label>
-                        <span id="fiche_photo"></span>
+                        <label for="details_nomresp"><b>Nom du responsable :</b></label>
+                        <input type="text" id="details_nomresp" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Nom du responsable :</b></label>
-                        <span id="fiche_nomresp"></span>
+                        <label for="details_prenomresp"><b>Prénom du responsable :</b></label>
+                        <input type="text" id="details_prenomresp" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Prénom du responsable :</b></label>
-                        <span id="fiche_prenomresp"></span>
+                        <label for="details_rueresp"><b>Adresse du responsable :</b></label>
+                        <input type="text" id="details_rueresp" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Adresse du responsable :</b></label>
-                        <span id="fiche_rueresp"></span>
+                        <label for="details_vilresp"><b>Ville du responsable :</b></label>
+                        <input type="text" id="details_vilresp" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Ville du responsable :</b></label>
-                        <span id="fiche_vilresp"></span>
+                        <label for="details_cpresp"><b>Code postal du responsable :</b></label>
+                        <input type="text" id="details_cpresp" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Code postal du responsable :</b></label>
-                        <span id="fiche_cpresp"></span>
+                        <label for="details_telresp"><b>Téléphone du responsable :</b></label>
+                        <input type="text" id="details_telresp" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Téléphone du responsable :</b></label>
-                        <span id="fiche_telresp"></span>
+                        <label for="details_emailresp"><b>Email du responsable :</b></label>
+                        <input type="text" id="details_emailresp" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Email du responsable :</b></label>
-                        <span id="fiche_emailresp"></span>
+                        <label for="details_assurance"><b>Assurance :</b></label>
+                        <input type="text" id="details_assurance" readonly>
                     </div>
                     <div class="form-group">
-                        <label><b>Assurance :</b></label>
-                        <span id="fiche_assurance"></span>
-                    </div>
-                    <div class="form-group">
-                        <label><b>Galop :</b></label>
-                        <span id="fiche_libgalop"></span>
+                        <label for="details_libgalop"><b>Galop :</b></label>
+                        <input type="text" id="details_libgalop" readonly>
                     </div>
                 </div>
             </div>
@@ -258,15 +253,14 @@ if ($reqCavalier === null) {
             <table id="cavalierTable" class="display">
                 <thead>
                     <tr>
-                        <th class="col-select">Sélectionner</th>
-                        <th class="col-id">ID</th>
-                        <th class="col-nom">Nom</th>
-                        <th class="col-prenom">Prénom</th>
-                        <th class="col-date-naissance">Date de naissance</th>
-                        <th class="col-numlic">Numéro de licence</th>
-                        <th class="col-assurance">Assurance</th>
-                        <th class="col-nomresp">Nom du responsable</th>
-                        <th class="col-galop">Galop</th>
+                        <th>Sélectionner</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Date de naissance</th>
+                        <th>Numéro de licence</th>
+                        <th>Photo</th>
+                        <th>Assurance</th>
+                        <th>Galop</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -275,7 +269,7 @@ if ($reqCavalier === null) {
                         if ($cavalier['supprime'] == '0') {
                     ?>
                     <tr>
-                        <td class="col-select">
+                        <td>
                             <input type="radio" class="select-cavalier" name="cavalier"
                                 data-idcava="<?= htmlspecialchars($cavalier['idcava']) ?>"
                                 data-nomcava="<?= htmlspecialchars($cavalier['nomcava']) ?>"
@@ -294,14 +288,13 @@ if ($reqCavalier === null) {
                                 data-idgalop="<?= htmlspecialchars($cavalier['idgalop']) ?>"
                                 data-libgalop="<?= htmlspecialchars($ocavaliers->CavaliersGalop($cavalier['idgalop'])) ?>">
                         </td>
-                        <td class="col-id"><?= htmlspecialchars($cavalier['idcava']) ?></td>
-                        <td class="col-nom"><?= htmlspecialchars($cavalier['nomcava']) ?></td>
-                        <td class="col-prenom"><?= htmlspecialchars($cavalier['prenomcava']) ?></td>
-                        <td class="col-date-naissance"><?= htmlspecialchars($cavalier['datenacava']) ?></td>
-                        <td class="col-numlic"><?= htmlspecialchars($cavalier['numlic']) ?></td>
-                        <td class="col-assurance"><?= htmlspecialchars($cavalier['assurance']) ?></td>
-                        <td class="col-nomresp"><?= htmlspecialchars($cavalier['nomresp']) ?></td>
-                        <td class="col-galop"><?= htmlspecialchars($ocavaliers->CavaliersGalop($cavalier['idgalop'])) ?></td>
+                        <td><?= htmlspecialchars($cavalier['nomcava']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['prenomcava']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['datenacava']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['numlic']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['photo']) ?></td>
+                        <td><?= htmlspecialchars($cavalier['assurance']) ?></td>
+                        <td><?= htmlspecialchars($ocavaliers->CavaliersGalop($cavalier['idgalop'])) ?></td>
                     </tr>
                     <?php
                         }
@@ -337,7 +330,7 @@ if ($reqCavalier === null) {
                     // On désactive les boutons au début, puis on les active si un cavalier est sélectionné
                     $('#modifierButton').prop('disabled', true);
                     $('#supprimerButton').prop('disabled', true);
-                    $('#ficheDetailButton').prop('disabled', true);
+                    $('#detailsButton').prop('disabled', true);
 
                     var idcava = $(this).data('idcava');
                     var nomcava = $(this).data('nomcava');
@@ -375,19 +368,45 @@ if ($reqCavalier === null) {
                     $('#modifier_libgalop').val(libgalop); // Charger le libgalop
                     $('#supprimer_idcava').val(idcava);
 
-                    // Activer les boutons "Modifier" et "Supprimer"
+                    // Remplir les champs de détails
+                    $('#details_nomcava').val(nomcava);
+                    $('#details_prenomcava').val(prenomcava);
+                    $('#details_datenacava').val(datenacava);
+                    $('#details_numlic').val(numlic);
+                    $('#details_photo').val(photo);
+                    $('#details_nomresp').val(nomresp);
+                    $('#details_prenomresp').val(prenomresp);
+                    $('#details_rueresp').val(rueresp);
+                    $('#details_vilresp').val(vilresp);
+                    $('#details_cpresp').val(cpresp);
+                    $('#details_telresp').val(telresp);
+                    $('#details_emailresp').val(emailresp);
+                    $('#details_assurance').val(assurance);
+                    $('#details_libgalop').val(libgalop); // Charger le libgalop
+
+                    // Activer les boutons "Modifier", "Supprimer" et "Plus de détails"
                     $('#modifierButton').prop('disabled', false);
                     $('#supprimerButton').prop('disabled', false);
-                    $('#ficheDetailButton').prop('disabled', false);
+                    $('#detailsButton').prop('disabled', false);
                 });
             });
+
+            // Fonction pour vérifier la sélection
+            function verifierSelection(formId) {
+                var selectedCavalier = $('input[name="cavalier"]:checked').length;
+                if (selectedCavalier === 0) {
+                    alert('Veuillez sélectionner un cavalier.');
+                } else {
+                    basculerFormulaire(formId);
+                }
+            }
 
             // Fonction pour basculer l'affichage des formulaires
             function basculerFormulaire(formId) {
                 document.getElementById('ajoutForm').style.display = 'none';
                 document.getElementById('modifierForm').style.display = 'none';
                 document.getElementById('supprimerForm').style.display = 'none';
-                document.getElementById('ficheDetailPopup').style.display = 'none';
+                document.getElementById('detailsForm').style.display = 'none';
                 document.getElementById(formId).style.display = 'block';
             }
 
@@ -396,43 +415,9 @@ if ($reqCavalier === null) {
                 document.getElementById(formId).style.display = 'none';
             }
 
-            // Fonction pour afficher la fiche détail
-            function afficherFicheDetail() {
-                var idcava = $('#modifier_idcava').val();
-                var nomcava = $('#modifier_nomcava').val();
-                var prenomcava = $('#modifier_prenomcava').val();
-                var datenacava = $('#modifier_datenacava').val();
-                var numlic = $('#modifier_numlic').val();
-                var photo = $('#modifier_photo').val();
-                var nomresp = $('#modifier_nomresp').val();
-                var prenomresp = $('#modifier_prenomresp').val();
-                var rueresp = $('#modifier_rueresp').val();
-                var vilresp = $('#modifier_vilresp').val();
-                var cpresp = $('#modifier_cpresp').val();
-                var telresp = $('#modifier_telresp').val();
-                var emailresp = $('#modifier_emailresp').val();
-                var assurance = $('#modifier_assurance').val();
-                var libgalop = $('#modifier_libgalop').val();
-
-                // Remplir les champs de la fiche détail
-                $('#fiche_idcava').text(idcava);
-                $('#fiche_nomcava').text(nomcava);
-                $('#fiche_prenomcava').text(prenomcava);
-                $('#fiche_datenacava').text(datenacava);
-                $('#fiche_numlic').text(numlic);
-                $('#fiche_photo').text(photo);
-                $('#fiche_nomresp').text(nomresp);
-                $('#fiche_prenomresp').text(prenomresp);
-                $('#fiche_rueresp').text(rueresp);
-                $('#fiche_vilresp').text(vilresp);
-                $('#fiche_cpresp').text(cpresp);
-                $('#fiche_telresp').text(telresp);
-                $('#fiche_emailresp').text(emailresp);
-                $('#fiche_assurance').text(assurance);
-                $('#fiche_libgalop').text(libgalop);
-
-                // Afficher le pop-up
-                basculerFormulaire('ficheDetailPopup');
+            // Fonction pour afficher les détails
+            function afficherDetails() {
+                basculerFormulaire('detailsForm');
             }
         </script>
 
