@@ -104,7 +104,7 @@ $reqinscrit = $oinscrit->InscritALL();
 
         <div class="form-group">
             <label for="libcours"><b>Libellé du cours :</b></label>
-            <input id="libcours" name="libcours" type="text" placeholder="Entrer le cours" onkeyup="autocompletInscritCoursajout(<?php echo $i; ?>)" required>
+            <input id="libcours" name="libcours" type="text" placeholder="Entrer le cours" onkeyup="autocompletInscritCoursajout()" required>
             <ul id="nom_list_inscrit_cours_id"</ul>
         </div>
 
