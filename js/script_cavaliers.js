@@ -5,7 +5,7 @@ function autocompletGalopajout() {
 
     if (keyword.length >= min_length) {
         $.ajax({
-            url: 'ajax.cavaliersajout.php',
+            url: '../ajax/ajax.cavaliersajout.php',
             type: 'POST',
             data: {
                 keyword: keyword,
@@ -38,7 +38,7 @@ function autocompletGalopModif() {
 
     if (keyword.length >= min_length) {
         $.ajax({
-            url: 'ajax.cavaliers.php',
+            url: '../ajax/ajax.cavaliers.php',
             type: 'POST',
             data: {
                 keyword: keyword,
