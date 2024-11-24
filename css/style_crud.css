@@ -1,616 +1,234 @@
-/* Design Centre Équestre */
+/* Couleurs du thème */
 :root {
-    --brown-dark: #4A3728;    /* Bois foncé */
-    --brown-light: #8B7355;   /* Bois clair */
-    --beige: #F5E6D3;        /* Beige naturel */
-    --green: #2D5A27;        /* Vert prairie */
-    --gold: #BF9B30;         /* Détails dorés */
-    --cream: #FDFAF6;        /* Fond crème */
-    --red-brick: #A64B2A;    /* Rouge brique */
+    --brown-dark: #3C2A21;     /* Marron foncé (bois) */
+    --brown-light: #8B7355;    /* Marron clair (cuir) */
+    --green: #4A6741;          /* Vert prairie (accent) */
+    --beige: #F5F1E8;         /* Beige clair (fond) */
+    --cream: #FFF9E8;         /* Crème (éléments) */
+    --gold: #D4A762;          /* Or (détails) */
+    --error: #A63D40;         /* Rouge bordeaux */
+    --success: #4A6741;       /* Vert forêt */
 }
 
 body {
-    background-color: var(--cream);
-    font-family: 'Crimson Pro', serif;
-    margin: 0;
-    padding: 0;
+    background-color: var(--beige);
+    font-family: 'Lora', serif;
+    color: var(--brown-dark);
+    line-height: 1.6;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+    background: white;
+    border: 1px solid #E8E0D5;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin: 30px auto;
 }
 
-/* En-tête stylisé */
+/* Titres */
 h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
     color: var(--brown-dark);
-    text-align: center;
-    margin: 2rem 0;
-    padding: 1rem;
-    border-bottom: 3px solid var(--gold);
-    position: relative;
-}
-
-h2::before, h2::after {
-    content: "★";
-    color: var(--gold);
-    position: absolute;
-    font-size: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-h2::before { left: 20%; }
-h2::after { right: 20%; }
-
-/* Boutons style équestre */
-.center-button {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    margin: 2.5rem 0;
-}
-
-.btn-primary, .btn-danger {
-    padding: 0.8rem 1.8rem;
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
     font-weight: 600;
-    cursor: pointer;
+    margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 15px;
+}
+
+/* Tableau */
+.table {
+    border: 1px solid #E8E0D5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: var(--brown-dark);
+    color: var(--cream);
+}
+
+.table th {
+    font-family: 'Playfair Display', serif;
+    padding: 15px;
+    font-weight: 500;
+}
+
+.table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #E8E0D5;
+}
+
+.table tbody tr:hover {
+    background-color: var(--beige);
+}
+
+/* Boutons */
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
     transition: all 0.3s ease;
-    border: none;
-    position: relative;
-    border-radius: 5px;
 }
 
 .btn-primary {
-    background: var(--green);
+    background-color: var(--brown-dark);
+    border: 1px solid var(--brown-dark);
     color: var(--cream);
-    border: 2px solid var(--green);
-    box-shadow: 3px 3px 0 var(--brown-dark);
 }
 
 .btn-primary:hover {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--brown-dark);
+    background-color: var(--brown-light);
+    border-color: var(--brown-light);
+}
+
+.btn-warning {
+    background-color: var(--gold);
+    border: 1px solid var(--gold);
+    color: var(--brown-dark);
 }
 
 .btn-danger {
-    background: var(--red-brick);
-    color: var(--cream);
-    border: 2px solid var(--red-brick);
-    box-shadow: 3px 3px 0 var(--brown-dark);
+    background-color: var(--error);
+    border: 1px solid var(--error);
+    color: white;
 }
 
-.btn-danger:hover {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--brown-dark);
+/* Formulaires */
+.form-control {
+    border: 2px solid #E8E0D5;
+    border-radius: 6px;
+    padding: 10px 15px;
+    background-color: var(--cream);
 }
 
-/* Tableau style box */
-#pensionTable {
-    width: 100%;
-    background: var(--cream);
-    border-collapse: separate;
-    border-spacing: 0;
-    border: 3px solid var(--brown-dark);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(74, 55, 40, 0.15);
-}
-
-#pensionTable thead th {
-    background: var(--brown-dark);
-    color: var(--cream);
-    padding: 1.2rem;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    text-align: left;
-}
-
-#pensionTable tbody td {
-    padding: 1rem;
-    color: var(--brown-dark);
-    border-bottom: 1px solid rgba(74, 55, 40, 0.2);
-}
-
-#pensionTable tbody tr:hover {
-    background: rgba(191, 155, 48, 0.1);
-}
-
-/* Style box avec scroll - Mise à jour */
-.form-popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--cream);
-    padding: 2.5rem;
-    border-radius: 15px;
-    border: 3px solid var(--brown-dark);
-    box-shadow: 0 8px 32px rgba(74, 55, 40, 0.25);
-    width: 85%;
-    max-width: 450px;
-    max-height: 85vh;
-    overflow-y: auto;
-    z-index: 9999;
-}
-
-/* Overlay sombre derrière le popup */
-.popup-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
-    z-index: 9998;
-}
-
-/* Style de la scrollbar du popup */
-.form-popup::-webkit-scrollbar {
-    width: 8px;
-}
-
-.form-popup::-webkit-scrollbar-track {
-    background: var(--beige);
-    border-radius: 10px;
-}
-
-.form-popup::-webkit-scrollbar-thumb {
-    background: var(--brown-light);
-    border-radius: 10px;
-    border: 2px solid var(--beige);
-}
-
-.form-popup::-webkit-scrollbar-thumb:hover {
-    background: var(--brown-dark);
-}
-
-/* En-tête du popup */
-.form-container h3 {
-    font-family: 'Playfair Display', serif;
-    color: var(--brown-dark);
-    font-size: 1.8rem;
-    margin: -0.5rem 0 1.8rem 0;
-    text-align: center;
-    border-bottom: 2px solid var(--gold);
-    padding-bottom: 1rem;
-    position: relative;
-}
-
-/* Bouton de fermeture amélioré */
-.close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--brown-dark);
-    color: var(--cream);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.2rem;
-    border: 2px solid transparent;
-}
-
-.close-btn:hover {
-    background: var(--cream);
-    color: var(--brown-dark);
-    border-color: var(--brown-dark);
-    transform: rotate(90deg);
-}
-
-/* Groupes de formulaire améliorés */
-.form-group {
-    margin-bottom: 1.8rem;
-    width: 100%;
-    position: relative;
+.form-control:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 167, 98, 0.1);
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 0.8rem;
     color: var(--brown-dark);
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
+    font-weight: 500;
+    margin-bottom: 8px;
 }
 
-.form-group input {
-    width: 100%;
-    padding: 0.8rem;
-    box-sizing: border-box;
-    border: 2px solid var(--brown-light);
-    border-radius: 8px;
-    font-family: 'Crimson Pro', serif;
-    font-size: 1rem;
-    color: var(--brown-dark);
-    background: var(--cream);
-    transition: all 0.3s ease;
+/* Modals */
+.modal-content {
+    border: none;
+    border-radius: 10px;
+    background-color: var(--cream);
 }
 
-.form-group input:focus {
-    outline: none;
-    border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(191, 155, 48, 0.15);
+.modal-header {
+    background-color: var(--brown-dark);
+    color: var(--cream);
+    border-bottom: 3px solid var(--gold);
 }
 
-/* Animation d'entrée du popup */
-@keyframes popupFadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -48%) scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
+.modal-title {
+    font-family: 'Playfair Display', serif;
 }
 
-/* Animation de sortie du popup */
-@keyframes popupFadeOut {
-    from {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: translate(-50%, -48%) scale(0.96);
-    }
+/* Alertes */
+.alert {
+    border-radius: 6px;
+    padding: 15px 20px;
+    border: none;
 }
 
-/* Application des animations */
-.form-popup.showing {
-    display: block;
-    animation: popupFadeIn 0.3s ease forwards;
+.alert-success {
+    background-color: rgba(74, 103, 65, 0.1);
+    border-left: 4px solid var(--success);
+    color: var(--success);
 }
 
-.form-popup.hiding {
-    animation: popupFadeOut 0.3s ease forwards;
-}
-
-/* Style des boutons dans le popup */
-.form-popup .btn-primary,
-.form-popup .btn-danger,
-.form-popup .btn-info {
-    width: 100%;
-    margin-top: 1rem;
-    padding: 1rem;
-    font-size: 1.2rem;
-}
-
-/* Responsive design pour les popups */
-@media (max-width: 768px) {
-    .form-popup {
-        padding: 2rem;
-        width: 90%;
-        max-height: 90vh;
-    }
-
-    .form-container h3 {
-        font-size: 1.6rem;
-    }
-
-    .form-group label {
-        font-size: 1rem;
-    }
-
-    .form-group input {
-        padding: 0.8rem;
-        font-size: 1rem;
-    }
-}
-
-/* Style pour les messages d'erreur dans le formulaire */
-.form-group .error-message {
-    color: var(--red-brick);
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    display: none;
-}
-
-.form-group.has-error input {
-    border-color: var(--red-brick);
-}
-
-.form-group.has-error .error-message {
-    display: block;
-}
-
-/* DataTables personnalisé */
-.dataTables_wrapper .dataTables_filter input {
-    padding: 0.5rem;
-    border: 2px solid var(--brown-light);
-    border-radius: 5px;
-    margin-left: 0.5rem;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    padding: 0.5rem 1rem !important;
-    margin: 0 2px;
-    border: 1px solid var(--brown-light) !important;
-    background: var(--cream) !important;
-    color: var(--brown-dark) !important;
-    border-radius: 5px !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button.current {
-    background: var(--cream) !important;
-    color: var(--cream) !important;
-    border-color: var(--brown-dark) !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-    color: var(--cream) !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.current) {
-    background: var(--brown-light) !important;
-    color: var(--cream) !important;
-    border-color: var(--brown-light) !important;
-}
-
-/* Décorations supplémentaires */
-.container::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: var(--brown-dark);
+.alert-danger {
+    background-color: rgba(166, 61, 64, 0.1);
+    border-left: 4px solid var(--error);
+    color: var(--error);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .container {
-        padding: 1rem;
-    }
-
-    h2 {
-        font-size: 2rem;
-    }
-
-    .center-button {
-        flex-direction: column;
-    }
-
-    .btn-primary, .btn-danger {
-        width: 100%;
-    }
-}
-
-/* Correction z-index et position des popups */
-.form-popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--cream);
-    padding: 2.5rem;
-    border-radius: 10px;
-    border: 3px solid var(--brown-dark);
-    box-shadow: 0 4px 20px rgba(74, 55, 40, 0.2);
-    width: 90%;
-    max-width: 500px;
-    z-index: 9999;
-}
-
-/* Style de la sélection du tableau */
-#pensionTable tbody tr.selected,
-#pensionTable tbody tr.selected td {
-    background-color: rgba(45, 90, 39, 0.1) !important;
-    color: var(--brown-dark) !important;
-}
-
-/* Amélioration DataTables */
-.dataTables_wrapper {
-    padding: 1.5rem;
-    border-radius: 10px;
-    background: var(--cream);
-    color: var(--brown-dark);
-}
-
-/* Barre de recherche */
-.dataTables_filter {
-    margin-bottom: 1.5rem;
-}
-
-.dataTables_filter label {
-    color: var(--brown-dark);
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.1rem;
-}
-
-.dataTables_filter input {
-    padding: 0.8rem 1.2rem !important;
-    border: 2px solid var(--brown-light) !important;
-    border-radius: 5px !important;
-    width: 250px !important;
-    margin-left: 0.8rem !important;
-    font-family: 'Crimson Pro', serif !important;
-    color: var(--brown-dark) !important;
-}
-
-/* Sélecteur nombre d'entrées */
-.dataTables_length {
-    margin-bottom: 1.5rem;
-}
-
-.dataTables_length label {
-    color: var(--brown-dark);
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.1rem;
-}
-
-.dataTables_length select {
-    padding: 0.6rem 2rem 0.6rem 1rem !important;
-    margin: 0 0.5rem !important;
-    border: 2px solid var(--brown-light) !important;
-    border-radius: 5px !important;
-    font-family: 'Crimson Pro', serif !important;
-    color: var(--brown-dark) !important;
-    background-color: var(--cream) !important;
-}
-
-/* Pagination */
-.dataTables_paginate {
-    margin-top: 1.5rem !important;
-}
-
-.dataTables_paginate .paginate_button {
-    padding: 0.8rem 1.2rem !important;
-    margin: 0 4px !important;
-    border: 2px solid var(--brown-light) !important;
-    border-radius: 5px !important;
-    background: var(--cream) !important;
-    color: var(--brown-dark) !important;
-    font-family: 'Crimson Pro', serif !important;
-}
-
-.dataTables_paginate .paginate_button.current {
-    background: var(--brown-dark) !important;
-    color: var(--cream) !important;
-    border-color: var(--brown-dark) !important;
-}
-
-.dataTables_paginate .paginate_button.current:hover {
-    color: var(--cream) !important;
-}
-
-.dataTables_paginate .paginate_button:hover:not(.current) {
-    background: var(--brown-light) !important;
-    color: var(--cream) !important;
-    border-color: var(--brown-light) !important;
-}
-
-/* Info nombre d'entrées */
-.dataTables_info {
-    color: var(--brown-dark) !important;
-    font-family: 'Crimson Pro', serif !important;
-    font-size: 1rem !important;
-    margin-top: 1.5rem !important;
-}
-
-/* Amélioration du tableau */
-#pensionTable {
-    margin: 0 !important;
-    border-collapse: separate !important;
-    border-spacing: 0 !important;
-}
-
-#pensionTable tbody tr {
-    transition: background-color 0.3s ease;
-}
-
-#pensionTable tbody tr:hover td {
-    background-color: rgba(191, 155, 48, 0.1);
-}
-
-/* Style des cellules du tableau */
-#pensionTable td, 
-#pensionTable th {
-    padding: 1rem 1.5rem !important;
-}
-
-/* Amélioration des boutons de pagination disabled */
-.dataTables_paginate .paginate_button.disabled {
-    opacity: 0.5 !important;
-    cursor: not-allowed !important;
-}
-
-/* Focus states */
-.dataTables_filter input:focus,
-.dataTables_length select:focus {
-    outline: none !important;
-    border-color: var(--gold) !important;
-    box-shadow: 0 0 0 3px rgba(191, 155, 48, 0.2) !important;
-}
-
-/* Amélioration du contraste pour la lisibilité */
-#pensionTable thead th {
-    background: var(--brown-dark) !important;
-    color: var(--cream) !important;
-    font-weight: 600 !important;
-}
-
-/* Conteneur du tableau */
-.table-container {
-    background: var(--cream);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(74, 55, 40, 0.15);
-    margin: 2rem 0;
-}
-
-/* Pagination avec texte blanc pour tous les états */
-.dataTables_paginate .paginate_button {
-    color: var(--brown-dark) !important;
-}
-
-.dataTables_paginate .paginate_button.current,
-.dataTables_paginate .paginate_button:hover {
-    color: var(--cream) !important;
-    background: var(--brown-dark) !important;
-}
-
-.dataTables_paginate .paginate_button:hover:not(.current) {
-    background: var(--brown-light) !important;
-    color: var(--cream) !important;
-}
-
-/* Style des boutons dans le popup - Mise à jour */
-.form-popup .button-group {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-    width: 100%;
-}
-
-.form-popup .button-group button {
-    flex: 1;
-    padding: 0.7rem 1rem;
-    font-size: 1rem;
-    min-width: 0;
-    width: 100%;
-}
-
-/* Ajustement du responsive */
-@media (max-width: 768px) {
-    .form-popup {
-        padding: 2rem;
-        width: 90%;
+        margin: 15px;
+        padding: 20px;
     }
     
-    .form-popup .button-group {
-        gap: 0.8rem;
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .table {
+        font-size: 14px;
     }
 }
 
-/* Ajustement pour les très petits écrans */
-@media (max-width: 480px) {
-    .form-popup .button-group {
-        flex-direction: column;
-    }
+/* Styles pour la barre de recherche */
+#searchInput {
+    border: 2px solid #E8E0D5;
+    border-radius: 6px;
+    padding: 10px 15px;
+    background-color: var(--cream);
+    transition: all 0.3s ease;
 }
 
-/* Style pour la liste de suggestions */
-#nom_list_pension_id,
-#modifier_nom_list_pension_id {
-    width: 100%;
-    box-sizing: border-box;
-    margin-top: 0.5rem;
+#searchInput:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 167, 98, 0.1);
+    outline: none;
+}
+
+#searchInput::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Style pour la modal de détail */
+.detail-group {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #E8E0D5;
+    padding-bottom: 0.5rem;
+}
+
+.detail-group:last-child {
+    border-bottom: none;
+}
+
+.detail-group label {
+    font-weight: 600;
+    color: var(--brown-dark);
+    margin-bottom: 0.3rem;
+    display: block;
+}
+
+.detail-group p {
+    margin: 0;
+    color: var(--brown-light);
+    font-size: 1.1rem;
+}
+
+/* Style pour le bouton détail */
+.btn-info {
+    background-color: var(--green);
+    border-color: var(--green);
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #3d5636;
+    border-color: #3d5636;
+}
+
+/* Espacement des boutons dans la colonne Actions */
+.table td .btn {
+    margin-right: 5px;
+}
+
+.table td .btn:last-child {
+    margin-right: 0;
 }
