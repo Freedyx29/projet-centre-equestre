@@ -1,23 +1,32 @@
 <?php
-
 include_once '../include/bdd.inc.php';
-
 class Cavalerie {
-
     private $numsire;
     private $nomche;
     private $datenache;
     private $garrot;
+    private $photo;
     private $idrace;
     private $idrobe;
 
-    function __construct($ns = null, $nc = null, $dn = null, $gr = null, $ir = null, $irb = null) {
-        $this->numsire = $ns;
-        $this->nomche = $nc;
-        $this->datenache = $dn;
-        $this->garrot = $gr;
-        $this->idrace = $ir;
-        $this->idrobe = $irb;
+    public function __construct($nums = null, $nomc = null, $daten = null, $gar = null, $photo = null, $idra = null, $idro = null) {
+        $this->numsire = $nums;
+        $this->nomche = $nomc;
+        $this->datenache = $daten;
+        $this->garrot = $gar;
+        $this->photo = $photo;
+        $this->idrace = $idra;
+        $this->idrobe = $idro;
+    }
+
+    public function getCavalerie() {
+        return "numsire: $this->numsire,
+                nomche: $this->nomche,
+                datenache: $this->datenache,
+                garrot: $this->garrot,
+                photo: $this->photo,
+                idrace: $this->idrace,
+                idrobe: $this->idrobe";
     }
 
     public function getnumsire() {
@@ -36,6 +45,10 @@ class Cavalerie {
         return $this->garrot;
     }
 
+    public function getphoto() {
+        return $this->photo;
+    }
+
     public function getidrace() {
         return $this->idrace;
     }
@@ -44,38 +57,44 @@ class Cavalerie {
         return $this->idrobe;
     }
 
-    public function setnomche($nc) {
-        $this->nomche = $nc;
+
+    public function setnomche($nomc) {
+        $this->nomche = $nomc;
     }
 
-    public function setdatenache($dn) {
-        $this->datenache = $dn;
+    public function setdatenache($daten) {
+        $this->datenache = $daten;
     }
 
-    public function setgarrot($gr) {
-        $this->garrot = $gr;
+    public function setgarrot($gar) {
+        $this->garrot = $gar;
     }
 
-    public function setidrace($ir) {
-        $this->idrace = $ir;
+    public function setphoto($photo) {
+        $this->photo = $photo;
     }
 
-    public function setidrobe($irb) {
-        $this->idrobe = $irb;
+    public function setidrace($idra) {
+        $this->idrace = $idra;
     }
 
-    // Requêtes
+    public function setidrobe($idro) {
+        $this->idrobe = $idro;
+    }
 
-    // Modèle SELECT : lire
-    public function CavalerieALL(){
-    $con = connexionPDO();
-    $sql = "SELECT * FROM cavalerie WHERE supprime = 0;";
-    $executesql = $con->prepare($sql);
-    $executesql->execute();
-    $resultat = $executesql->fetchAll();
-    return $resultat;
-}
-
+    public function CavalerieALL() {
+        try {
+            $con = connexionPDO();
+            $sql = "SELECT * FROM cavalerie WHERE supprime = 0 OR supprime IS NULL ORDER BY numsire DESC;";
+            $executesql = $con->prepare($sql);
+            $executesql->execute();
+            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
+            return $resultat;
+        } catch (PDOException $e) {
+            error_log("Erreur dans CavalerieALL: " . $e->getMessage());
+            return [];
+        }
+    }
 
     public function CavalerieRace($id) {
         $con = connexionPDO();
@@ -101,88 +120,104 @@ class Cavalerie {
         return $ligne['librobe'];
     }
 
-    // Modèle UPDATE : modifier
-    public function Modifier($numsire, $nomche, $datenache, $garrot, $idrace, $idrobe){
+
+    public function Modifier($id, $nomc, $daten, $gar, $photo, $idra, $idro) {
         $con = connexionPDO();
         $data = [
-            ':nomche' => $nomche,
-            ':datenache' => $datenache,
-            ':garrot' => $garrot,
-            ':idrace' => $idrace,
-            ':idrobe' => $idrobe,
-            ':numsire' => $numsire
+            ':nomche' => $nomc,
+            ':datenache' => $daten,
+            ':garrot' => $gar,
+            ':photo' => $photo,
+            ':idrace' => $idra,
+            ':idrobe' => $idro,
+            ':id' => $id
         ];
 
         $sql = "UPDATE cavalerie
-                SET nomche = :nomche, datenache = :datenache, garrot = :garrot, idrace = :idrace, idrobe = :idrobe
-                WHERE numsire = :numsire;";
-        $stmm = $con->prepare($sql);
+                SET nomche = :nomche, datenache = :datenache, garrot = :garrot, photo = :photo, idrace = :idrace, idrobe = :idrobe
+                WHERE numsire = :id;";
+        $stmn = $con->prepare($sql);
 
-        if ($stmm->execute($data)) {
+        if ($stmn->execute($data)) {
             echo "Cavalerie modifiée";
             return true;
         } else {
-            echo $stmm->errorInfo();
+            echo $stmn->errorInfo();
             return false;
         }
     }
 
-// Modèle DELETE : supprimer logiquement
-public function Supprimer($numsire) {
-    $con = connexionPDO();
-    $data = [
-        ':numsire' => $numsire
-    ];
 
-    $sql = "UPDATE cavalerie SET supprime = 1 WHERE numsire = :numsire;";
-    $stmm = $con->prepare($sql);
+    public function Supprimer($id) {
+        try {
+            $con = connexionPDO();
+            $data = [':id' => $id];
 
-    if ($stmm->execute($data)) {
-        echo "Suppression réussie";
-        return true;
-    } else {
-        $errorInfo = $stmm->errorInfo();
-        echo "Erreur lors de la suppression : " . $errorInfo[2];
-        return false;
+            $sql = "UPDATE cavalerie
+                    SET supprime = 1
+                    WHERE numsire = :id;";
+            $stmn = $con->prepare($sql);
+
+            $result = $stmn->execute($data);
+
+            if ($result) {
+                // Vérifions si une ligne a été affectée
+                if ($stmn->rowCount() > 0) {
+                    return true;
+                } else {
+                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
+                    return false;
+                }
+            } else {
+                $errorInfo = $stmn->errorInfo();
+                error_log("Erreur SQL: " . $errorInfo[2]);
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Exception PDO: " . $e->getMessage());
+            return false;
+        }
     }
-}
 
 
-
-
-    // Modèle INSERT : créer
-    public function CavalerieAjt($nomche, $datenache, $garrot, $idrace, $idrobe){
+    public function CavalerieAjt($nomc, $daten, $gar, $photo, $idra, $idro) {
         $con = connexionPDO();
         $data = [
-            ':nomche' => $nomche,
-            ':datenache' => $datenache,
-            ':garrot' => $garrot,
-            ':idrace' => $idrace,
-            ':idrobe' => $idrobe
+            ':nomche' => $nomc,
+            ':datenache' => $daten,
+            ':garrot' => $gar,
+            ':photo' => $photo,
+            ':idrace' => $idra,
+            ':idrobe' => $idro
         ];
 
-        $sql = "INSERT INTO cavalerie (nomche, datenache, garrot, idrace, idrobe) VALUES (:nomche, :datenache, :garrot, :idrace, :idrobe);";
-        $stmm = $con->prepare($sql);
+        $sql = "INSERT INTO cavalerie (nomche, datenache, garrot, photo, idrace, idrobe)
+                VALUES (:nomche, :datenache, :garrot, :photo, :idrace, :idrobe);";
+        $stmn = $con->prepare($sql);
 
-        if ($stmm->execute($data)) {
-            echo "Cavalerie insérée";
+        if ($stmn->execute($data)) {
+            echo "Cavalerie ajoutée";
             return $con->lastInsertId();
         } else {
-            echo $stmm->errorInfo();
+            echo $stmn->errorInfo();
             return false;
         }
     }
 
-    // Méthode pour récupérer les informations actuelles d'une cavalerie par numsire
-    public function getCavalerieByNumsire($numsire) {
-        $con = connexionPDO();
-        $sql = "SELECT * FROM cavalerie WHERE numsire = :numsire";
-        $data = [':numsire' => $numsire];
-        $executesql = $con->prepare($sql);
-        $executesql->execute($data);
-        $resultat = $executesql->fetch();
-        return $resultat;
-    }
-}
 
+    public function selectRace() {
+        $con = connexionPDO();
+        $sql = "SELECT * FROM race;";
+        $executesql = $con->query($sql);
+        return $executesql;
+    }
+
+    public function selectRobe() {
+        $con = connexionPDO();
+        $sql = "SELECT * FROM robe;";
+        $executesql = $con->query($sql);
+        return $executesql;
+    }
+
+}
 ?>
