@@ -153,17 +153,6 @@ $listePensions = $pension->PensionALL();
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Cheval</label>
-                                    <input type="text" id="nomche<?php echo $p['idpen']; ?>" class="form-control" 
-                                           value="<?php echo $pension->PensionNumsire($p['numsire']); ?>" 
-                                           onkeyup="autocompletPension(<?php echo $p['idpen']; ?>)" required>
-
-                                    <input type="hidden" id="num_sire<?php echo $p['idpen']; ?>" name="numsire" value="<?php echo $p['numsire']; ?>">
-
-                                    <ul id="nom_list_pension_id<?php echo $p['idpen']; ?>"></ul>
-                                </div>
-
-                                <div class="form-group">
                                     <label>Date début</label>
                                     <input type="date" name="dateD" class="form-control" value="<?php echo $p['dateD']; ?>" required>
                                 </div>
@@ -176,6 +165,17 @@ $listePensions = $pension->PensionALL();
                                 <div class="form-group">
                                     <label>Tarif</label>
                                     <input type="number" name="tarif" class="form-control" step="1" value="<?php echo $p['tarif']; ?>" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Cheval</label>
+                                    <input type="text" id="nomche<?php echo $p['idpen']; ?>" class="form-control" 
+                                           value="<?php echo $pension->PensionNumsire($p['numsire']); ?>" 
+                                           onkeyup="autocompletPension(<?php echo $p['idpen']; ?>)" required>
+
+                                    <input type="hidden" id="num_sire<?php echo $p['idpen']; ?>" name="numsire" value="<?php echo $p['numsire']; ?>">
+
+                                    <ul id="nom_list_pension_id<?php echo $p['idpen']; ?>"></ul>
                                 </div>
 
                             </div>
