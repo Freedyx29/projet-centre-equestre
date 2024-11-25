@@ -133,7 +133,7 @@ $listePensions = $pension->PensionALL();
             </div>
         </div>
 
-        <!-- Modals Modification et Suppression -->
+        <!-- Modals Modification et Suppression et Détail-->
         <?php foreach($listePensions as $p): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $p['idpen']; ?>">
