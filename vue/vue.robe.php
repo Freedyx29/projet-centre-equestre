@@ -1,169 +1,182 @@
-<?php 
-include '../class/class.robe.php';
-
-$oRobe = new Robe();
-$reqRobe = $oRobe->RobeALL(); // Assuming you have a method to get all robes
+<?php
+// Inclusion de la classe Robe et création d'une instance
+include_once '../class/class.robe.php';
+$robe = new Robe();
+$listeRobes = $robe->RobeALL();
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Robes</title>
-    <link rel="stylesheet" href="css.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<style>
-    /* CSS for Pop-ups */
-    .popup {
-        display: none;
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        z-index: 1000;
-    }
-
-    .popup-content {
-        background-color: #fff;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .form-section button {
-        margin-right: 10px;
-    }
-
-    /* New CSS for the "Sélectionner" column */
-    .select-column {
-        width: 50px; /* Adjust the width as needed */
-    }
-</style>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style_crud.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Gestion des Robes</h1>
-    </header>
-
-    <section class="form-section">
-        <h2>Gestion des Robes</h2>
-        <button onclick="openPopup('addPopup')">Ajouter une robe</button>
-        <button id="editButton" onclick="openPopup('editPopup')" disabled>Modifier une robe</button>
-        <button id="deleteButton" onclick="openPopup('deletePopup')" disabled>Supprimer une robe</button>
-    </section>
-
-    <section class="cards-section">
+    <div class="container mt-4">
         <h2>Liste des Robes</h2>
-        <div class="cards-container">
-   <table id="robeTable" class="display">
-    <thead>
-        <tr>
-            <th class="select-column">Sélectionner</th>
-            <th>ID</th>
-            <th>Nom de la robe</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        $robes = $oRobe->RobeALL(); // Call method to get all robes
-        foreach ($robes as $robe) {
-            echo "<tr>
-                <td class='select-column'><input type='radio' name='selectedRobe' class='robe-radio' value='" . htmlspecialchars($robe['idrobe']) . "'></td>
-                <td>" . htmlspecialchars($robe['idrobe']) . "</td>
-                <td>" . htmlspecialchars($robe['librobe']) . "</td>
-            </tr>";
-        }
+
+        <!-- Section des messages d'alerte -->
+        <?php 
+        if(isset($_GET['success']) && isset($_GET['message'])) {
+            $alertClass = $_GET['success'] == 1 ? 'alert-success' : 'alert-danger';
         ?>
-    </tbody>
-</table>
+            <div class="alert <?php echo $alertClass; ?> alert-dismissible fade show">
+                <?php echo htmlspecialchars($_GET['message']); ?>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        <?php } ?>
 
+        <!-- Bouton Ajouter -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+                    Ajouter une robe
+                </button>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+            </div>
         </div>
-    </section>
 
-    <!-- Popup for Adding a Robe -->
-    <div id="addPopup" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closePopup('addPopup')">&times;</span>
-            <h2>Ajouter une robe</h2>
-            <form action="../traitement/traitement.robe.php" method="POST">
-                <input type="text" name="librobe" placeholder="Nom de la robe" required>
-                <button type="submit" name="ajouter">Ajouter</button>
-            </form>
+        <!-- Tableau principal des robes -->
+        <table class="table table-striped" id="robeTable">
+            <thead>
+                <tr>
+                    <th>Libellé</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($listeRobes as $r): ?>
+                    <tr>
+                        <td><?php echo $r['librobe']; ?></td>
+                        <td>
+                            <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal<?php echo $r['idrobe']; ?>">
+                                Détail
+                            </button>
+                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $r['idrobe']; ?>">
+                                Modifier
+                            </button>
+                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $r['idrobe']; ?>">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <!-- Modal Ajout -->
+        <div class="modal fade" id="ajoutModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Ajouter une robe</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <form action="../traitement/traitement.robe.php" method="post">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Libellé</label>
+                                <input type="text" name="librobe" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
+
+        <!-- Modals Modification, Suppression et Détail -->
+        <?php foreach($listeRobes as $r): ?>
+            <!-- Modal Modification -->
+            <div class="modal fade" id="modifModal<?php echo $r['idrobe']; ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Modifier la robe</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <form action="../traitement/traitement.robe.php" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="idrobe" value="<?php echo $r['idrobe']; ?>">
+                                <div class="form-group">
+                                    <label>Libellé</label>
+                                    <input type="text" name="librobe" class="form-control" value="<?php echo $r['librobe']; ?>" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="modifier" class="btn btn-warning">Modifier</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Suppression -->
+            <div class="modal fade" id="suppModal<?php echo $r['idrobe']; ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Confirmer la suppression</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir supprimer cette robe ?
+                        </div>
+                        <form action="../traitement/traitement.robe.php" method="post">
+                            <input type="hidden" name="idrobe" value="<?php echo $r['idrobe']; ?>">
+                            <div class="modal-footer">
+                                <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Détail -->
+            <div class="modal fade" id="detailModal<?php echo $r['idrobe']; ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Détail de la robe</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="detail-group">
+                                <label>ID Robe :</label>
+                                <p><?php echo $r['idrobe']; ?></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 
-    <!-- Popup for Editing a Robe -->
-    <div id="editPopup" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closePopup('editPopup')">&times;</span>
-            <h2>Modifier une robe</h2>
-            <form id="editForm" action="../traitement/traitement.robe.php" method="POST">
-                <input type="hidden" name="idrobe" id="editId">
-                <input type="text" name="librobe" id="editLibrobe" placeholder="Nom de la robe" required>
-                <button type="submit" name="modifier">Modifier</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Popup for Deleting a Robe -->
-    <div id="deletePopup" class="popup">
-        <div class="popup-content">
-            <span class="close" onclick="closePopup('deletePopup')">&times;</span>
-            <h2>Êtes-vous sûr de vouloir supprimer cette robe ?</h2>
-            <button id="confirmDelete">Supprimer</button>
-            <button onclick="closePopup('deletePopup')">Annuler</button>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        // Activation de DataTables sur la table des robes
-        $(document).ready(function() {
-            $('#robeTable').DataTable();
-        });
-
-        // Handler for radio button change
-        $('input[name="selectedRobe"]').on('change', function() {
-            const selectedRobe = $('input[name="selectedRobe"]:checked');
-            if (selectedRobe.length > 0) {
-                $('#editId').val(selectedRobe.val()); // Set the ID of the selected robe for editing
-                $('#editLibrobe').val(selectedRobe.closest('tr').find('td:eq(2)').text().trim()); // Get the name of the selected robe
-                
-                $('#editButton').prop('disabled', false);
-                $('#deleteButton').prop('disabled', false);
-            }
-        });
-
-        $('#confirmDelete').on('click', function() {
-            const selectedRobe = $('input[name="selectedRobe"]:checked');
-            if (selectedRobe.length > 0) {
-                const id = selectedRobe.val(); // Get the ID of the selected robe
-                $.post('../traitement/traitement.robe.php', { supprimer: true, idrobe: id }, function() {
-                    window.location.reload(); // Refresh the page after delete
+        $(document).ready(function(){
+            $("#searchInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#robeTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
-            }
+            });
         });
-
-        function openPopup(popupId) {
-            document.getElementById(popupId).style.display = 'block';
-        }
-
-        function closePopup(popupId) {
-            document.getElementById(popupId).style.display = 'none';
-        }
     </script>
 </body>
 </html>
