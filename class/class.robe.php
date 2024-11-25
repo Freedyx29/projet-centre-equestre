@@ -36,12 +36,17 @@ class Robe {
 
     //Modèle SELECT : lire
     public function RobeALL(){
-        $con = connexionPDO();
-        $sql = "SELECT * FROM robe;";
-        $executesql = $con->prepare($sql);
-        $executesql->execute();
-        $resultat = $executesql->fetchAll();
-        return $resultat;
+        try {
+            $con = connexionPDO();
+            $sql = "SELECT * FROM robe WHERE supprime = 0 OR supprime IS NULL ORDER BY idrobe DESC;";
+            $executesql = $con->prepare($sql);
+            $executesql->execute();
+            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
+            return $resultat;
+        } catch (PDOException $e) {
+            error_log("Erreur dans RobeAll: " . $e->getMessage());
+            return [];
+        }   
     }
     
 
@@ -55,7 +60,7 @@ class Robe {
     
         $sql = "UPDATE robe 
                 SET librobe = :libro
-                WHERE idrobe = :id";
+                WHERE idrobe = :id;";
         $stmn = $con->prepare($sql);
     
         if ($stmn->execute($data)) {
@@ -70,20 +75,29 @@ class Robe {
 
     //Modèle DELETE : supprimer
     public function Supprimer($id){
-        $con = connexionPDO();
-        $data = [
-            ':id' => $id
-        ];
-    
-        $sql = "UPDATE robe SET supprime = 1 WHERE idrobe = :id;";
-        $stmn = $con->prepare($sql);
-    
-        if ($stmn->execute($data)) {
-            echo "Suppression réussie";
-            return true;
-        } else {
-            $errorInfo = $stmn->errorInfo();
-            echo "Erreur lors de la suppression : " . $errorInfo[2];
+        try {
+            $con = connexionPDO();
+            $data = [':id' => $id];
+
+            $sql = "UPDATE robe SET supprime = 1 WHERE idrobe = :id;";
+            $stmn = $con->prepare($sql);
+
+            $result = $stmn->execute($data);
+
+            if ($result) {
+                if ($stmn->rowCount() > 0) {
+                    return true;
+                } else {
+                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
+                    return false;
+                }
+            } else {
+                $errorInfo = $stmn->errorInfo();
+                error_log("Erreur SQL: " . $errorInfo[2]);
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Exception PDO: " . $e->getMessage());
             return false;
         }
     }
