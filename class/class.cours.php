@@ -8,12 +8,14 @@ class Cours {
     private $libcours;
     private $hdebut;
     private $hfin;
+    private $jour;
 
-    public function __construct($idco = null, $libc = null, $hd = null, $hf = null) {
+    public function __construct($idco = null, $libc = null, $hd = null, $hf = null, $j = null) {
         $this->idcours = $idco;
         $this->libcours = $libc;
         $this->hdebut = $hd;
         $this->hfin = $hf;
+        $this->jour = $j;
     }
 
 
@@ -21,7 +23,8 @@ class Cours {
         return "ID cours : $this->idcours,
                 Lib courq : $this->libcours,
                 Heure début : $this->hdebut,
-                Heure Fin : $this->hfin";
+                Heure Fin : $this->hfin,
+                Jour : $this->jour";
     }
 
     public function getidcours() {
@@ -40,6 +43,10 @@ class Cours {
         return $this->hfin;
     }
 
+    public function getjour() {
+        return $this->jour;
+    }
+
 
     public function setlibcours($libc) {
         $this->libcours = $libc;
@@ -53,6 +60,9 @@ class Cours {
         $this->hfin = $hf;
     }
 
+    public function setjour($j) {
+        $this->jour = $j;
+    }
 
         //Requêtes
 
@@ -68,17 +78,18 @@ class Cours {
     
 
     //Modèle UPDATE : modifier
-    public function Modifier($id, $libc, $hd, $hf){
+    public function Modifier($id, $libc, $hd, $hf, $j){
         $con = connexionPDO();
         $data = [
             ':libc' => $libc,
             ':hd' => $hd,
             ':hf' => $hf,
+            ':j' => $j,
             ':id' => $id
         ];
     
         $sql = "UPDATE cours 
-                SET libcours = :libc, hdebut =:hd, hfin = :hf
+                SET libcours = :libc, hdebut =:hd, hfin = :hf, jour =:j
                 WHERE idcours = :id";
         $stmn = $con->prepare($sql);
     
@@ -93,36 +104,46 @@ class Cours {
 
 
     //Modèle DELETE : supprimer
-    public function Supprimer($id){
-        $con = connexionPDO();
-        $data = [
-            ':id' => $id
-        ];
-    
-        $sql = "UPDATE cours SET supprime = 1 WHERE idcours = :id;";
-        $stmn = $con->prepare($sql);
-    
-        if ($stmn->execute($data)) {
-            echo "Suppression réussie";
-            return true;
-        } else {
-            $errorInfo = $stmn->errorInfo();
-            echo "Erreur lors de la suppression : " . $errorInfo[2];
+    public function Supprimer($id) {
+        try {
+            $con = connexionPDO();
+            $data = [':id' => $id];
+
+            $sql = "UPDATE cours SET supprime = 1 WHERE idcours = :id;";
+            $stmn = $con->prepare($sql);
+
+            $result = $stmn->execute($data);
+
+            if ($result) {
+                if ($stmn->rowCount() > 0) {
+                    return true;
+                } else {
+                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
+                    return false;
+                }
+            } else {
+                $errorInfo = $stmn->errorInfo();
+                error_log("Erreur SQL: " . $errorInfo[2]);
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Exception PDO: " . $e->getMessage());
             return false;
         }
     }
     
 
     //Modèle INSERT : créer
-    public function CoursAjt($libcours, $hdebut, $hfin){
+    public function CoursAjt($libcours, $hdebut, $hfin, $jour){
         $con = connexionPDO();
         $data = [
             ':libcours' => $libcours,
             ':hdebut' => $hdebut,
             ':hfin' => $hfin,
+            ':jour' => $jour,
         ];
     
-        $sql = "INSERT INTO cours (libcours, hdebut, hfin) VALUES (:libcours, :hdebut, :hfin);";
+        $sql = "INSERT INTO cours (libcours, hdebut, hfin, jour) VALUES (:libcours, :hdebut, :hfin, :jour);";
         $stmn = $con->prepare($sql);
     
         if ($stmn->execute($data)) {
