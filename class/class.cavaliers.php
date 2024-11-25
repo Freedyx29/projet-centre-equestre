@@ -187,16 +187,20 @@ class Cavaliers {
     }
     
 
-
     public function CavaliersALL() {
-        $con = connexionPDO();
-        $sql = "SELECT * FROM cavaliers;";
-        $executesql = $con->prepare($sql);
-        $executesql->execute();
-        $resultat = $executesql->fetchAll();
-        return $resultat;
+        try {
+            $con = connexionPDO();
+            $sql = "SELECT * FROM cavaliers WHERE supprime = 0 OR supprime IS NULL ORDER BY idcava DESC;";
+            $executesql = $con->prepare($sql);
+            $executesql->execute();
+            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
+            return $resultat;
+        } catch (PDOException $e) {
+            error_log("Erreur dans CavaliersALL: " . $e->getMessage());
+            return [];
+        }
     }
-
+    
     public function CavaliersGalop($id) {
         $con = connexionPDO();
         $sql = "SELECT libgalop
@@ -210,132 +214,112 @@ class Cavaliers {
     }
 
 
-    public function Modifier($id, $nc, $pc, $dnc, $nl, $po, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga){
-        $con = connexionPDO();
-    
-        // Vérifiez si l'idgalop existe dans la table galop
-        $sqlCheck = "SELECT COUNT(*) FROM galop WHERE idgalop = :idgalop";
-        $stmtCheck = $con->prepare($sqlCheck);
-        $stmtCheck->bindParam(':idgalop', $idga, PDO::PARAM_INT);
-        $stmtCheck->execute();
-        $count = $stmtCheck->fetchColumn();
-    
-        if ($count > 0) {
-            $data = [
-                ':nc' => $nc,
-                ':pc' => $pc,
-                ':dnc' => $dnc,
-                ':nl' => $nl,
-                ':po' => $po,
-                ':nr' => $nr,
-                ':pr' => $pr,
-                ':rr' => $rr,
-                ':vr' => $vr,
-                ':cpr' => $cpr,
-                ':tr' => $tr,
-                ':emr' => $emr,
-                ':pw' => $pw,
-                ':assu' => $assu,
-                ':idga' => $idga,
-                ':id' => $id
-            ];
-    
-            $sql = "UPDATE cavaliers
-                    SET nomcava = :nc, prenomcava = :pc, datenacava = :dnc, numlic = :nl, photo = :po, nomresp = :nr,
-                        prenomresp = :pr, rueresp = :rr, vilresp = :vr, cpresp = :cpr, telresp = :tr, emailresp = :emr,
-                        password = :pw, assurance = :assu, idgalop = :idga
-                    WHERE idcava = :id;";
-            $stmn = $con->prepare($sql);
-    
-            if ($stmn->execute($data)) {
-                echo "Cavalier modifié";
-                return true;
-            } else {
-                echo $stmn->errorInfo();
-                return false;
-            }
-        } else {
-            echo "Erreur : L'idgalop n'existe pas dans la table galop.";
-            return false;
-        }
-    }
-
-
-    public function Supprimer($id){
+    public function Modifier($id, $nc, $pc, $dnc, $nl, $po, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
         $con = connexionPDO();
         $data = [
+            ':nomcava' => $nc,
+            ':prenomcava' => $pc,
+            ':datenacava' => $dnc,
+            ':numlic' => $nl,
+            ':photo' => $po,
+            ':nomresp' => $nr,
+            ':prenomresp' => $pr,
+            ':rueresp' => $rr,
+            ':vilresp' => $vr,
+            ':cpresp' => $cpr,
+            ':telresp' => $tr,
+            ':emailresp' => $emr,
+            ':password' => $pw,
+            ':assurance' => $assu,
+            ':idgalop' => $idga,
             ':id' => $id
         ];
 
-        $sql = "UPDATE cavaliers SET supprime = 1 WHERE idcava = :id;";
+        $sql = "UPDATE cavaliers 
+                SET nomcava = :nomcava, prenomcava = :prenomcava, datenacava = :datenacava, numlic = :numlic, photo = :photo, nomresp = :nomresp, prenomresp = :prenomresp, rueresp = :rueresp, vilresp = :vilresp, cpresp = :cpresp, telresp = :telresp, emailresp = :emailresp, password = :password, assurance = :assurance, idgalop = :idgalop
+                WHERE idcava = :id;";
+        $stmn = $con->prepare($sql);
+        
+        if ($stmn->execute($data)) {
+            echo "Cavalier modifié";
+            return true;
+        } else {
+            echo $stmn->errorInfo();
+            return false;
+        }
+    }
+
+
+    public function Supprimer($id) {
+        try {
+            $con = connexionPDO();
+            $data = [':id' => $id];
+            $sql = "UPDATE cavaliers SET supprime = 1 WHERE idcava = :id;";
+            $stmn = $con->prepare($sql);
+
+            $result = $stmn->execute($data);
+
+            if ($result) {
+                // Vérifions si une ligne a été affectée
+                if ($stmn->rowCount() > 0) {
+                    return true;
+                } else {
+                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
+                    return false;
+                }
+            } else {
+                $errorInfo = $stmn->errorInfo();
+                error_log("Erreur SQL: " . $errorInfo[2]);
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Erreur dans Supprimer: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function CavaliersAjt($nc, $pc, $dnc, $nl, $po, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
+        $con = connexionPDO();
+        $data = [
+            ':nomcava' => $nc,
+            ':prenomcava' => $pc,
+            ':datenacava' => $dnc,
+            ':numlic' => $nl,
+            ':photo' => $po,
+            ':nomresp' => $nr,
+            ':prenomresp' => $pr,
+            ':rueresp' => $rr,
+            ':vilresp' => $vr,
+            ':cpresp' => $cpr,
+            ':telresp' => $tr,
+            ':emailresp' => $emr,
+            ':password' => $pw,
+            ':assurance' => $assu,
+            ':idgalop' => $idga
+        ];
+
+        $sql = "INSERT INTO cavaliers (nomcava, prenomcava, datenacava, numlic, photo, nomresp, prenomresp, rueresp, vilresp, cpresp, telresp, emailresp, password, assurance, idgalop) 
+                VALUES (:nomcava, :prenomcava, :datenacava, :numlic, :photo, :nomresp, :prenomresp, :rueresp, :vilresp, :cpresp, :telresp, :emailresp, :password, :assurance, :idgalop);";
         $stmn = $con->prepare($sql);
 
         if ($stmn->execute($data)) {
-            echo "Suppression réussie";
+            echo "Cavalier ajouté";
             return true;
         } else {
-            $errorInfo = $stmn->errorInfo();
-            echo "Erreur lors de la suppression : " . $errorInfo[2];
+            echo $stmn->errorInfo();
             return false;
         }
     }
 
-
-    public function CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic, $photo, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp, $emailresp, $password, $assurance, $idgalop){
+    
+    public function selectTypeGalop() {
         $con = connexionPDO();
-    
-        // Vérifiez si l'idgalop existe dans la table galop
-        $sqlCheck = "SELECT COUNT(*) FROM galop WHERE idgalop = :idgalop";
-        $stmtCheck = $con->prepare($sqlCheck);
-        $stmtCheck->bindParam(':idgalop', $idgalop, PDO::PARAM_INT);
-        $stmtCheck->execute();
-        $count = $stmtCheck->fetchColumn();
-    
-        if ($count > 0) {
-            $data = [
-                ':nomcava' => $nomcava,
-                ':prenomcava' => $prenomcava,
-                ':datenacava' => $datenacava,
-                ':numlic' => $numlic,
-                ':photo' => $photo,
-                ':nomresp' => $nomresp,
-                ':prenomresp' => $prenomresp,
-                ':rueresp' => $rueresp,
-                ':vilresp' => $vilresp,
-                ':cpresp' => $cpresp,
-                ':telresp' => $telresp,
-                ':emailresp' => $emailresp,
-                ':password' => $password,
-                ':assurance' => $assurance,
-                ':idgalop' => $idgalop
-            ];
-    
-            $sql = "INSERT INTO cavaliers (nomcava, prenomcava, datenacava, numlic, photo, nomresp, prenomresp,
-                    rueresp, vilresp, cpresp, telresp, emailresp, password, assurance, idgalop)
-                    VALUES (:nomcava, :prenomcava, :datenacava, :numlic, :photo, :nomresp, :prenomresp,
-                    :rueresp, :vilresp, :cpresp, :telresp, :emailresp, :password, :assurance, :idgalop);";
-            $stmn = $con->prepare($sql);
-    
-            if ($stmn->execute($data)) {
-                echo "Cavalier inséré";
-                return $con->lastInsertId();
-            } else {
-                echo $stmn->errorInfo();
-                return false;
-            }
-        } else {
-            echo "Erreur : L'idgalop n'existe pas dans la table galop.";
-            return false;
-        }
-    }
-    
-    
-    public function selectTypeGalop(){
-        $con = connexionPDO();
-        $sql="SELECT * FROM idgalop;";
-        $executesql = $con->query($sql);                   
+        $sql = "SELECT * FROM galop;";
+        $executesql = $con->query($sql);
         return $executesql;
     }
+
 }
 
 ?>
