@@ -9,7 +9,6 @@ if (isset($_POST['ajouter'])) {
     $prenomcava = $_POST['prenomcava'];
     $datenacava = $_POST['datenacava'];
     $numlic = $_POST['numlic'];
-    $photo = $_POST['photo'];
     $nomresp = $_POST['nomresp'];
     $prenomresp = $_POST['prenomresp'];
     $rueresp = $_POST['rueresp'];
@@ -20,8 +19,7 @@ if (isset($_POST['ajouter'])) {
     $password = $_POST['password'];
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
-    $success = $ocavaliers->CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic, $photo,
-                                        $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
+    $success = $ocavaliers->CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic,$nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
                                         $emailresp, $password, $assurance, $idgalop ) ? 1 : 0;
     header("Location: ../vue/vue.cavaliers.php?success=1&message=Cavalier ajouté avec succès");
 }
@@ -32,7 +30,6 @@ if (isset($_POST['modifier'])) {
     $prenomcava = $_POST['prenomcava'];
     $datenacava = $_POST['datenacava'];
     $numlic = $_POST['numlic'];
-    $photo = $_POST['photo'];
     $nomresp = $_POST['nomresp'];
     $prenomresp = $_POST['prenomresp'];
     $rueresp = $_POST['rueresp'];
@@ -43,7 +40,7 @@ if (isset($_POST['modifier'])) {
     $password = $_POST['password'];
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
-    $success = $ocavaliers->Modifier($idcava, $nomcava, $prenomcava, $datenacava, $numlic, $photo,
+    $success = $ocavaliers->Modifier($idcava, $nomcava, $prenomcava, $datenacava, $numlic,
     $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
     $emailresp, $password, $assurance, $idgalop) ? 1 : 0;
     header("Location: ../vue/vue.cavaliers.php?success=1&message=Cavalier modifié avec succès");
