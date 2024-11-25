@@ -21,13 +21,13 @@ function autocompletRobe(id) {
     }
 }
 
-function autocompletRaceajout() {
+function autocompletRobeajout() {
     var min_length = 1;
     var keyword = $('#librobe').val();
 
     if (keyword.length >= min_length) {
         $.ajax({
-            url: '../ajax/ajax.cavalerie.raceajout.php',
+            url: '../ajax/ajax.cavalerie.robeajout.php',
             type: 'POST',
             data: {
                 keyword: keyword,
