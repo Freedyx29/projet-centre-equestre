@@ -3,7 +3,6 @@
 include '../include/bdd.inc.php';
 
 class Race {
-
     private $idrace;
     private $librace;
 
@@ -11,7 +10,6 @@ class Race {
         $this->idrace = $idra;
         $this->librace = $libra;
     }
-
 
     public function getRace() {
         return "ID Race : $this->idrace,
@@ -26,27 +24,29 @@ class Race {
         return $this->librace;
     }
 
-
     public function setlibrace($libra) {
         $this->librace = $libra;
     }
 
-
-        //Requêtes
+    //Requêtes
 
     //Modèle SELECT : lire
-    public function RaceALL(){
-        $con = connexionPDO();
-        $sql = "SELECT * FROM race;";
-        $executesql = $con->prepare($sql);
-        $executesql->execute();
-        $resultat = $executesql->fetchAll();
-        return $resultat;
+    public function RaceALL() {
+        try {
+            $con = connexionPDO();
+            $sql = "SELECT * FROM race WHERE supprime = 0 OR supprime IS NULL ORDER BY idrace DESC;";
+            $executesql = $con->prepare($sql);
+            $executesql->execute();
+            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
+            return $resultat;
+        } catch (PDOException $e) {
+            error_log("Erreur dans RaceAll: " . $e->getMessage());
+            return [];
+        }   
     }
-    
 
     //Modèle UPDATE : modifier
-    public function Modifier($id, $libra){
+    public function Modifier($id, $libra) {
         $con = connexionPDO();
         $data = [
             ':libra' => $libra,
@@ -55,7 +55,7 @@ class Race {
     
         $sql = "UPDATE race 
                 SET librace = :libra
-                WHERE idrace = :id";
+                WHERE idrace = :id;";
         $stmn = $con->prepare($sql);
     
         if ($stmn->execute($data)) {
@@ -67,30 +67,37 @@ class Race {
         }
     }
 
-
     //Modèle DELETE : supprimer
-    public function Supprimer($id){
-        $con = connexionPDO();
-        $data = [
-            ':id' => $id
-        ];
-    
-        $sql = "UPDATE race SET supprime = 1 WHERE idrace = :id;";
-        $stmn = $con->prepare($sql);
-    
-        if ($stmn->execute($data)) {
-            echo "Suppression réussie";
-            return true;
-        } else {
-            $errorInfo = $stmn->errorInfo();
-            echo "Erreur lors de la suppression : " . $errorInfo[2];
+    public function Supprimer($id) {
+        try {
+            $con = connexionPDO();
+            $data = [':id' => $id];
+
+            $sql = "UPDATE race SET supprime = 1 WHERE idrace = :id;";
+            $stmn = $con->prepare($sql);
+
+            $result = $stmn->execute($data);
+
+            if ($result) {
+                if ($stmn->rowCount() > 0) {
+                    return true;
+                } else {
+                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
+                    return false;
+                }
+            } else {
+                $errorInfo = $stmn->errorInfo();
+                error_log("Erreur SQL: " . $errorInfo[2]);
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Exception PDO: " . $e->getMessage());
             return false;
         }
     }
-    
 
     //Modèle INSERT : créer
-    public function RaceAjt($librace){
+    public function RaceAjt($librace) {
         $con = connexionPDO();
         $data = [
             ':librace' => $librace,
@@ -108,5 +115,4 @@ class Race {
         }
     }
 }
-
 ?>
