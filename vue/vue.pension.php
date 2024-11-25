@@ -117,7 +117,7 @@ $listePensions = $pension->PensionALL();
                                 <label>Cheval</label>
                                 <input type="text" id="nomche" class="form-control" onkeyup="autocompletPensionajout()" required>
                                 <input type="hidden" id="num_sire" name="numsire">
-                                <div id="nom_list_pension_id"></div>
+                                <ul id="nom_list_pension_id"></ul>
                             </div>
 
                         </div>
@@ -160,7 +160,7 @@ $listePensions = $pension->PensionALL();
 
                                     <input type="hidden" id="num_sire<?php echo $p['idpen']; ?>" name="numsire" value="<?php echo $p['numsire']; ?>">
 
-                                    <div id="nom_list_pension_id<?php echo $p['idpen']; ?>"></div>
+                                    <ul id="nom_list_pension_id<?php echo $p['idpen']; ?>"></ul>
                                 </div>
 
                                 <div class="form-group">
