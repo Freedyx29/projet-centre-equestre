@@ -1,27 +1,26 @@
 <?php
-include 'class.galop.php';
 
-$oGalop = new Galop();
+include '../class/class.galop.php';
+
+$ogalop = new Galop();
 
 if (isset($_POST['ajouter'])) {
     $libgalop = $_POST['libgalop'];
-    $success = $oGalop->galopAjout($libgalop) ? 1 : 0;
-    header("Location: vue.galop.php?success=$success");
-    exit();
+    $success = $ogalop->GalopAjt($libgalop) ? 1 : 0;
+    header("Location: ../vue/vue.galop.php?success=1&message=Galop ajoutée avec succès");
 }
 
 if (isset($_POST['modifier'])) {
     $idgalop = $_POST['idgalop'];
     $libgalop = $_POST['libgalop'];
-    $success = $oGalop->Modifier($idgalop, $libgalop) ? 1 : 0;
-    header("Location: vue.galop.php?success=$success");
-    exit();
+    $success = $ogalop->Modifier($idgalop, $libgalop) ? 1 : 0;
+    header("Location: ../vue/vue.galop.php?success=1&message=Galop modifiée avec succès");
 }
 
 if (isset($_POST['supprimer'])) {
     $idgalop = $_POST['idgalop'];
-    $success = $oGalop->Supprimer($idgalop) ? 1 : 0;
-    header("Location: vue.galop.php?success=$success");
-    exit();
+    $success = $ogalop->Supprimer($idgalop) ? 1 : 0;
+    header("Location: ../vue/vue.galop.php?success=1&message=Galop supprimée avec succès");
 }
+
 ?>
