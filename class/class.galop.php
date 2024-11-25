@@ -35,13 +35,18 @@ class Galop {
         //Requêtes
 
     //Modèle SELECT : lire
-    public function GalopAll(){
-        $con = connexionPDO();
-        $sql = "SELECT * FROM galop;";
-        $executesql = $con->prepare($sql);
-        $executesql->execute();
-        $resultat = $executesql->fetchAll();
-        return $resultat;
+    public function GalopAll() {
+        try {
+            $con = connexionPDO();
+            $sql = "SELECT * FROM galop WHERE supprime = 0 OR supprime IS NULL ORDER BY idgalop DESC;";
+            $executesql = $con->prepare($sql);
+            $executesql->execute();
+            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
+            return $resultat;
+        } catch (PDOException $e) {
+            error_log("Erreur dans GalopAll: " . $e->getMessage());
+            return [];
+        }   
     }
     
 
@@ -70,20 +75,29 @@ class Galop {
 
     //Modèke DELETE : supprimer
     public function Supprimer($id){
-        $con = connexionPDO();
-        $data = [
-            ':id' => $id
-        ];
-    
-        $sql = "UPDATE galop SET supprime = 1 WHERE idgalop = :id;";
-        $stmn = $con->prepare($sql);
-    
-        if ($stmn->execute($data)) {
-            echo "Suppression réussie";
-            return true;
-        } else {
-            $errorInfo = $stmn->errorInfo();
-            echo "Erreur lors de la suppression : " . $errorInfo[2];
+        try {
+            $con = connexionPDO();
+            $data = [':id' => $id];
+
+            $sql = "UPDATE galop SET supprime = 1 WHERE idgalop = :id;";
+            $stmn = $con->prepare($sql);
+
+            $result = $stmn->execute($data);
+
+            if ($result) {
+                if ($stmn->rowCount() > 0) {
+                    return true;
+                } else {
+                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
+                    return false;
+                }
+            } else {
+                $errorInfo = $stmn->errorInfo();
+                error_log("Erreur SQL: " . $errorInfo[2]);
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Exception PDO: " . $e->getMessage());
             return false;
         }
     }
