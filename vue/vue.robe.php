@@ -50,7 +50,8 @@ $listeRobes = $robe->RobeALL();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($listeRobes as $r): ?>
+                <?php foreach($listeRobes as $r): 
+                    if ($r['supprime'] != '1'): ?>
                     <tr>
                         <td><?php echo $r['librobe']; ?></td>
                         <td>
@@ -65,7 +66,7 @@ $listeRobes = $robe->RobeALL();
                             </button>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                <?php endif; endforeach; ?>
             </tbody>
         </table>
 
@@ -94,7 +95,8 @@ $listeRobes = $robe->RobeALL();
         </div>
 
         <!-- Modals Modification, Suppression et Détail -->
-        <?php foreach($listeRobes as $r): ?>
+        <?php foreach($listeRobes as $r): 
+            if ($r['supprime'] != '1'): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $r['idrobe']; ?>">
                 <div class="modal-dialog">
@@ -162,7 +164,7 @@ $listeRobes = $robe->RobeALL();
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?>
+        <?php endif; endforeach; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
