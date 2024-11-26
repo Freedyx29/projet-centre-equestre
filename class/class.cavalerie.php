@@ -82,18 +82,13 @@ class Cavalerie {
         $this->idrobe = $idro;
     }
 
-    public function CavalerieALL() {
-        try {
-            $con = connexionPDO();
-            $sql = "SELECT * FROM cavalerie WHERE supprime = 0 OR supprime IS NULL ORDER BY numsire DESC;";
-            $executesql = $con->prepare($sql);
-            $executesql->execute();
-            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
-            return $resultat;
-        } catch (PDOException $e) {
-            error_log("Erreur dans CavalerieALL: " . $e->getMessage());
-            return [];
-        }
+    public function CavalerieAll(){
+        $con = connexionPDO();
+        $sql = "SELECT * FROM cavalerie;";
+        $executesql = $con->prepare($sql);
+        $executesql->execute();
+        $resultat = $executesql->fetchAll();
+        return $resultat;
     }
 
     public function CavalerieRace($id) {
