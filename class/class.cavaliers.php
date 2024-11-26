@@ -176,18 +176,13 @@ class Cavaliers {
     }
     
 
-    public function CavaliersALL() {
-        try {
-            $con = connexionPDO();
-            $sql = "SELECT * FROM cavaliers WHERE supprime = 0 OR supprime IS NULL ORDER BY idcava DESC;";
-            $executesql = $con->prepare($sql);
-            $executesql->execute();
-            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
-            return $resultat;
-        } catch (PDOException $e) {
-            error_log("Erreur dans CavaliersALL: " . $e->getMessage());
-            return [];
-        }
+    public function CavaliersAll(){
+        $con = connexionPDO();
+        $sql = "SELECT * FROM cavaliers;";
+        $executesql = $con->prepare($sql);
+        $executesql->execute();
+        $resultat = $executesql->fetchAll();
+        return $resultat;
     }
     
     public function CavaliersGalop($id) {
