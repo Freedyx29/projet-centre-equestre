@@ -50,7 +50,8 @@ $listeRaces = $race->RaceALL();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($listeRaces as $r): ?>
+                <?php foreach($listeRaces as $r): 
+                    if ($r['supprime'] != '1'): ?>
                     <tr>
                         <td><?php echo $r['librace']; ?></td>
                         <td>
@@ -65,7 +66,7 @@ $listeRaces = $race->RaceALL();
                             </button>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                <?php endif; endforeach; ?>
             </tbody>
         </table>
 
@@ -94,7 +95,8 @@ $listeRaces = $race->RaceALL();
         </div>
 
         <!-- Modals Modification, Suppression et Détail -->
-        <?php foreach($listeRaces as $r): ?>
+        <?php foreach($listeRaces as $r): 
+            if ($r['supprime'] != '1'): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $r['idrace']; ?>">
                 <div class="modal-dialog">
@@ -162,7 +164,7 @@ $listeRaces = $race->RaceALL();
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?>
+        <?php endif; endforeach; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
