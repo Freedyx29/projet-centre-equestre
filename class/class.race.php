@@ -31,18 +31,13 @@ class Race {
     //Requêtes
 
     //Modèle SELECT : lire
-    public function RaceALL() {
-        try {
-            $con = connexionPDO();
-            $sql = "SELECT * FROM race WHERE supprime = 0 OR supprime IS NULL ORDER BY idrace DESC;";
-            $executesql = $con->prepare($sql);
-            $executesql->execute();
-            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
-            return $resultat;
-        } catch (PDOException $e) {
-            error_log("Erreur dans RaceAll: " . $e->getMessage());
-            return [];
-        }   
+    public function RaceAll(){
+        $con = connexionPDO();
+        $sql = "SELECT * FROM race;";
+        $executesql = $con->prepare($sql);
+        $executesql->execute();
+        $resultat = $executesql->fetchAll();
+        return $resultat;
     }
 
     //Modèle UPDATE : modifier
