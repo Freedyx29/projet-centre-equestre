@@ -35,18 +35,13 @@ class Galop {
         //Requêtes
 
     //Modèle SELECT : lire
-    public function GalopAll() {
-        try {
-            $con = connexionPDO();
-            $sql = "SELECT * FROM galop WHERE supprime = 0 OR supprime IS NULL ORDER BY idgalop DESC;";
-            $executesql = $con->prepare($sql);
-            $executesql->execute();
-            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
-            return $resultat;
-        } catch (PDOException $e) {
-            error_log("Erreur dans GalopAll: " . $e->getMessage());
-            return [];
-        }   
+    public function GalopAll(){
+        $con = connexionPDO();
+        $sql = "SELECT * FROM galop;";
+        $executesql = $con->prepare($sql);
+        $executesql->execute();
+        $resultat = $executesql->fetchAll();
+        return $resultat;
     }
     
 
