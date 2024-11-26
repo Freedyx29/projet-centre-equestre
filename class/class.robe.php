@@ -35,18 +35,13 @@ class Robe {
         //Requêtes
 
     //Modèle SELECT : lire
-    public function RobeALL(){
-        try {
-            $con = connexionPDO();
-            $sql = "SELECT * FROM robe WHERE supprime = 0 OR supprime IS NULL ORDER BY idrobe DESC;";
-            $executesql = $con->prepare($sql);
-            $executesql->execute();
-            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
-            return $resultat;
-        } catch (PDOException $e) {
-            error_log("Erreur dans RobeAll: " . $e->getMessage());
-            return [];
-        }   
+    public function RobeAll(){
+        $con = connexionPDO();
+        $sql = "SELECT * FROM robe;";
+        $executesql = $con->prepare($sql);
+        $executesql->execute();
+        $resultat = $executesql->fetchAll();
+        return $resultat;
     }
     
 
