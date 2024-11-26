@@ -58,7 +58,8 @@ $cavalerieList = $cavalerie->CavalerieALL();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($cavalerieList as $c): ?>
+                <?php foreach($cavalerieList as $c): 
+                    if ($c['supprime'] != '1'): ?>
                     <tr>
                         <!-- <td><?php echo $c['numsire']; ?></td> -->
                         <td><?php echo $c['nomche']; ?></td>
@@ -79,7 +80,7 @@ $cavalerieList = $cavalerie->CavalerieALL();
                             </button>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                <?php endif; endforeach; ?>
             </tbody>
         </table>
 
@@ -143,7 +144,8 @@ $cavalerieList = $cavalerie->CavalerieALL();
         </div>
 
         <!-- Modals Modification et Suppression et Détail-->
-        <?php foreach($cavalerieList as $c): ?>
+        <?php foreach($cavalerieList as $c): 
+            if ($c['supprime'] != '1'): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $c['numsire']; ?>">
                 <div class="modal-dialog">
@@ -294,22 +296,58 @@ $cavalerieList = $cavalerie->CavalerieALL();
                 </div>
             </div>
 
-        <?php endforeach; ?>
+        <?php endif; endforeach; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        $(document).ready(function(){
-            $("#searchInput").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#cavalerieTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
+$(document).ready(function(){
+    // Variables de base
+    var $rows = $("#cavalerieTable tbody tr");
+    var page = 1;
+    var limit = 5;
+    var total = Math.ceil($rows.length / limit);
+
+    // Fonction pour afficher les lignes
+    function showRows() {
+        $rows.hide().slice((page-1)*limit, page*limit).show();
+        $("#pageNum").text(`Page ${page}/${total}`);
+    }
+
+    // Modification de la fonction de recherche
+    $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        if(value === "") {
+            // Réinitialiser la pagination quand le champ est vide
+            page = 1;
+            $rows.hide();
+            showRows();
+        } else {
+            // Pendant la recherche, afficher uniquement les résultats filtrés
+            $("#cavalerieTable tbody tr").each(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
-        });
-    </script>
+        }
+    });
+
+    // Ajoute les boutons et le numéro de page
+    $("#cavalerieTable").after(`
+        <div class="text-center mt-3">
+            <button id="prev" class="btn btn-brown">&laquo;</button>
+            <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
+            <button id="next" class="btn btn-brown">&raquo;</button>
+        </div>
+    `);
+
+    // Clics sur les boutons
+    $("#next").click(() => { if(page < total) { page++; showRows(); }});
+    $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
+
+    showRows();
+});
+</script>
 
 </body>
 </html>
