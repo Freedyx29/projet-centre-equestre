@@ -85,7 +85,7 @@ class Prend {
 
         $sql = "UPDATE prend 
                 SET refidcava = :refidcava, refidpen = :refidpen
-                WHERE refidcava = :id_cava_first AND refidpen = :id_pen_first; AND (refidcava, refidpen) NOT IN (SELECT refidcava, refidveh FROM prend)";
+                WHERE refidcava = :id_cava_first AND refidpen = :id_pen_first;";
         $stmt = $con->prepare($sql);
  
         if ($stmt->execute($data)) {
@@ -99,8 +99,9 @@ class Prend {
 
 
     public function Supprimer($refidcava, $refidpen){
-        $con = connexionPDO();
-        $data = [
+        try {
+            $con = connexionPDO();
+            $data = [
             ':refidcava' => $refidcava,
             ':refidpen' => $refidpen
         ];
@@ -114,6 +115,10 @@ class Prend {
         } else {
             $errorInfo = $stmt->errorInfo();
             echo "Erreur lors de la suppression : " . $errorInfo[2];
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "Erreur PDO : " . $e->getMessage();
             return false;
         }
     }    
