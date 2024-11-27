@@ -14,8 +14,8 @@ $list = $req->fetchAll();
 
 foreach ($list as $res) {
     $Listepension = str_replace($_POST['keyword'], '<b>'.$_POST['keyword'].'</b>', $res['libpen']);
-    // Utilise l'index `id` pour l'élément HTML, qui est passé depuis la fonction autocompletCat() dans le JavaScript
-    echo '<li onclick="set_item_pen(\''.str_replace("'", "\'", $res['libpen']).'\', '.$_POST['index'].', '.$res['libpen'].')">'.$Listepension.'</li>';
+    // Correction: Utilisation de idpen au lieu de libpen comme ID
+    echo '<li onclick="set_item_pen(\''.str_replace("'", "\'", $res['libpen']).'\', '.$_POST['index'].', '.$res['idpen'].')">'.$Listepension.'</li>';
     }
 }
 
