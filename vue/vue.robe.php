@@ -1,6 +1,9 @@
 <?php
 // Inclusion de la classe Robe et création d'une instance
 include_once '../class/class.robe.php';
+
+include_once '../include/haut.inc.php';
+
 $robe = new Robe();
 $listeRobes = $robe->RobeALL();
 ?>
@@ -156,6 +159,11 @@ $listeRobes = $robe->RobeALL();
                             <div class="detail-group">
                                 <label>ID Robe :</label>
                                 <p><?php echo $r['idrobe']; ?></p>
+                            </div>
+
+                            <div class="detail-group">
+                                <label>Libellé :</label>
+                                <p><?php echo $r['librobe']; ?></p>
                             </div>
                         </div>
                         <div class="modal-footer">
