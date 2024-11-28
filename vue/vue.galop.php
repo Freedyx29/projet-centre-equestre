@@ -1,6 +1,8 @@
 <?php
 // Inclusion de la classe Galop et création d'une instance
 include_once '../class/class.galop.php';
+include_once '../include/haut.inc.php';
+
 // Création d'une instance de la classe Galop
 $galop = new Galop();
 // Récupération de toutes les galops depuis la base de données
@@ -10,7 +12,7 @@ $listeGalops = $galop->GalopALL();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestion des Pensions</title>
+    <title>Gestion des Galops</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style_crud.css">
@@ -173,6 +175,11 @@ $listeGalops = $galop->GalopALL();
                             <div class="detail-group">
                                 <label>ID Galop :</label>
                                 <p><?php echo $g['idgalop']; ?></p>
+                            </div>
+
+                            <div class="detail-group">
+                                <label>Libellé :</label>
+                                <p><?php echo $g['libgalop']; ?></p>
                             </div>
 
                         </div>
