@@ -1,5 +1,6 @@
 <?php
 require_once '../class/class.cavalerie.php';
+include_once '../include/haut.inc.php';
 $cavalerie = new Cavalerie();
 $cavalerieList = $cavalerie->CavalerieALL();
 ?>
@@ -7,7 +8,7 @@ $cavalerieList = $cavalerie->CavalerieALL();
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>CRUD Cavaleries</title>
+    <title>Gestion des Cavaleries</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style_crud.css">
