@@ -1,6 +1,7 @@
 <?php
 // Inclusion de la classe Pension et création d'une instance
 include_once '../class/class.pension.php';
+include_once '../include/haut.inc.php';
 // Création d'une instance de la classe Pension
 $pension = new Pension();
 // Récupération de toutes les pensions depuis la base de données
