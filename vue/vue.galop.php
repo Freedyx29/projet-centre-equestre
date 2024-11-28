@@ -203,7 +203,7 @@ $(document).ready(function(){
     // Variables de base
     var $rows = $("#galopTable tbody tr");
     var page = 1;
-    var limit = 5;
+    var limit = 7;
     var total = Math.ceil($rows.length / limit);
 
     // Fonction pour afficher les lignes
