@@ -7,96 +7,124 @@ class Evenements {
     private $ideve;
     private $titre;
     private $commentaire;
-    private $supprime;
 
-    function __construct($ideve = null, $titre = null, $commentaire = null, $supprime = 0) {
-        $this->ideve = $ideve;
-        $this->titre = $titre;
-        $this->commentaire = $commentaire;
-        $this->supprime = $supprime;
+    public function __construct($ide = null, $tt = null, $cmt = null) {
+        $this->ideve = $ide;
+        $this->titre = $tt;
+        $this->commentaire = $cmt;
     }
 
-    public function getEvenement() {
-        return "id: $this->ideve, titre: $this->titre, commentaire: $this->commentaire, supprime: $this->supprime";
+    public function getEvenements() {
+        return "id évènement : $this->ideve,
+                titre : $this->titre,
+                commentaire : $this->commentaire";
     }
 
-    public function getId() {
+
+    public function getideve() {
         return $this->ideve;
     }
 
-    public function getTitre() {
+    public function gettitre() {
         return $this->titre;
     }
 
-    public function getCommentaire() {
+    public function getcommentaire() {
         return $this->commentaire;
     }
 
-    public function getSupprime() {
-        return $this->supprime;
+
+    public function settitre($tt) {
+        $this->titre = $tt;
     }
 
-    public function setTitre($titre) {
-        $this->titre = $titre;
+    public function setcommentaire($cmt) {
+        $this->commentaire = $cmt;
     }
 
-    public function setCommentaire($commentaire) {
-        $this->commentaire = $commentaire;
-    }
 
-    public function setSupprime($supprime) {
-        $this->supprime = $supprime;
-    }
-
-    // SELECT - Lire tous les événements
-    public function getAllEvenements() {
+    public function EvenementsAll(){
         $con = connexionPDO();
-        $sql = "SELECT * FROM evenements WHERE supprime = 0;";
+        $sql = "SELECT * FROM evenements;";
         $executesql = $con->prepare($sql);
         $executesql->execute();
-        return $executesql->fetchAll();
+        $resultat = $executesql->fetchAll();
+        return $resultat;
     }
 
-    // INSERT - Ajouter un événement
-    public function ajouterEvenement($titre, $commentaire) {
+
+    public function Modifier($id, $tt, $cmt){
         $con = connexionPDO();
         $data = [
-            ':titre' => $titre,
-            ':commentaire' => $commentaire
+            ':tt' => $tt,
+            ':cmt' => $cmt,
+            ':id' => $id
         ];
-        $sql = "INSERT INTO evenements (titre, commentaire) VALUES (:titre, :commentaire);";
-        $stmm = $con->prepare($sql);
-        if ($stmm->execute($data)) {
-            echo "Événement ajouté";
-            return $con->lastInsertId();
+
+        $sql = "UPDATE evenements
+                SET titre = :tt,
+                    commentaire = :cmt
+                WHERE ideve = :id;";
+        $stmn = $con->prepare($sql);
+
+        if ($stmn->execute($data)) {
+            echo "Evènement modifié";
+            return true;
         } else {
-            echo $stmm->errorInfo();
+            echo $stmn->errorInfo();
             return false;
         }
     }
 
-    // UPDATE - Modifier un événement
-    public function modifierEvenement($ideve, $titre, $commentaire) {
+
+    public function Supprimer($id){
+        try {
+            $con = connexionPDO();
+            $data = [':id' => $id];
+
+            $sql = "UPDATE evenements SET supprime = 1 WHERE ideve = :id;";
+            $stmn = $con->prepare($sql);
+
+            $result = $stmn->execute($data);
+
+            if ($result) {
+                if ($stmn->rowCount() > 0) {
+                    return true;
+                } else {
+                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
+                    return false;
+                }
+            } else {
+                $errorInfo = $stmn->errorInfo();
+                error_log("Erreur SQL: " . $errorInfo[2]);
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Exception PDO: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function EvenementsAjt($titre, $commentaire){
         $con = connexionPDO();
         $data = [
             ':titre' => $titre,
             ':commentaire' => $commentaire,
-            ':ideve' => $ideve
         ];
-        $sql = "UPDATE evenements SET titre = :titre, commentaire = :commentaire WHERE ideve = :ideve;";
-        $stmm = $con->prepare($sql);
-        return $stmm->execute($data);
-    }
 
-    // DELETE - Supprimer (soft delete) un événement
-    public function supprimerEvenement($ideve) {
-        $con = connexionPDO();
-        $data = [
-            ':ideve' => $ideve
-        ];
-        $sql = "UPDATE evenements SET supprime = 1 WHERE ideve = :ideve;";
-        $stmm = $con->prepare($sql);
-        return $stmm->execute($data);
+        $sql = "INSERT INTO evenements (titre, commentaire)
+                VALUES (:titre, :commentaire);";
+        $stmn = $con->prepare($sql);
+
+        if ($stmn->execute($data)) {
+            echo "Evènement inséré";
+            return $con->lastInsertId();
+        } else {
+            echo $stmn->errorInfo();
+            return false;
+        }
     }
 }
+
 ?>
