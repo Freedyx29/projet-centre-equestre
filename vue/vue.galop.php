@@ -54,8 +54,8 @@ $listeGalops = $galop->GalopALL();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($listeGalops as $g): ?>
-                    <?php if ($g['supprime'] != '1'): ?>
+                <?php foreach($listeGalops as $g):
+                    if ($g['supprime'] != '1'): ?>
                         <tr>
                             <td><?php echo $g['libgalop']; ?></td>
                         <td>
@@ -69,8 +69,8 @@ $listeGalops = $galop->GalopALL();
                                 Supprimer
                             </button>
                         </td>
-                    </tr>
-                <?php endif; endforeach; ?>
+                        </tr>
+                    <?php endif; endforeach; ?>
             </tbody>
         </table>
 
@@ -103,8 +103,8 @@ $listeGalops = $galop->GalopALL();
         </div>
 
         <!-- Modals Modification et Suppression et Détail -->
-        <?php foreach($listeGalops as $g): ?>
-            <?php if ($g['supprime'] != '1'): ?>
+        <?php foreach($listeGalops as $g):
+            if ($g['supprime'] != '1'): ?>
                 <!-- Modal Modification -->
                 <div class="modal fade" id="modifModal<?php echo $g['idgalop']; ?>">
                 <div class="modal-dialog">
