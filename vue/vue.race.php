@@ -1,6 +1,7 @@
 <?php
 // Inclusion de la classe Race et création d'une instance
 include_once '../class/class.race.php';
+include_once '../include/haut.inc.php';
 $race = new Race();
 $listeRaces = $race->RaceALL();
 ?>
@@ -156,6 +157,11 @@ $listeRaces = $race->RaceALL();
                             <div class="detail-group">
                                 <label>ID Race :</label>
                                 <p><?php echo $r['idrace']; ?></p>
+                            </div>
+
+                            <div class="detail-group">
+                                <label>Libellé :</label>
+                                <p><?php echo $r['librace']; ?></p>
                             </div>
                         </div>
                         <div class="modal-footer">
