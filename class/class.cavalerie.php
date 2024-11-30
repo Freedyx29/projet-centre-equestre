@@ -1,32 +1,25 @@
 <?php
+
 include_once '../include/bdd.inc.php';
+
 class Cavalerie {
+
     private $numsire;
     private $nomche;
     private $datenache;
     private $garrot;
-    private $photo;
     private $idrace;
     private $idrobe;
+    private $photo;
 
-    public function __construct($nums = null, $nomc = null, $daten = null, $gar = null, $photo = null, $idra = null, $idro = null) {
-        $this->numsire = $nums;
-        $this->nomche = $nomc;
-        $this->datenache = $daten;
-        $this->garrot = $gar;
-        $this->photo = $photo;
-        $this->idrace = $idra;
-        $this->idrobe = $idro;
-    }
-
-    public function getCavalerie() {
-        return "numsire: $this->numsire,
-                nomche: $this->nomche,
-                datenache: $this->datenache,
-                garrot: $this->garrot,
-                photo: $this->photo,
-                idrace: $this->idrace,
-                idrobe: $this->idrobe";
+    function __construct($ns = null, $nc = null, $dn = null, $gr = null, $ir = null, $irb = null, $ph = null) {
+        $this->numsire = $ns;
+        $this->nomche = $nc;
+        $this->datenache = $dn;
+        $this->garrot = $gr;
+        $this->idrace = $ir;
+        $this->idrobe = $irb;
+        $this->photo = $ph;
     }
 
     public function getnumsire() {
@@ -45,10 +38,6 @@ class Cavalerie {
         return $this->garrot;
     }
 
-    public function getphoto() {
-        return $this->photo;
-    }
-
     public function getidrace() {
         return $this->idrace;
     }
@@ -57,40 +46,54 @@ class Cavalerie {
         return $this->idrobe;
     }
 
-
-    public function setnomche($nomc) {
-        $this->nomche = $nomc;
+    public function getphoto() {
+        return $this->photo;
     }
 
-    public function setdatenache($daten) {
-        $this->datenache = $daten;
+    public function setnomche($nc) {
+        $this->nomche = $nc;
     }
 
-    public function setgarrot($gar) {
-        $this->garrot = $gar;
+    public function setdatenache($dn) {
+        $this->datenache = $dn;
     }
 
-    public function setphoto($photo) {
-        $this->photo = $photo;
+    public function setgarrot($gr) {
+        $this->garrot = $gr;
     }
 
-    public function setidrace($idra) {
-        $this->idrace = $idra;
+    public function setidrace($ir) {
+        $this->idrace = $ir;
     }
 
-    public function setidrobe($idro) {
-        $this->idrobe = $idro;
+    public function setidrobe($irb) {
+        $this->idrobe = $irb;
     }
 
-    public function CavalerieAll(){
+    public function setphoto($ph) {
+        $this->photo = $ph;
+    }
+
+    // Requêtes
+
+    // Modèle SELECT : lire
+    public function CavalerieALL(){
         $con = connexionPDO();
-        $sql = "SELECT * FROM cavalerie;";
+        $sql = "SELECT * FROM cavalerie WHERE supprime = 0;";
         $executesql = $con->prepare($sql);
         $executesql->execute();
         $resultat = $executesql->fetchAll();
         return $resultat;
     }
-
+ public function getSinglePhotoByNumsire($numsire) {
+        $con = connexionPDO();
+        $sql = "SELECT lienphoto FROM photos WHERE numsire = :numsire LIMIT 1";
+        $data = [':numsire' => $numsire];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetch();
+        return $resultat ? $resultat['lienphoto'] : null;
+    }
     public function CavalerieRace($id) {
         $con = connexionPDO();
         $sql = "SELECT librace
@@ -115,104 +118,136 @@ class Cavalerie {
         return $ligne['librobe'];
     }
 
+    // Modèle UPDATE : modifier
+   public function Modifier($numsire, $nomche, $datenache, $garrot, $idrace, $idrobe){
+    $con = connexionPDO();
+    $data = [
+        ':nomche' => $nomche,
+        ':datenache' => $datenache,
+        ':garrot' => $garrot,
+        ':idrace' => $idrace,
+        ':idrobe' => $idrobe,
+        ':numsire' => $numsire
+    ];
 
-    public function Modifier($id, $nomc, $daten, $gar, $photo, $idra, $idro) {
+    $sql = "UPDATE cavalerie
+            SET nomche = :nomche, datenache = :datenache, garrot = :garrot, idrace = :idrace, idrobe = :idrobe
+            WHERE numsire = :numsire";
+    $stmm = $con->prepare($sql);
+
+    if ($stmm->execute($data)) {
+        echo "Cavalerie modifiée";
+        return true;
+    } else {
+        echo $stmm->errorInfo();
+        return false;
+    }
+}
+
+    // Modèle DELETE : supprimer logiquement
+    public function Supprimer($numsire) {
         $con = connexionPDO();
         $data = [
-            ':nomche' => $nomc,
-            ':datenache' => $daten,
-            ':garrot' => $gar,
-            ':photo' => $photo,
-            ':idrace' => $idra,
-            ':idrobe' => $idro,
-            ':id' => $id
+            ':numsire' => $numsire
         ];
 
-        $sql = "UPDATE cavalerie
-                SET nomche = :nomche, datenache = :datenache, garrot = :garrot, photo = :photo, idrace = :idrace, idrobe = :idrobe
-                WHERE numsire = :id;";
-        $stmn = $con->prepare($sql);
+        $sql = "UPDATE cavalerie SET supprime = 1 WHERE numsire = :numsire;";
+        $stmm = $con->prepare($sql);
 
-        if ($stmn->execute($data)) {
-            echo "Cavalerie modifiée";
+        if ($stmm->execute($data)) {
+            echo "Suppression réussie";
             return true;
         } else {
-            echo $stmn->errorInfo();
+            $errorInfo = $stmm->errorInfo();
+            echo "Erreur lors de la suppression : " . $errorInfo[2];
             return false;
         }
     }
 
+    // Modèle INSERT : créer
+  public function CavalerieAjt($nomche, $datenache, $garrot, $idrace, $idrobe){
+    $con = connexionPDO();
+    $data = [
+        ':nomche' => $nomche,
+        ':datenache' => $datenache,
+        ':garrot' => $garrot,
+        ':idrace' => $idrace,
+        ':idrobe' => $idrobe
+    ];
 
-    public function Supprimer($id) {
-        try {
-            $con = connexionPDO();
-            $data = [':id' => $id];
+    $sql = "INSERT INTO cavalerie (nomche, datenache, garrot, idrace, idrobe) VALUES (:nomche, :datenache, :garrot, :idrace, :idrobe);";
+    $stmm = $con->prepare($sql);
 
-            $sql = "UPDATE cavalerie
-                    SET supprime = 1
-                    WHERE numsire = :id;";
-            $stmn = $con->prepare($sql);
+    if ($stmm->execute($data)) {
+        echo "Cavalerie insérée";
+        return $con->lastInsertId();
+    } else {
+        echo $stmm->errorInfo();
+        return false;
+    }
+}
 
-            $result = $stmn->execute($data);
 
-            if ($result) {
-                // Vérifions si une ligne a été affectée
-                if ($stmn->rowCount() > 0) {
-                    return true;
-                } else {
-                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
-                    return false;
-                }
-            } else {
-                $errorInfo = $stmn->errorInfo();
-                error_log("Erreur SQL: " . $errorInfo[2]);
-                return false;
-            }
-        } catch (PDOException $e) {
-            error_log("Exception PDO: " . $e->getMessage());
-            return false;
-        }
+    // Méthode pour récupérer les informations actuelles d'une cavalerie par numsire
+    public function getCavalerieByNumsire($numsire) {
+        $con = connexionPDO();
+        $sql = "SELECT * FROM cavalerie WHERE numsire = :numsire";
+        $data = [':numsire' => $numsire];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetch();
+        return $resultat;
     }
 
-
-    public function CavalerieAjt($nomc, $daten, $gar, $photo, $idra, $idro) {
+    // Méthode pour ajouter une photo à la table photos
+    public function ajouterPhoto($numsire, $photo) {
         $con = connexionPDO();
         $data = [
-            ':nomche' => $nomc,
-            ':datenache' => $daten,
-            ':garrot' => $gar,
-            ':photo' => $photo,
-            ':idrace' => $idra,
-            ':idrobe' => $idro
+            ':numsire' => $numsire,
+            ':lienphoto' => $photo
         ];
 
-        $sql = "INSERT INTO cavalerie (nomche, datenache, garrot, photo, idrace, idrobe)
-                VALUES (:nomche, :datenache, :garrot, :photo, :idrace, :idrobe);";
-        $stmn = $con->prepare($sql);
+        $sql = "INSERT INTO photos (numsire, lienphoto) VALUES (:numsire, :lienphoto);";
+        $stmm = $con->prepare($sql);
 
-        if ($stmn->execute($data)) {
-            echo "Cavalerie ajoutée";
-            return $con->lastInsertId();
+        if ($stmm->execute($data)) {
+            echo "Photo insérée";
+            return true;
         } else {
-            echo $stmn->errorInfo();
+            echo $stmm->errorInfo();
             return false;
         }
     }
 
-
-    public function selectRace() {
+    // Méthode pour récupérer toutes les photos d'une cavalerie par numsire
+    public function getPhotosByNumsire($numsire) {
         $con = connexionPDO();
-        $sql = "SELECT * FROM race;";
-        $executesql = $con->query($sql);
-        return $executesql;
+        $sql = "SELECT idphotos, lienphoto FROM photos WHERE numsire = :numsire";
+        $data = [':numsire' => $numsire];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetchAll();
+        return $resultat;
     }
 
-    public function selectRobe() {
+    // Méthode pour supprimer une photo spécifique de la table photos
+    public function supprimerPhoto($idphotos) {
         $con = connexionPDO();
-        $sql = "SELECT * FROM robe;";
-        $executesql = $con->query($sql);
-        return $executesql;
-    }
+        $data = [
+            ':idphotos' => $idphotos
+        ];
 
+        $sql = "DELETE FROM photos WHERE idphotos = :idphotos";
+        $stmm = $con->prepare($sql);
+
+        if ($stmm->execute($data)) {
+            echo "Photo supprimée";
+            return true;
+        } else {
+            echo $stmm->errorInfo();
+            return false;
+        }
+    }
 }
+
 ?>
