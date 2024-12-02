@@ -1,102 +1,253 @@
 <?php
-require('../fpdf186/fpdf.php');
-include_once '../class/class.cavalerie.php';
 
-class PDF extends FPDF {
-    // En-tête
-    function Header() {
-        // Ajout du logo
-        $this->Image('../photos/equip.png', 10, 10, 30); // Chemin, x, y, largeur
-        $this->SetFont('Arial', 'B', 16);
-        $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
-        $this->Cell(0, 20, 'Liste des Cavaleries', 0, 1, 'C');
-        $this->Ln(10); // Espacement après l'en-tête
+include_once '../include/bdd.inc.php';
 
-        // Ligne de séparation
-        $this->SetDrawColor(212, 164, 94); // #D4A45E
-        $this->SetLineWidth(0.5);
-        $this->Line(10, $this->GetY(), 200, $this->GetY());
-        $this->Ln(10);
+class Cavalerie {
+
+    private $numsire;
+    private $nomche;
+    private $datenache;
+    private $garrot;
+    private $idrace;
+    private $idrobe;
+    private $photo;
+
+    function __construct($ns = null, $nc = null, $dn = null, $gr = null, $ir = null, $irb = null, $ph = null) {
+        $this->numsire = $ns;
+        $this->nomche = $nc;
+        $this->datenache = $dn;
+        $this->garrot = $gr;
+        $this->idrace = $ir;
+        $this->idrobe = $irb;
+        $this->photo = $ph;
     }
 
-    // Pied de page
-    function Footer() {
-        $this->SetY(-30);
-
-        // Ligne de séparation
-        $this->SetDrawColor(212, 164, 94); // #D4A45E
-        $this->SetLineWidth(0.5);
-        $this->Line(10, $this->GetY(), 200, $this->GetY());
-        $this->Ln(5); // Espacement après la ligne
-
-        // Affiche la date et le numéro de page
-        $this->SetFont('Arial', 'I', 8);
-        $this->SetTextColor(100, 100, 100);
-        $this->Cell(0, 10, 'Vu le : ' . date('Y-m-d H:i:s') . ' | Page ' . $this->PageNo(), 0, 0, 'C');
+    public function getnumsire() {
+        return $this->numsire;
     }
 
-    // En-tête du tableau
-    function TableHeader() {
-        $this->SetFont('Arial', 'B', 12);
-        $this->SetFillColor(60, 36, 21); // Couleur de fond : #3C2415
-        $this->SetTextColor(255, 255, 255); // Couleur du texte : blanc
-        $this->SetDrawColor(60, 36, 21); // Couleur des bordures : #3C2415
-
-        // Calculer la position pour centrer le tableau
-        $this->SetX(10); // Marge gauche de 10 unités
-
-        $this->Cell(25, 10, 'Numsire', 1, 0, 'C', true); // Fond activé avec `true`
-        $this->Cell(35, 10, 'Nom Cheval', 1, 0, 'C', true);
-        $this->Cell(35, 10, 'Date Naissance', 1, 0, 'C', true);
-        $this->Cell(25, 10, 'Garrot', 1, 0, 'C', true);
-        $this->Cell(25, 10, 'Race', 1, 0, 'C', true);
-        $this->Cell(35, 10, 'Robe', 1, 0, 'C', true);
-        $this->Ln();
+    public function getnomche() {
+        return $this->nomche;
     }
 
-    // Contenu du tableau
-    function TableRow($numsire, $nomche, $datenache, $garrot, $race, $robe, $alternate) {
-        $this->SetFont('Arial', '', 12);
-        $this->SetFillColor($alternate ? 240 : 255, $alternate ? 240 : 255, $alternate ? 240 : 255); // Nuances de beige
-        $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
+    public function getdatenache() {
+        return $this->datenache;
+    }
 
-        // Calculer la position pour centrer le tableau
-        $this->SetX(10); // Marge gauche de 10 unités
+    public function getgarrot() {
+        return $this->garrot;
+    }
 
-        $this->Cell(25, 10, $numsire, 1, 0, 'C', true); // Utilisation du fond
-        $this->Cell(35, 10, $nomche, 1, 0, 'C', true);
-        $this->Cell(35, 10, $datenache, 1, 0, 'C', true);
-        $this->Cell(25, 10, $garrot, 1, 0, 'C', true);
-        $this->Cell(25, 10, $race, 1, 0, 'C', true);
-        $this->Cell(35, 10, $robe, 1, 0, 'C', true);
-        $this->Ln();
+    public function getidrace() {
+        return $this->idrace;
+    }
+
+    public function getidrobe() {
+        return $this->idrobe;
+    }
+
+    public function getphoto() {
+        return $this->photo;
+    }
+
+    public function setnomche($nc) {
+        $this->nomche = $nc;
+    }
+
+    public function setdatenache($dn) {
+        $this->datenache = $dn;
+    }
+
+    public function setgarrot($gr) {
+        $this->garrot = $gr;
+    }
+
+    public function setidrace($ir) {
+        $this->idrace = $ir;
+    }
+
+    public function setidrobe($irb) {
+        $this->idrobe = $irb;
+    }
+
+    public function setphoto($ph) {
+        $this->photo = $ph;
+    }
+
+    // Requêtes
+
+    // Modèle SELECT : lire
+    public function CavalerieALL(){
+        $con = connexionPDO();
+        $sql = "SELECT * FROM cavalerie WHERE supprime = 0;";
+        $executesql = $con->prepare($sql);
+        $executesql->execute();
+        $resultat = $executesql->fetchAll();
+        return $resultat;
+    }
+ public function getSinglePhotoByNumsire($numsire) {
+        $con = connexionPDO();
+        $sql = "SELECT lienphoto FROM photos WHERE numsire = :numsire LIMIT 1";
+        $data = [':numsire' => $numsire];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetch();
+        return $resultat ? $resultat['lienphoto'] : null;
+    }
+    public function CavalerieRace($id) {
+        $con = connexionPDO();
+        $sql = "SELECT librace
+                FROM race
+                WHERE idrace = :idrace";
+        $data = [':idrace' => $id];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $ligne = $executesql->fetch();
+        return $ligne['librace'];
+    }
+
+    public function CavalerieRobe($id) {
+        $con = connexionPDO();
+        $sql = "SELECT librobe
+                FROM robe
+                WHERE idrobe = :idrobe";
+        $data = [':idrobe' => $id];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $ligne = $executesql->fetch();
+        return $ligne['librobe'];
+    }
+
+    // Modèle UPDATE : modifier
+   public function Modifier($numsire, $nomche, $datenache, $garrot, $idrace, $idrobe){
+    $con = connexionPDO();
+    $data = [
+        ':nomche' => $nomche,
+        ':datenache' => $datenache,
+        ':garrot' => $garrot,
+        ':idrace' => $idrace,
+        ':idrobe' => $idrobe,
+        ':numsire' => $numsire
+    ];
+
+    $sql = "UPDATE cavalerie
+            SET nomche = :nomche, datenache = :datenache, garrot = :garrot, idrace = :idrace, idrobe = :idrobe
+            WHERE numsire = :numsire";
+    $stmm = $con->prepare($sql);
+
+    if ($stmm->execute($data)) {
+        echo "Cavalerie modifiée";
+        return true;
+    } else {
+        echo $stmm->errorInfo();
+        return false;
     }
 }
 
-// Instanciation de la classe Cavalerie
-$cavalerie = new Cavalerie();
-$listeCavaleries = $cavalerie->CavalerieALL();
+    // Modèle DELETE : supprimer logiquement
+    public function Supprimer($numsire) {
+        $con = connexionPDO();
+        $data = [
+            ':numsire' => $numsire
+        ];
 
-// Création de l'instance de PDF
-$pdf = new PDF();
-$pdf->AliasNbPages();
-$pdf->AddPage();
-$pdf->SetFont('Arial', 'B', 12);
+        $sql = "UPDATE cavalerie SET supprime = 1 WHERE numsire = :numsire;";
+        $stmm = $con->prepare($sql);
 
-// En-tête du tableau
-$pdf->TableHeader();
+        if ($stmm->execute($data)) {
+            echo "Suppression réussie";
+            return true;
+        } else {
+            $errorInfo = $stmm->errorInfo();
+            echo "Erreur lors de la suppression : " . $errorInfo[2];
+            return false;
+        }
+    }
 
-// Contenu du tableau
-$alternate = false; // Pour les couleurs alternées des lignes
-foreach ($listeCavaleries as $c) {
-    if ($c['supprime'] != '1') {
-        $race = $cavalerie->CavalerieRace($c['idrace']);
-        $robe = $cavalerie->CavalerieRobe($c['idrobe']);
-        $pdf->TableRow($c['numsire'], $c['nomche'], $c['datenache'], $c['garrot'], $race, $robe, $alternate);
-        $alternate = !$alternate; // Alterne entre deux fonds
+    // Modèle INSERT : créer
+  public function CavalerieAjt($nomche, $datenache, $garrot, $idrace, $idrobe){
+    $con = connexionPDO();
+    $data = [
+        ':nomche' => $nomche,
+        ':datenache' => $datenache,
+        ':garrot' => $garrot,
+        ':idrace' => $idrace,
+        ':idrobe' => $idrobe
+    ];
+
+    $sql = "INSERT INTO cavalerie (nomche, datenache, garrot, idrace, idrobe) VALUES (:nomche, :datenache, :garrot, :idrace, :idrobe);";
+    $stmm = $con->prepare($sql);
+
+    if ($stmm->execute($data)) {
+        echo "Cavalerie insérée";
+        return $con->lastInsertId();
+    } else {
+        echo $stmm->errorInfo();
+        return false;
     }
 }
 
-// Sortie du PDF
-$pdf->Output();
+
+    // Méthode pour récupérer les informations actuelles d'une cavalerie par numsire
+    public function getCavalerieByNumsire($numsire) {
+        $con = connexionPDO();
+        $sql = "SELECT * FROM cavalerie WHERE numsire = :numsire";
+        $data = [':numsire' => $numsire];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetch();
+        return $resultat;
+    }
+
+    // Méthode pour ajouter une photo à la table photos
+    public function ajouterPhoto($numsire, $photo) {
+        $con = connexionPDO();
+        $data = [
+            ':numsire' => $numsire,
+            ':lienphoto' => $photo
+        ];
+
+        $sql = "INSERT INTO photos (numsire, lienphoto) VALUES (:numsire, :lienphoto);";
+        $stmm = $con->prepare($sql);
+
+        if ($stmm->execute($data)) {
+            echo "Photo insérée";
+            return true;
+        } else {
+            echo $stmm->errorInfo();
+            return false;
+        }
+    }
+
+    // Méthode pour récupérer toutes les photos d'une cavalerie par numsire
+    public function getPhotosByNumsire($numsire) {
+        $con = connexionPDO();
+        $sql = "SELECT idphotos, lienphoto FROM photos WHERE numsire = :numsire";
+        $data = [':numsire' => $numsire];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetchAll();
+        return $resultat;
+    }
+
+    // Méthode pour supprimer une photo spécifique de la table photos
+    public function supprimerPhoto($idphotos) {
+        $con = connexionPDO();
+        $data = [
+            ':idphotos' => $idphotos
+        ];
+
+        $sql = "DELETE FROM photos WHERE idphotos = :idphotos";
+        $stmm = $con->prepare($sql);
+
+        if ($stmm->execute($data)) {
+            echo "Photo supprimée";
+            return true;
+        } else {
+            echo $stmm->errorInfo();
+            return false;
+        }
+    }
+}
+
 ?>
