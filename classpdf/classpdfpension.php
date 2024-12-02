@@ -6,7 +6,7 @@ class PDF extends FPDF {
     // En-tête
     function Header() {
         // Ajout du logo
-        $this->Image('../photos/equi.png', 10, 10, 20); // Chemin, x, y, largeur
+        $this->Image('../photos/equip.png', 10, 10, 20); // Chemin, x, y, largeur
         $this->SetFont('Arial', 'B', 16);
         $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
         $this->Cell(0, 20, 'Liste des Pensions', 0, 1, 'C');
