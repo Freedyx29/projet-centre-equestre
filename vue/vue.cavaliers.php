@@ -1,6 +1,8 @@
 <?php
 // Inclusion de la classe Cavalier et création d'une instance
 include_once '../class/class.cavaliers.php';
+include_once '../include/haut.inc.php';
+
 // Création d'une instance de la classe Cavalier
 $cavalier = new Cavaliers();
 // Récupération de toutes les cavaliers depuis la base de données
@@ -32,17 +34,20 @@ $cavaliersList = $cavalier->CavaliersALL();
                 </div>
             <?php } ?>
 
-            <!-- Bouton Ajouter -->
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                        Ajouter un cavalier
-                    </button>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-                </div>
-            </div>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+            Ajouter un cavalier
+        </button>
+        <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
+        <a href="../classpdf/classpdfcavaliers.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;">
+            📋 Afficher le PDF
+        </a>
+    </div>
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+    </div>
+</div>
 
             <!-- Tableau principal des cavaliers -->
             <table class="table table-striped" id="cavalierTable">
