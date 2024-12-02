@@ -147,13 +147,58 @@ class Cours {
         $stmn = $con->prepare($sql);
     
         if ($stmn->execute($data)) {
+            $idcours = $con->lastInsertId();
             echo "Cours insérée";
-            return $con->lastInsertId();
+
+            // Ajouter les occurrences dans le calendrier
+            $this->ajouterOccurrencesCalendrier($idcours, $jour);
+
+            return $idcours;
         } else {
             echo $stmn->errorInfo();
             return false;
         }
     }
+
+    private function ajouterOccurrencesCalendrier($idcours, $jour): void {
+        $con = connexionPDO();
+        $year = date('Y');
+
+        $joursEn = [
+            'LUNDI' => 'Monday',
+            'MARDI' => 'Tuesday',
+            'MERCREDI' => 'Wednesday',
+            'JEUDI' => 'Thursday',
+            'VENDREDI' => 'Friday',
+            'SAMEDI' => 'Saturday',
+            'DIMANCHE' => 'Sunday'
+        ];
+
+        $jour = strtoupper($jour);
+        if (!isset($joursEn[$jour])) {
+            throw new Exception("Jour invalide : $jour");
+        }
+        $jourEn = $joursEn[$jour];
+
+        $startDate = new DateTime("first $jourEn of January $year");
+        $endDate = new DateTime("last day of December $year");
+
+        // Créer les occurrences dans calendrier
+        while ($startDate <= $endDate) {
+            $data = [
+                ':idcoursbase' => $idcours,
+                ':datecours' => $startDate->format('Y-m-d'),
+            ];
+
+            $sql = "INSERT INTO calendrier (idcoursbase, datecours) 
+                    VALUES (:idcoursbase, :datecours)";
+            $stmn = $con->prepare($sql);
+            $stmn->execute($data);
+
+            $startDate->modify('+1 week');
+        }
+    }    
+
 }
 
 ?>
