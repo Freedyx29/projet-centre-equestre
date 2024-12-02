@@ -43,14 +43,14 @@ class PDF extends FPDF {
         $this->SetDrawColor(60, 36, 21); // Couleur des bordures : #3C2415
 
         // Calculer la position pour centrer le tableau
-        $this->SetX((210 - 210) / 2); // 210 est la largeur de la page, 210 est la largeur totale des cellules
+        $this->SetX(10); // Marge gauche de 10 unités
 
-        $this->Cell(30, 10, 'Numsire', 1, 0, 'C', true); // Fond activé avec `true`
-        $this->Cell(40, 10, 'Nom Cheval', 1, 0, 'C', true);
-        $this->Cell(40, 10, 'Date Naissance', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'Garrot', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'Race', 1, 0, 'C', true);
-        $this->Cell(40, 10, 'Robe', 1, 0, 'C', true);
+        $this->Cell(25, 10, 'Numsire', 1, 0, 'C', true); // Fond activé avec `true`
+        $this->Cell(35, 10, 'Nom Cheval', 1, 0, 'C', true);
+        $this->Cell(35, 10, 'Date Naissance', 1, 0, 'C', true);
+        $this->Cell(25, 10, 'Garrot', 1, 0, 'C', true);
+        $this->Cell(25, 10, 'Race', 1, 0, 'C', true);
+        $this->Cell(35, 10, 'Robe', 1, 0, 'C', true);
         $this->Ln();
     }
 
@@ -61,14 +61,14 @@ class PDF extends FPDF {
         $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
 
         // Calculer la position pour centrer le tableau
-        $this->SetX((210 - 210) / 2); // 210 est la largeur de la page, 210 est la largeur totale des cellules
+        $this->SetX(10); // Marge gauche de 10 unités
 
-        $this->Cell(30, 10, $numsire, 1, 0, 'C', true); // Utilisation du fond
-        $this->Cell(40, 10, $nomche, 1, 0, 'C', true);
-        $this->Cell(40, 10, $datenache, 1, 0, 'C', true);
-        $this->Cell(30, 10, $garrot, 1, 0, 'C', true);
-        $this->Cell(30, 10, $race, 1, 0, 'C', true);
-        $this->Cell(40, 10, $robe, 1, 0, 'C', true);
+        $this->Cell(25, 10, $numsire, 1, 0, 'C', true); // Utilisation du fond
+        $this->Cell(35, 10, $nomche, 1, 0, 'C', true);
+        $this->Cell(35, 10, $datenache, 1, 0, 'C', true);
+        $this->Cell(25, 10, $garrot, 1, 0, 'C', true);
+        $this->Cell(25, 10, $race, 1, 0, 'C', true);
+        $this->Cell(35, 10, $robe, 1, 0, 'C', true);
         $this->Ln();
     }
 }
