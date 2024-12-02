@@ -1,11 +1,10 @@
 <?php
 // Inclusion de la classe Robe et création d'une instance
 include_once '../class/class.robe.php';
-
 include_once '../include/haut.inc.php';
 
 $robe = new Robe();
-$listeRobes = $robe->RobeALL();
+$listeRobes = $robe->RobeAll();
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +21,7 @@ $listeRobes = $robe->RobeALL();
         <h2>Liste des Robes</h2>
 
         <!-- Section des messages d'alerte -->
-        <?php 
+        <?php
         if(isset($_GET['success']) && isset($_GET['message'])) {
             $alertClass = $_GET['success'] == 1 ? 'alert-success' : 'alert-danger';
         ?>
@@ -31,18 +30,23 @@ $listeRobes = $robe->RobeALL();
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         <?php } ?>
+        <!-- Bouton Ajouter et Générer PDF -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+            Ajouter une robe
+        </button>
+        <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
+        <a href="../classpdf/classpdfrobe.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;">
+            📋 Afficher le PDF
+        </a>
+    </div>
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+    </div>
+</div>
 
-        <!-- Bouton Ajouter -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                    Ajouter une robe
-                </button>
-            </div>
-            <div class="col-md-6">
-                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-            </div>
-        </div>
+
 
         <!-- Tableau principal des robes -->
         <table class="table table-striped" id="robeTable">
@@ -53,7 +57,7 @@ $listeRobes = $robe->RobeALL();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($listeRobes as $r): 
+                <?php foreach($listeRobes as $r):
                     if ($r['supprime'] != '1'): ?>
                     <tr>
                         <td><?php echo $r['librobe']; ?></td>
@@ -98,7 +102,7 @@ $listeRobes = $robe->RobeALL();
         </div>
 
         <!-- Modals Modification, Suppression et Détail -->
-        <?php foreach($listeRobes as $r): 
+        <?php foreach($listeRobes as $r):
             if ($r['supprime'] != '1'): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $r['idrobe']; ?>">
