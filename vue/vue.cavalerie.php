@@ -1,8 +1,14 @@
 <?php
 require_once '../class/class.cavalerie.php';
 include_once '../include/haut.inc.php';
+
 $cavalerie = new Cavalerie();
 $cavalerieList = $cavalerie->CavalerieALL();
+
+// Vérifiez si $cavalerieList est null ou vide
+if ($cavalerieList === null || empty($cavalerieList)) {
+    $cavalerieList = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +27,25 @@ $cavalerieList = $cavalerie->CavalerieALL();
     <div class="container mt-4">
         <h2>Liste des Cavaleries</h2>
 
+        <!-- Bouton Voir le PDF et Barre de recherche -->
+        <div class="row mb-3">
+            <div class="col-md-12 d-flex justify-content-between align-items-center">
+                <a href="../classpdf/cavalerie_pdf.php" class="btn btn-success" target="_blank">
+                    Voir le PDF
+                </a>
+                <input type="text" id="searchInput" class="form-control w-50 ml-2" placeholder="Rechercher...">
+            </div>
+        </div>
+
+        <!-- Bouton Ajouter -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+                    Ajouter une cavalerie
+                </button>
+            </div>
+        </div>
+
         <!-- Section des messages d'alerte -->
         <?php
         if(isset($_GET['success']) && isset($_GET['message'])) {
@@ -32,69 +57,56 @@ $cavalerieList = $cavalerie->CavalerieALL();
             </div>
         <?php } ?>
 
-        <!-- Bouton Ajouter -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                    Ajouter une cavalerie
-                </button>
-            </div>
-            <div class="col-md-6">
-                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-            </div>
-        </div>
-
         <!-- Tableau principal des cavaleries -->
         <table class="table table-striped" id="cavalerieTable">
-    <thead>
-        <tr>
-            <th>Nom cheval</th>
-            <th>Date naissance</th>
-            <th>Garrot</th>
-            <th>Photo</th>
-            <th>Race</th>
-            <th>Robe</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach($cavalerieList as $c): ?>
-            <tr>
-                <td><?php echo $c['nomche']; ?></td>
-                <td><?php echo date('d/m/Y', strtotime($c['datenache'])); ?></td>
-                <td><?php echo $c['garrot']; ?></td>
-                <td>
-                    <?php
-                    $singlePhoto = $cavalerie->getSinglePhotoByNumsire($c['numsire']);
-                    if ($singlePhoto):
-                        $photoPath = '../uploads/' . basename($singlePhoto);
-                        if (file_exists($photoPath)): ?>
-                            <img src="<?php echo $photoPath; ?>" alt="<?php echo $c['nomche']; ?>" width="100">
-                        <?php else: ?>
-                            <span>Photo introuvable : <?php echo basename($singlePhoto); ?></span>
-                        <?php endif;
-                    else: ?>
-                        <span>Pas de photo</span>
-                    <?php endif; ?>
-                </td>
-                <td><?php echo $cavalerie->CavalerieRace($c['idrace']); ?></td>
-                <td><?php echo $cavalerie->CavalerieRobe($c['idrobe']); ?></td>
-                <td>
-                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal<?php echo $c['numsire']; ?>">
-                        Détail
-                    </button>
-                    <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $c['numsire']; ?>">
-                        Modifier
-                    </button>
-                    <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $c['numsire']; ?>">
-                        Supprimer
-                    </button>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
-
+            <thead>
+                <tr>
+                    <th>Nom cheval</th>
+                    <th>Date naissance</th>
+                    <th>Garrot</th>
+                    <th>Photo</th>
+                    <th>Race</th>
+                    <th>Robe</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($cavalerieList as $c): ?>
+                    <tr>
+                        <td><?php echo $c['nomche']; ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($c['datenache'])); ?></td>
+                        <td><?php echo $c['garrot']; ?></td>
+                        <td>
+                            <?php
+                            $singlePhoto = $cavalerie->getSinglePhotoByNumsire($c['numsire']);
+                            if ($singlePhoto):
+                                $photoPath = '../uploads/' . basename($singlePhoto);
+                                if (file_exists($photoPath)): ?>
+                                    <img src="<?php echo $photoPath; ?>" alt="<?php echo $c['nomche']; ?>" width="100">
+                                <?php else: ?>
+                                    <span>Photo introuvable : <?php echo basename($singlePhoto); ?></span>
+                                <?php endif;
+                            else: ?>
+                                <span>Pas de photo</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo $cavalerie->CavalerieRace($c['idrace']); ?></td>
+                        <td><?php echo $cavalerie->CavalerieRobe($c['idrobe']); ?></td>
+                        <td>
+                            <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal<?php echo $c['numsire']; ?>">
+                                Détail
+                            </button>
+                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $c['numsire']; ?>">
+                                Modifier
+                            </button>
+                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $c['numsire']; ?>">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
         <!-- Modal Ajout -->
         <div class="modal fade" id="ajoutModal">
