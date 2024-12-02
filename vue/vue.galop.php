@@ -12,7 +12,7 @@ $listeGalops = $galop->GalopALL();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestion des Galops</title>
+    <title>Gestion des Pensions</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style_crud.css">
@@ -33,17 +33,20 @@ $listeGalops = $galop->GalopALL();
             </div>
         <?php } ?>
 
-        <!-- Bouton Ajouter -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                    Ajouter un galop
-                </button>
-            </div>
-            <div class="col-md-6">
-                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-            </div>
-        </div>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+            Ajouter un galop
+        </button>
+        <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
+        <a href="../classpdf/classpdfgalop.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;">
+            📋 Afficher le PDF
+        </a>
+    </div>
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+    </div>
+</div>
 
         <!-- Tableau principal des galops -->
         <table class="table table-striped" id="galopTable">
@@ -54,8 +57,8 @@ $listeGalops = $galop->GalopALL();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($listeGalops as $g):
-                    if ($g['supprime'] != '1'): ?>
+                <?php foreach($listeGalops as $g): ?>
+                    <?php if ($g['supprime'] != '1'): ?>
                         <tr>
                             <td><?php echo $g['libgalop']; ?></td>
                         <td>
@@ -69,8 +72,8 @@ $listeGalops = $galop->GalopALL();
                                 Supprimer
                             </button>
                         </td>
-                        </tr>
-                    <?php endif; endforeach; ?>
+                    </tr>
+                <?php endif; endforeach; ?>
             </tbody>
         </table>
 
@@ -103,8 +106,8 @@ $listeGalops = $galop->GalopALL();
         </div>
 
         <!-- Modals Modification et Suppression et Détail -->
-        <?php foreach($listeGalops as $g):
-            if ($g['supprime'] != '1'): ?>
+        <?php foreach($listeGalops as $g): ?>
+            <?php if ($g['supprime'] != '1'): ?>
                 <!-- Modal Modification -->
                 <div class="modal fade" id="modifModal<?php echo $g['idgalop']; ?>">
                 <div class="modal-dialog">
@@ -177,11 +180,6 @@ $listeGalops = $galop->GalopALL();
                                 <p><?php echo $g['idgalop']; ?></p>
                             </div>
 
-                            <div class="detail-group">
-                                <label>Libellé :</label>
-                                <p><?php echo $g['libgalop']; ?></p>
-                            </div>
-
                         </div>
 
                         <div class="modal-footer">
@@ -203,7 +201,7 @@ $(document).ready(function(){
     // Variables de base
     var $rows = $("#galopTable tbody tr");
     var page = 1;
-    var limit = 7;
+    var limit = 5;
     var total = Math.ceil($rows.length / limit);
 
     // Fonction pour afficher les lignes
