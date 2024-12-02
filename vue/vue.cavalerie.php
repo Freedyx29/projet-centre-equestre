@@ -174,7 +174,7 @@ $cavalerieList = $cavalerie->CavalerieALL();
                                     <input type="file" name="photo" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>Photos existantes</label>
+                                    <label>Selectionner pour supprimer les photos existantes</label>
                                     <?php
                                     $photos = $cavalerie->getPhotosByNumsire($c['numsire']);
                                     if (!empty($photos)):
