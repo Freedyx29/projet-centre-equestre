@@ -2,6 +2,7 @@
 // Inclusion de la classe Race et création d'une instance
 include_once '../class/class.race.php';
 include_once '../include/haut.inc.php';
+
 $race = new Race();
 $listeRaces = $race->RaceALL();
 ?>
@@ -29,18 +30,21 @@ $listeRaces = $race->RaceALL();
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         <?php } ?>
-
-        <!-- Bouton Ajouter -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                    Ajouter une race
-                </button>
-            </div>
-            <div class="col-md-6">
-                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-            </div>
+        <!-- Bouton Ajouter et Générer PDF -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+                Ajouter une race
+            </button>
+            <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
+            <a href="../classpdf/classpdfrace.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;">
+                📋 Afficher le PDF
+            </a>
         </div>
+        <div class="col-md-6">
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+        </div>
+    </div>
 
         <!-- Tableau principal des races -->
         <table class="table table-striped" id="raceTable">
@@ -157,11 +161,6 @@ $listeRaces = $race->RaceALL();
                             <div class="detail-group">
                                 <label>ID Race :</label>
                                 <p><?php echo $r['idrace']; ?></p>
-                            </div>
-
-                            <div class="detail-group">
-                                <label>Libellé :</label>
-                                <p><?php echo $r['librace']; ?></p>
                             </div>
                         </div>
                         <div class="modal-footer">
