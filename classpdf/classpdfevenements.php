@@ -1,6 +1,6 @@
 <?php
 require('../fpdf186/fpdf.php');
-include_once '../class/class.robe.php';
+include_once '../class/class.evenements.php';
 
 class PDF extends FPDF {
     // En-tête
@@ -9,7 +9,7 @@ class PDF extends FPDF {
         $this->Image('../photos/equip.png', 10, 10, 30); // Chemin, x, y, largeur
         $this->SetFont('Arial', 'B', 16);
         $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
-        $this->Cell(0, 20, 'Liste des Robes', 0, 1, 'C');
+        $this->Cell(0, 20, 'Liste des Evenements', 0, 1, 'C');
         $this->Ln(10); // Espacement après l'en-tête
 
         // Ligne de séparation
@@ -43,31 +43,33 @@ class PDF extends FPDF {
         $this->SetDrawColor(60, 36, 21); // Couleur des bordures : #3C2415
 
         // Calculer la position pour centrer le tableau
-        $this->SetX((210 - 140) / 2); // 210 est la largeur de la page, 140 est la largeur totale des cellules
+        $this->SetX((210 - 180) / 2); // 210 est la largeur de la page, 180 est la largeur totale des cellules
 
-        $this->Cell(40, 10, 'ID Robe', 1, 0, 'C', true); // Fond activé avec `true`
-        $this->Cell(100, 10, 'Libelle', 1, 0, 'C', true);
+        $this->Cell(60, 10, 'ID Evenement', 1, 0, 'C', true); // Fond activé avec `true`
+        $this->Cell(60, 10, 'Titre', 1, 0, 'C', true);
+        $this->Cell(60, 10, 'Commentaire', 1, 0, 'C', true);
         $this->Ln();
     }
 
     // Contenu du tableau
-    function TableRow($idrobe, $librobe, $alternate) {
+    function TableRow($ideve, $titre, $commentaire, $alternate) {
         $this->SetFont('Arial', '', 12);
         $this->SetFillColor($alternate ? 240 : 255, $alternate ? 240 : 255, $alternate ? 240 : 255); // Nuances de beige
         $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
 
         // Calculer la position pour centrer le tableau
-        $this->SetX((210 - 140) / 2); // 210 est la largeur de la page, 140 est la largeur totale des cellules
+        $this->SetX((210 - 180) / 2); // 210 est la largeur de la page, 180 est la largeur totale des cellules
 
-        $this->Cell(40, 10, $idrobe, 1, 0, 'C', true); // Utilisation du fond
-        $this->Cell(100, 10, $librobe, 1, 0, 'C', true);
+        $this->Cell(60, 10, $ideve, 1, 0, 'C', true); // Utilisation du fond
+        $this->Cell(60, 10, $titre, 1, 0, 'C', true);
+        $this->Cell(60, 10, $commentaire, 1, 0, 'C', true);
         $this->Ln();
     }
 }
 
-// Instanciation de la classe Robe
-$robe = new Robe();
-$listeRobes = $robe->RobeAll();
+// Instanciation de la classe Evenements
+$evenements = new Evenements();
+$listeEvenements = $evenements->EvenementsAll();
 
 // Création de l'instance de PDF
 $pdf = new PDF();
@@ -80,9 +82,9 @@ $pdf->TableHeader();
 
 // Contenu du tableau
 $alternate = false; // Pour les couleurs alternées des lignes
-foreach ($listeRobes as $r) {
-    if ($r['supprime'] != '1') {
-        $pdf->TableRow($r['idrobe'], $r['librobe'], $alternate);
+foreach ($listeEvenements as $e) {
+    if ($e['supprime'] != '1') {
+        $pdf->TableRow($e['ideve'], $e['titre'], $e['commentaire'], $alternate);
         $alternate = !$alternate; // Alterne entre deux fonds
     }
 }
