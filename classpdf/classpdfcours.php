@@ -6,7 +6,7 @@ class PDF extends FPDF {
     // En-tête
     function Header() {
         // Ajout du logo
-        $this->Image('../photos/equi.png', 10, 10, 20); // Chemin, x, y, largeur
+        $this->Image('../photos/equip.png', 10, 10, 30); // Chemin, x, y, largeur
         $this->SetFont('Arial', 'B', 16);
         $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
         $this->Cell(0, 20, 'Liste des Cours', 0, 1, 'C');
@@ -43,17 +43,13 @@ class PDF extends FPDF {
         $this->SetDrawColor(60, 36, 21); // Couleur des bordures : #3C2415
 
         // Calculer la position pour centrer le tableau
-        $tableWidth = 190; // Largeur totale des cellules
-        $pageWidth = 210; // Largeur de la page
-        $startX = ($pageWidth - $tableWidth) / 2;
-
-        $this->SetX($startX);
+        $this->SetX((210 - 180) / 2); // 210 est la largeur de la page, 180 est la largeur totale des cellules
 
         $this->Cell(40, 10, 'ID Cours', 1, 0, 'C', true); // Fond activé avec `true`
-        $this->Cell(50, 10, 'Libelle Cours', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'Heure Debut', 1, 0, 'C', true);
+        $this->Cell(40, 10, 'Libelle', 1, 0, 'C', true);
+        $this->Cell(40, 10, 'Heure Debut', 1, 0, 'C', true);
         $this->Cell(30, 10, 'Heure Fin', 1, 0, 'C', true);
-        $this->Cell(40, 10, 'Jour', 1, 0, 'C', true);
+        $this->Cell(30, 10, 'Jour', 1, 0, 'C', true);
         $this->Ln();
     }
 
@@ -64,17 +60,13 @@ class PDF extends FPDF {
         $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
 
         // Calculer la position pour centrer le tableau
-        $tableWidth = 190; // Largeur totale des cellules
-        $pageWidth = 210; // Largeur de la page
-        $startX = ($pageWidth - $tableWidth) / 2;
-
-        $this->SetX($startX);
+        $this->SetX((210 - 180) / 2); // 210 est la largeur de la page, 180 est la largeur totale des cellules
 
         $this->Cell(40, 10, $idcours, 1, 0, 'C', true); // Utilisation du fond
-        $this->Cell(50, 10, $libcours, 1, 0, 'C', true);
-        $this->Cell(30, 10, $hdebut, 1, 0, 'C', true);
+        $this->Cell(40, 10, $libcours, 1, 0, 'C', true);
+        $this->Cell(40, 10, $hdebut, 1, 0, 'C', true);
         $this->Cell(30, 10, $hfin, 1, 0, 'C', true);
-        $this->Cell(40, 10, $jour, 1, 0, 'C', true);
+        $this->Cell(30, 10, $jour, 1, 0, 'C', true);
         $this->Ln();
     }
 }
