@@ -1,0 +1,35 @@
+BEGIN
+    INSERT INTO logs_cavaliers (
+        idcava,
+        nomcava_old, nomcava_new,
+        prenomcava_old, prenomcava_new,
+        datenacava_old, datenacava_new,
+        numlic_old, numlic_new,
+        nomresp_old, nomresp_new,
+        prenomresp_old, prenomresp_new,
+        rueresp_old, rueresp_new,
+        vilresp_old, vilresp_new,
+        cpresp_old, cpresp_new,
+        telresp_old, telresp_new,
+        emailresp_old, emailresp_new,
+        password_old, password_new,
+        assurance_old, assurance_new,
+        idgalop_old, idgalop_new
+    ) VALUES (
+        NEW.idcava,
+        OLD.nomcava, NEW.nomcava,
+        OLD.prenomcava, NEW.prenomcava,
+        OLD.datenacava, NEW.datenacava,
+        OLD.numlic, NEW.numlic,
+        OLD.nomresp, NEW.nomresp,
+        OLD.prenomresp, NEW.prenomresp,
+        OLD.rueresp, NEW.rueresp,
+        OLD.vilresp, NEW.vilresp,
+        OLD.cpresp, NEW.cpresp,
+        OLD.telresp, NEW.telresp,
+        OLD.emailresp, NEW.emailresp,
+        OLD.password, NEW.password,
+        OLD.assurance, NEW.assurance,
+        OLD.idgalop, NEW.idgalop
+    );
+END
