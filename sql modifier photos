@@ -1,0 +1,2 @@
+ALTER TABLE photos MODIFY numsire INT(11) NULL;
+
