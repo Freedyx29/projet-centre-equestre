@@ -28,7 +28,7 @@ class PDF extends FPDF {
         // Affiche la date et le numéro de page
         $this->SetFont('Arial', 'I', 8);
         $this->SetTextColor(100, 100, 100);
-        $this->Cell(0, 10, 'Vu le : ' . date('Y-m-d H:i:s') . ' | Page ' . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, 'Vu le : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->PageNo(), 0, 0, 'C');
     }
 
     // En-tête du tableau
@@ -68,6 +68,10 @@ class PDF extends FPDF {
         $pageWidth = 297; // Largeur de la page en paysage
         $startX = ($pageWidth - $tableWidth) / 2 - 10; // Déplacer légèrement vers la gauche
         $this->SetX($startX);
+
+        // Reformater la date de naissance au format européen
+        $datenacava = date('d/m/Y', strtotime($datenacava));
+
         $this->Cell(20, 10, $nomcava, 1, 0, 'C', true); // Utilisation du fond
         $this->Cell(20, 10, $prenomcava, 1, 0, 'C', true);
         $this->Cell(20, 10, $datenacava, 1, 0, 'C', true);
