@@ -9,7 +9,7 @@ class PDF extends FPDF {
         $this->Image('../photos/equip.png', 10, 10, 30); // Chemin, x, y, largeur
         $this->SetFont('Arial', 'B', 16);
         $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
-        $this->Cell(0, 20, 'Liste des Prend', 0, 1, 'C');
+        $this->Cell(0, 20, 'Liste des Prets', 0, 1, 'C');
         $this->Ln(10); // Espacement après l'en-tête
 
         // Ligne de séparation
