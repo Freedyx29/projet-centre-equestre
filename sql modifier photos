@@ -1,2 +1,1 @@
-ALTER TABLE photos MODIFY numsire INT(11) NULL;
-
+ALTER TABLE photos MODIFY numsire INT(11) DEFAULT 0;
