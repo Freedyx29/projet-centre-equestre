@@ -32,17 +32,21 @@ $listeEvenements = $evenements->EvenementsAll();
             </div>
         <?php } ?>
 
-        <!-- Bouton Ajouter -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                    Ajouter un Evènement
-                </button>
-            </div>
-            <div class="col-md-6">
-                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-            </div>
+        <!-- Bouton Ajouter et Générer PDF -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+                Ajouter un évènement
+            </button>
+            <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
+            <a href="../classpdf/classpdfevenements.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;">
+                📋 Afficher le PDF
+            </a>
         </div>
+        <div class="col-md-6">
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+        </div>
+    </div>
 
 
         <!-- Tableau principal des Evènements -->
