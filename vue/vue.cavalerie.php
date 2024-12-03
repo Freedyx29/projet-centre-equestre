@@ -38,10 +38,9 @@ $cavalerieList = $cavalerie->CavalerieALL();
             Ajouter une cavalerie
         </button>
         <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
-        <a href="../classpdf/classpdfcavalerie.php" class="btn btn-success" target="_blank">
-    Voir le PDF
-</a>
-
+        <a href="../classpdf/classpdfcavalerie.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;">
+            📋 Afficher le PDF
+        </a>
     </div>
     <div class="col-md-6">
         <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
