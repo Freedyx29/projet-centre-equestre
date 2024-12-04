@@ -18,7 +18,7 @@ $cavaliersList = $cavalier->CavaliersALL();
         <link rel="stylesheet" href="../css/style_crud.css">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../js/script_cavaliers.js"></script>
-<script src="../js/script_ville_cp.js"></script>
+        <script src="../js/script_ville_cp.js"></script>
     </head>
     <body>
         <div class="container mt-4">
@@ -35,20 +35,20 @@ $cavaliersList = $cavalier->CavaliersALL();
                 </div>
             <?php } ?>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-            Ajouter un cavalier
-        </button>
-        <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
-        <a href="../classpdf/classpdfcavaliers.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;" target="_blank">
-            📋 Afficher le PDF
-        </a>
-    </div>
-    <div class="col-md-6">
-        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-    </div>
-</div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+                        Ajouter un cavalier
+                    </button>
+                    <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
+                    <a href="../classpdf/classpdfcavaliers.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;" target="_blank">
+                        📋 Afficher le PDF
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+                </div>
+            </div>
 
             <!-- Tableau principal des cavaliers -->
             <table class="table table-striped" id="cavalierTable">
@@ -88,92 +88,90 @@ $cavaliersList = $cavalier->CavaliersALL();
             </table>
 
             <!-- Modal Ajout -->
-<div class="modal fade" id="ajoutModal">
-    <div class="modal-dialog modal-lg"> <!-- Changé en modal-lg pour plus de largeur -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Ajouter un cavalier</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <form action="../traitement/traitement.cavaliers.php" method="post">
-                <div class="modal-body">
-                    <div class="row"> <!-- Ajout d'une row pour créer deux colonnes -->
-                        <div class="col-md-6"> <!-- Première colonne -->
-                            <div class="form-group">
-                                <label>Nom cavalier</label>
-                                <input type="text" name="nomcava" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Prénom cavalier</label>
-                                <input type="text" name="prenomcava" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Date de naissance</label>
-                                <input type="date" name="datenacava" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Numéro de licence</label>
-                                <input type="text" name="numlic" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Nom responsable</label>
-                                <input type="text" name="nomresp" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Prénom responsable</label>
-                                <input type="text" name="prenomresp" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Rue responsable</label>
-                                <input type="text" name="rueresp" class="form-control" required>
-                            </div>
+            <div class="modal fade" id="ajoutModal">
+                <div class="modal-dialog modal-lg"> <!-- Changé en modal-lg pour plus de largeur -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Ajouter un cavalier</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
-                        <div class="col-md-6"> <!-- Deuxième colonne -->
-                            <!-- Dans le formulaire d'ajout -->
-                        <!-- Dans le formulaire d'ajout -->
-                        <div class="form-group">
-                            <label>Ville responsable</label>
-                            <input type="text" name="vilresp" id="vilresp" class="form-control" onkeyup="autocompletVilleAjout()" required>
-                            <ul id="nom_list_ville_id"></ul>
-                        </div>
-                        <div class="form-group">
-                            <label>Code postal responsable</label>
-                            <input type="text" name="cpresp" id="cpresp" class="form-control" onkeyup="autocompletCPAjout()" required>
-                            <ul id="nom_list_cp_id"></ul>
-                        </div>
-                                                    <div class="form-group">
-                                                        <label>Téléphone responsable</label>
-                                                        <input type="text" name="telresp" class="form-control" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Email responsable</label>
-                                                        <input type="email" name="emailresp" class="form-control" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Password</label>
-                                                        <input type="password" name="password" class="form-control" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Assurance</label>
-                                                        <input type="text" name="assurance" class="form-control" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>Galop</label>
-                                                        <input type="text" id="libgalop" class="form-control" onkeyup="autocompletGalopajout()" required>
-                                                        <input type="hidden" id="id_galop" name="idgalop">
-                                                        <ul id="nom_list_galop_id"></ul>
-                                                    </div>
-                                                </div>
-                                            </div>
+                        <form action="../traitement/traitement.cavaliers.php" method="post">
+                            <div class="modal-body">
+                                <div class="row"> <!-- Ajout d'une row pour créer deux colonnes -->
+                                    <div class="col-md-6"> <!-- Première colonne -->
+                                        <div class="form-group">
+                                            <label>Nom cavalier</label>
+                                            <input type="text" name="nomcava" class="form-control" required>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        <div class="form-group">
+                                            <label>Prénom cavalier</label>
+                                            <input type="text" name="prenomcava" class="form-control" required>
                                         </div>
-                                    </form>
+                                        <div class="form-group">
+                                            <label>Date de naissance</label>
+                                            <input type="date" name="datenacava" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Numéro de licence</label>
+                                            <input type="text" name="numlic" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Nom responsable</label>
+                                            <input type="text" name="nomresp" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Prénom responsable</label>
+                                            <input type="text" name="prenomresp" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Rue responsable</label>
+                                            <input type="text" name="rueresp" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6"> <!-- Deuxième colonne -->
+                                        <div class="form-group">
+                                            <label>Ville responsable</label>
+                                            <input type="text" name="vilresp" id="vilresp" class="form-control" onkeyup="autocompletVilleAjout()" required>
+                                            <ul id="nom_list_ville_id" class="suggestion-list"></ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Code postal responsable</label>
+                                            <input type="text" name="cpresp" id="cpresp" class="form-control" onkeyup="autocompletCPAjout()" required>
+                                            <ul id="nom_list_cp_id" class="suggestion-list"></ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Téléphone responsable</label>
+                                            <input type="text" name="telresp" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email responsable</label>
+                                            <input type="email" name="emailresp" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Password</label>
+                                            <input type="password" name="password" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Assurance</label>
+                                            <input type="text" name="assurance" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Galop</label>
+                                            <input type="text" id="libgalop" class="form-control" onkeyup="autocompletGalopajout()" required>
+                                            <input type="hidden" id="id_galop" name="idgalop">
+                                            <ul id="nom_list_galop_id" class="suggestion-list"></ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <!-- Modals Modification et Suppression et Détail -->
             <?php foreach($cavaliersList as $c): 
@@ -269,7 +267,7 @@ $cavaliersList = $cavalier->CavaliersALL();
                                                 value="<?php echo $cavalier->CavaliersGalop($c['idgalop']); ?>" 
                                                 onkeyup="autocompletGalop(<?php echo $c['idcava']; ?>)" required>
                                             <input type="hidden" id="id_galop<?php echo $c['idcava']; ?>" name="idgalop" value="<?php echo $c['idgalop']; ?>">
-                                            <ul id="nom_list_galop_id<?php echo $c['idcava']; ?>"></ul>
+                                            <ul id="nom_list_galop_id<?php echo $c['idcava']; ?>" class="suggestion-list"></ul>
                                         </div>
                                     </div>
                                 </div>
@@ -284,123 +282,130 @@ $cavaliersList = $cavalier->CavaliersALL();
                 </div>
             </div>
 
-
-                <!-- Modal Suppression -->
-                <div class="modal fade" id="suppModal<?php echo $c['idcava']; ?>">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Confirmer la suppression</h4>
-                                
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-
-                            <div class="modal-body">
-                                Êtes-vous sûr de vouloir supprimer ce cavalier ?
-                            </div>
-
-                            <form action="../traitement/traitement.cavaliers.php" method="post">
-                                <input type="hidden" name="idcava" value="<?php echo $c['idcava']; ?>">
-                            
-                                <div class="modal-footer">
-                                    <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                </div>
-                            
-                            </form>
+            <!-- Modal Suppression -->
+            <div class="modal fade" id="suppModal<?php echo $c['idcava']; ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Confirmer la suppression</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Modal Détail -->
-                <div class="modal fade" id="detailModal<?php echo $c['idcava']; ?>">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Détails du cavalier</h4>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir supprimer ce cavalier ?
+                        </div>
 
-                            <div class="modal-body">
-                                <div class="detail-group">
-                                    <label>ID cavalier :</label>
-                                    <p><?php echo $c['idcava']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Nom cavalier :</label>
-                                    <p><?php echo $c['nomcava']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Prénom cavalier :</label>
-                                    <p><?php echo $c['prenomcava']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Date de naissance :</label>
-                                    <p><?php echo date('d/m/Y', strtotime($c['datenacava'])); ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Numéro de licence :</label>
-                                    <p><?php echo $c['numlic']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Nom responsable :</label>
-                                    <p><?php echo $c['nomresp']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Prénom responsable :</label>
-                                    <p><?php echo $c['prenomresp']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Rue responsable :</label>
-                                    <p><?php echo $c['rueresp']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Ville responsable :</label>
-                                    <p><?php echo $c['vilresp']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Code postal responsable :</label>
-                                    <p><?php echo $c['cpresp']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Téléphone responsable :</label>
-                                    <p><?php echo $c['telresp']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Email responsable :</label>
-                                    <p><?php echo $c['emailresp']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Assurance :</label>
-                                    <p><?php echo $c['assurance']; ?></p>
-                                </div>
-
-                                <div class="detail-group">
-                                    <label>Galop :</label>
-                                    <p><?php echo $cavalier->CavaliersGalop($c['idgalop']); ?></p>
-                                </div>
-
-                            </div>
-
+                        <form action="../traitement/traitement.cavaliers.php" method="post">
+                            <input type="hidden" name="idcava" value="<?php echo $c['idcava']; ?>">
+                        
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                             </div>
+                        
+                        </form>
+                    </div>
+                </div>
+            </div>
 
+<!-- Modal Détail -->
+<div class="modal fade" id="detailModal<?php echo $c['idcava']; ?>">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Détails du cavalier</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6"> <!-- Première colonne -->
+                        <div class="detail-group">
+                            <label>ID cavalier :</label>
+                            <p><?php echo $c['idcava']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Nom cavalier :</label>
+                            <p><?php echo $c['nomcava']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Prénom cavalier :</label>
+                            <p><?php echo $c['prenomcava']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Date de naissance :</label>
+                            <p><?php echo date('d/m/Y', strtotime($c['datenacava'])); ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Numéro de licence :</label>
+                            <p><?php echo $c['numlic']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Galop :</label>
+                            <p><?php echo $cavalier->CavaliersGalop($c['idgalop']); ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Assurance :</label>
+                            <p><?php echo $c['assurance']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Password :</label>
+                            <p><?php echo $c['password']; ?></p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6"> <!-- Deuxième colonne -->
+                        <div class="detail-group">
+                            <label>Nom responsable :</label>
+                            <p><?php echo $c['nomresp']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Prénom responsable :</label>
+                            <p><?php echo $c['prenomresp']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Rue responsable :</label>
+                            <p><?php echo $c['rueresp']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Ville responsable :</label>
+                            <p><?php echo $c['vilresp']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Code postal responsable :</label>
+                            <p><?php echo $c['cpresp']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Téléphone responsable :</label>
+                            <p><?php echo $c['telresp']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Email responsable :</label>
+                            <p><?php echo $c['emailresp']; ?></p>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
             <?php endif; endforeach; ?>
         </div>
@@ -409,51 +414,51 @@ $cavaliersList = $cavalier->CavaliersALL();
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
-$(document).ready(function(){
-    // Variables de base
-    var $rows = $("#cavalierTable tbody tr");
-    var page = 1;
-    var limit = 5;
-    var total = Math.ceil($rows.length / limit);
+        $(document).ready(function(){
+            // Variables de base
+            var $rows = $("#cavalierTable tbody tr");
+            var page = 1;
+            var limit = 5;
+            var total = Math.ceil($rows.length / limit);
 
-    // Fonction pour afficher les lignes
-    function showRows() {
-        $rows.hide().slice((page-1)*limit, page*limit).show();
-        $("#pageNum").text(`Page ${page}/${total}`);
-    }
+            // Fonction pour afficher les lignes
+            function showRows() {
+                $rows.hide().slice((page-1)*limit, page*limit).show();
+                $("#pageNum").text(`Page ${page}/${total}`);
+            }
 
-    // Modification de la fonction de recherche
-    $("#searchInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        if(value === "") {
-            // Réinitialiser la pagination quand le champ est vide
-            page = 1;
-            $rows.hide();
-            showRows();
-        } else {
-            // Pendant la recherche, afficher uniquement les résultats filtrés
-            $("#cavalierTable tbody tr").each(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            // Modification de la fonction de recherche
+            $("#searchInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                if(value === "") {
+                    // Réinitialiser la pagination quand le champ est vide
+                    page = 1;
+                    $rows.hide();
+                    showRows();
+                } else {
+                    // Pendant la recherche, afficher uniquement les résultats filtrés
+                    $("#cavalierTable tbody tr").each(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                }
             });
-        }
-    });
 
-    // Ajoute les boutons et le numéro de page
-    $("#cavalierTable").after(`
-        <div class="text-center mt-3">
-            <button id="prev" class="btn btn-brown">&laquo;</button>
-            <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
-            <button id="next" class="btn btn-brown">&raquo;</button>
-        </div>
-    `);
+            // Ajoute les boutons et le numéro de page
+            $("#cavalierTable").after(`
+                <div class="text-center mt-3">
+                    <button id="prev" class="btn btn-brown">&laquo;</button>
+                    <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
+                    <button id="next" class="btn btn-brown">&raquo;</button>
+                </div>
+            `);
 
-    // Clics sur les boutons
-    $("#next").click(() => { if(page < total) { page++; showRows(); }});
-    $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
+            // Clics sur les boutons
+            $("#next").click(() => { if(page < total) { page++; showRows(); }});
+            $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
 
-    showRows();
-});
-</script>
+            showRows();
+        });
+        </script>
 
     </body>
 </html>
