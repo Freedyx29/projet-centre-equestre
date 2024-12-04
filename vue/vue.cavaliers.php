@@ -40,7 +40,7 @@ $cavaliersList = $cavalier->CavaliersALL();
             Ajouter un cavalier
         </button>
         <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
-        <a href="../classpdf/classpdfcavaliers.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;">
+        <a href="../classpdf/classpdfcavaliers.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;" target="_blank">
             📋 Afficher le PDF
         </a>
     </div>
@@ -87,99 +87,89 @@ $cavaliersList = $cavalier->CavaliersALL();
             </table>
 
             <!-- Modal Ajout -->
-            <div class="modal fade" id="ajoutModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Ajouter un cavalier</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <!-- Modal Ajout -->
+<div class="modal fade" id="ajoutModal">
+    <div class="modal-dialog modal-lg"> <!-- Changé en modal-lg pour plus de largeur -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ajouter un cavalier</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form action="../traitement/traitement.cavaliers.php" method="post">
+                <div class="modal-body">
+                    <div class="row"> <!-- Ajout d'une row pour créer deux colonnes -->
+                        <div class="col-md-6"> <!-- Première colonne -->
+                            <div class="form-group">
+                                <label>Nom cavalier</label>
+                                <input type="text" name="nomcava" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Prénom cavalier</label>
+                                <input type="text" name="prenomcava" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date de naissance</label>
+                                <input type="date" name="datenacava" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Numéro de licence</label>
+                                <input type="text" name="numlic" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nom responsable</label>
+                                <input type="text" name="nomresp" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Prénom responsable</label>
+                                <input type="text" name="prenomresp" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Rue responsable</label>
+                                <input type="text" name="rueresp" class="form-control" required>
+                            </div>
                         </div>
-                        <form action="../traitement/traitement.cavaliers.php" method="post">
-                            <div class="modal-body">
-
-                                <div class="form-group">
-                                    <label>Nom cavalier</label>
-                                    <input type="text" name="nomcava" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Prénom cavalier</label>
-                                    <input type="text" name="prenomcava" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Date de naissance</label>
-                                    <input type="date" name="datenacava" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Numéro de licence</label>
-                                    <input type="text" name="numlic" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Nom responsable</label>
-                                    <input type="text" name="nomresp" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Prénom responsable</label>
-                                    <input type="text" name="prenomresp" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Rue responsable</label>
-                                    <input type="text" name="rueresp" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Ville responsable</label>
-                                    <input type="text" name="vilresp" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Code postal responsable  </label>
-                                    <input type="text" name="cpresp" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Téléphone responsable</label>
-                                    <input type="text" name="telresp" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Email responsable</label>
-                                    <input type="email" name="emailresp" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" name="password" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Assurance</label>
-                                    <input type="text" name="assurance" class="form-control" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Galop</label>
-                                    <input type="text" id="libgalop" class="form-control" onkeyup="autocompletGalopajout()" required>
-                                    <input type="hidden" id="id_galop" name="idgalop">
-                                    <ul id="nom_list_galop_id"></ul>
-                                </div>
-
+                        <div class="col-md-6"> <!-- Deuxième colonne -->
+                            <div class="form-group">
+                                <label>Ville responsable</label>
+                                <input type="text" name="vilresp" class="form-control" required>
                             </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <div class="form-group">
+                                <label>Code postal responsable</label>
+                                <input type="text" name="cpresp" class="form-control" required>
                             </div>
-                            
-                        </form>
+                            <div class="form-group">
+                                <label>Téléphone responsable</label>
+                                <input type="text" name="telresp" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email responsable</label>
+                                <input type="email" name="emailresp" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Assurance</label>
+                                <input type="text" name="assurance" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Galop</label>
+                                <input type="text" id="libgalop" class="form-control" onkeyup="autocompletGalopajout()" required>
+                                <input type="hidden" id="id_galop" name="idgalop">
+                                <ul id="nom_list_galop_id"></ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
             <!-- Modals Modification et Suppression et Détail -->
             <?php foreach($cavaliersList as $c): 
