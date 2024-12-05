@@ -6,14 +6,14 @@ class PDF extends FPDF {
     // En-tête
     function Header() {
         // Ajout du logo
-        $this->Image('../photos/equip.png', 10, 10, 30); // Chemin, x, y, largeur
+        $this->Image('../photos/equip.png', 10, 10, 30);
         $this->SetFont('Arial', 'B', 16);
-        $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
-        $this->Cell(0, 20, 'Liste des Cavaleries', 0, 1, 'C');
-        $this->Ln(10); // Espacement après l'en-tête
+        $this->SetTextColor(60, 36, 21);
+        $this->Cell(0, 20, utf8_decode('Liste des Cavaleries'), 0, 1, 'C');
+        $this->Ln(10);
 
         // Ligne de séparation
-        $this->SetDrawColor(212, 164, 94); // #D4A45E
+        $this->SetDrawColor(212, 164, 94);
         $this->SetLineWidth(0.5);
         $this->Line(10, $this->GetY(), 200, $this->GetY());
         $this->Ln(10);
@@ -24,51 +24,57 @@ class PDF extends FPDF {
         $this->SetY(-30);
 
         // Ligne de séparation
-        $this->SetDrawColor(212, 164, 94); // #D4A45E
+        $this->SetDrawColor(212, 164, 94);
         $this->SetLineWidth(0.5);
         $this->Line(10, $this->GetY(), 200, $this->GetY());
-        $this->Ln(5); // Espacement après la ligne
+        $this->Ln(5);
 
         // Affiche la date et le numéro de page
         $this->SetFont('Arial', 'I', 8);
         $this->SetTextColor(100, 100, 100);
-        $this->Cell(0, 10, 'Vu le : ' . date('Y-m-d H:i:s') . ' | Page ' . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, utf8_decode('Vu le : ') . date('d/m/Y H:i:s') . utf8_decode(' | Page ') . $this->PageNo(), 0, 0, 'C');
     }
 
     // En-tête du tableau
     function TableHeader() {
         $this->SetFont('Arial', 'B', 12);
-        $this->SetFillColor(60, 36, 21); // Couleur de fond : #3C2415
-        $this->SetTextColor(255, 255, 255); // Couleur du texte : blanc
-        $this->SetDrawColor(60, 36, 21); // Couleur des bordures : #3C2415
+        $this->SetFillColor(60, 36, 21);
+        $this->SetTextColor(255, 255, 255);
+        $this->SetDrawColor(60, 36, 21);
 
-        // Calculer la position pour centrer le tableau
-        $this->SetX(10); // Marge gauche de 10 unités
+        $tableWidth = 190;
+        $pageWidth = 210;
+        $startX = ($pageWidth - $tableWidth) / 2;
 
-        $this->Cell(25, 10, 'Numsire', 1, 0, 'C', true); // Fond activé avec `true`
-        $this->Cell(35, 10, 'Nom Cheval', 1, 0, 'C', true);
-        $this->Cell(35, 10, 'Date Naissance', 1, 0, 'C', true);
-        $this->Cell(25, 10, 'Garrot', 1, 0, 'C', true);
-        $this->Cell(25, 10, 'Race', 1, 0, 'C', true);
-        $this->Cell(35, 10, 'Robe', 1, 0, 'C', true);
+        $this->SetX($startX);
+
+        $this->Cell(30, 10, utf8_decode('N° SIRE'), 1, 0, 'C', true);
+        $this->Cell(35, 10, utf8_decode('Nom'), 1, 0, 'C', true);
+        $this->Cell(35, 10, utf8_decode('Date naissance'), 1, 0, 'C', true);
+        $this->Cell(25, 10, utf8_decode('Garrot'), 1, 0, 'C', true);
+        $this->Cell(30, 10, utf8_decode('Race'), 1, 0, 'C', true);
+        $this->Cell(35, 10, utf8_decode('Robe'), 1, 0, 'C', true);
         $this->Ln();
     }
 
     // Contenu du tableau
     function TableRow($numsire, $nomche, $datenache, $garrot, $race, $robe, $alternate) {
         $this->SetFont('Arial', '', 12);
-        $this->SetFillColor($alternate ? 240 : 255, $alternate ? 240 : 255, $alternate ? 240 : 255); // Nuances de beige
-        $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
+        $this->SetFillColor($alternate ? 240 : 255, $alternate ? 240 : 255, $alternate ? 240 : 255);
+        $this->SetTextColor(60, 36, 21);
 
-        // Calculer la position pour centrer le tableau
-        $this->SetX(10); // Marge gauche de 10 unités
+        $tableWidth = 190;
+        $pageWidth = 210;
+        $startX = ($pageWidth - $tableWidth) / 2;
 
-        $this->Cell(25, 10, $numsire, 1, 0, 'C', true); // Utilisation du fond
-        $this->Cell(35, 10, $nomche, 1, 0, 'C', true);
-        $this->Cell(35, 10, $datenache, 1, 0, 'C', true);
-        $this->Cell(25, 10, $garrot, 1, 0, 'C', true);
-        $this->Cell(25, 10, $race, 1, 0, 'C', true);
-        $this->Cell(35, 10, $robe, 1, 0, 'C', true);
+        $this->SetX($startX);
+
+        $this->Cell(30, 10, utf8_decode($numsire), 1, 0, 'C', true);
+        $this->Cell(35, 10, utf8_decode($nomche), 1, 0, 'C', true);
+        $this->Cell(35, 10, utf8_decode($datenache), 1, 0, 'C', true);
+        $this->Cell(25, 10, utf8_decode($garrot), 1, 0, 'C', true);
+        $this->Cell(30, 10, utf8_decode($race), 1, 0, 'C', true);
+        $this->Cell(35, 10, utf8_decode($robe), 1, 0, 'C', true);
         $this->Ln();
     }
 }
@@ -87,13 +93,13 @@ $pdf->SetFont('Arial', 'B', 12);
 $pdf->TableHeader();
 
 // Contenu du tableau
-$alternate = false; // Pour les couleurs alternées des lignes
+$alternate = false;
 foreach ($listeCavaleries as $c) {
     if ($c['supprime'] != '1') {
         $race = $cavalerie->CavalerieRace($c['idrace']);
         $robe = $cavalerie->CavalerieRobe($c['idrobe']);
         $pdf->TableRow($c['numsire'], $c['nomche'], $c['datenache'], $c['garrot'], $race, $robe, $alternate);
-        $alternate = !$alternate; // Alterne entre deux fonds
+        $alternate = !$alternate;
     }
 }
 
