@@ -389,5 +389,18 @@ function ajouterCavalier(idcours, index) {
     $(`#cavaliersContainer${idcours}`).append(newInput);
 }
 </script>
+
+<script>
+$(document).ready(function() {
+    // Délégation d'événement pour gérer les clics sur les suggestions
+    $(document).on('click', '.autocomplete-list li', function() {
+        const id = $(this).closest('.cavalier-input').find('input[type="text"]').attr('id').replace('nomcava', '');
+        const nom = $(this).text();
+        const idCava = $(this).data('id');
+        
+        set_item_cava(nom, id, idCava);
+    });
+});
+</script>
 </body>
 </html>
