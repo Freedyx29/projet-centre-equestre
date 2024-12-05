@@ -13,6 +13,7 @@ $listeCours = $cours->CoursAll();
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style_crud.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../js/script_cours.cavaliers.js"></script>
 </head>
 <body>
     <div class="container mt-4">
@@ -82,7 +83,7 @@ $listeCours = $cours->CoursAll();
 
         <!-- Modal Ajout -->
         <div class="modal fade" id="ajoutModal">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Ajouter un cours</h4>
@@ -90,25 +91,46 @@ $listeCours = $cours->CoursAll();
                     </div>
                     <form action="../traitement/traitement.cours.php" method="post">
                         <div class="modal-body">
+                            <!-- Première partie : informations du cours -->
                             <div class="form-group">
                                 <label>Libellé</label>
                                 <input type="text" name="libcours" class="form-control" required>
                             </div>
+
                             <div class="form-group">
                                 <label>Heure début</label>
                                 <input type="time" name="hdebut" class="form-control" required>
                             </div>
+
                             <div class="form-group">
                                 <label>Heure fin</label>
                                 <input type="time" name="hfin" class="form-control" required>
                             </div>
+
                             <div class="form-group">
                                 <label>Jour</label>
                                 <input type="text" name="jour" class="form-control" required>
                             </div>
+
+                            <!-- Deuxième partie : ajout des cavaliers -->
+                            <hr>
+                            <h5 class="mb-3">Ajouter des cavaliers</h5>
+                            <div id="cavaliersContainer">
+                                <div class="cavalier-input mb-3">
+                                    <div class="form-group">
+                                        <label>Cavalier</label>
+                                        <input type="text" id="nomcava" name="nomcava[]" class="form-control" onkeyup="autocompletCoursCavaajout()" placeholder="Rechercher un cavalier...">
+                                        <input type="hidden" id="id_cava" name="cavaliers[]">
+                                        <ul id="nom_list_cours_cava_id" class="autocomplete-list"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-brown" id="addCavalierBtn">
+                                <i class="fas fa-plus"></i> Ajouter un autre cavalier
+                            </button>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
+                            <button type="submit" name="ajouter" class="btn btn-primary">Enregistrer</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                         </div>
                     </form>
@@ -121,7 +143,7 @@ $listeCours = $cours->CoursAll();
             if ($c['supprime'] != '1'): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $c['idcours']; ?>">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title">Modifier le cours</h4>
@@ -130,25 +152,61 @@ $listeCours = $cours->CoursAll();
                         <form action="../traitement/traitement.cours.php" method="post">
                             <div class="modal-body">
                                 <input type="hidden" name="idcours" value="<?php echo $c['idcours']; ?>">
+                                
                                 <div class="form-group">
                                     <label>Libellé</label>
                                     <input type="text" name="libcours" class="form-control" value="<?php echo $c['libcours']; ?>" required>
                                 </div>
+
                                 <div class="form-group">
                                     <label>Heure début</label>
                                     <input type="time" name="hdebut" class="form-control" value="<?php echo $c['hdebut']; ?>" required>
                                 </div>
+
                                 <div class="form-group">
                                     <label>Heure fin</label>
                                     <input type="time" name="hfin" class="form-control" value="<?php echo $c['hfin']; ?>" required>
                                 </div>
+
                                 <div class="form-group">
                                     <label>Jour</label>
                                     <input type="text" name="jour" class="form-control" value="<?php echo $c['jour']; ?>" required>
                                 </div>
+
+                                <!-- Section des cavaliers -->
+                                <hr>
+                                <h5 class="mb-3">Cavaliers inscrits</h5>
+                                <div id="cavaliersContainer<?php echo $c['idcours']; ?>">
+                                    <?php 
+                                    $cavaliers = $cours->getCavaliersForCours($c['idcours']);
+                                    foreach ($cavaliers as $index => $cavalier): 
+                                    ?>
+                                    <div class="cavalier-input mb-3">
+                                        <div class="form-group">
+                                            <label>Cavalier <?php echo $index + 1; ?></label>
+                                            <input type="text" 
+                                                   id="nomcava<?php echo $c['idcours']; ?>_<?php echo $index; ?>" 
+                                                   name="nomcava[]" 
+                                                   class="form-control" 
+                                                   value="<?php echo htmlspecialchars($cavalier['nomcava']); ?>"
+                                                   onkeyup="autocompletCoursCava('<?php echo $c['idcours']; ?>_<?php echo $index; ?>')">
+                                            <input type="hidden" 
+                                                   id="id_cava<?php echo $c['idcours']; ?>_<?php echo $index; ?>" 
+                                                   name="cavaliers[]" 
+                                                   value="<?php echo $cavalier['idcava']; ?>">
+                                            <ul id="nom_list_cours_cava_id<?php echo $c['idcours']; ?>_<?php echo $index; ?>" 
+                                                class="autocomplete-list"></ul>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <button type="button" class="btn btn-brown" 
+                                        onclick="ajouterCavalier('<?php echo $c['idcours']; ?>', '<?php echo count($cavaliers); ?>')">
+                                    <i class="fas fa-plus"></i> Ajouter un cavalier
+                                </button>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" name="modifier" class="btn btn-warning">Modifier</button>
+                                <button type="submit" name="modifier" class="btn btn-primary">Enregistrer</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                             </div>
                         </form>
@@ -208,8 +266,24 @@ $listeCours = $cours->CoursAll();
                             </div>
 
                             <div class="detail-group">
-                                <label>Jour :</label>
+                                    <label>Jour :</label>
                                 <p><?php echo $c['jour']; ?></p>
+                            </div>
+
+                            <div class="detail-group">
+                                <label>Cavaliers inscrits :</label>
+                                <div class="cavaliers-list">
+                                    <?php 
+                                    $cavaliers = $cours->getCavaliersForCours($c['idcours']);
+                                    if (!empty($cavaliers)) {
+                                        foreach ($cavaliers as $cavalier) {
+                                            echo '<div class="cavalier-item">' . htmlspecialchars($cavalier['nomcava']) . '</div>';
+                                        }
+                                    } else {
+                                        echo '<div class="cavalier-item">Aucun cavalier inscrit</div>';
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -269,6 +343,51 @@ $(document).ready(function(){
 
     showRows();
 });
+</script>
+
+<script>
+$(document).ready(function() {
+    let cavalierCount = 0;
+    
+    $('#addCavalierBtn').click(function() {
+        cavalierCount++;
+        const newInput = `
+            <div class="cavalier-input mb-3">
+                <div class="form-group">
+                    <label>Cavalier</label>
+                    <input type="text" id="nomcava${cavalierCount}" name="nomcava[]" class="form-control" onkeyup="autocompletCoursCava(${cavalierCount})" placeholder="Rechercher un cavalier...">
+                    <input type="hidden" id="id_cava${cavalierCount}" name="cavaliers[]">
+                    <ul id="nom_list_cours_cava_id${cavalierCount}" class="autocomplete-list"></ul>
+                </div>
+            </div>
+        `;
+        $('#cavaliersContainer').append(newInput);
+    });
+});
+</script>
+
+<script>
+function ajouterCavalier(idcours, index) {
+    const newIndex = parseInt(index) + 1;
+    const newInput = `
+        <div class="cavalier-input mb-3">
+            <div class="form-group">
+                <label>Cavalier ${newIndex + 1}</label>
+                <input type="text" 
+                       id="nomcava${idcours}_${newIndex}" 
+                       name="nomcava[]" 
+                       class="form-control" 
+                       onkeyup="autocompletCoursCava('${idcours}_${newIndex}')">
+                <input type="hidden" 
+                       id="id_cava${idcours}_${newIndex}" 
+                       name="cavaliers[]">
+                <ul id="nom_list_cours_cava_id${idcours}_${newIndex}" 
+                    class="autocomplete-list"></ul>
+            </div>
+        </div>
+    `;
+    $(`#cavaliersContainer${idcours}`).append(newInput);
+}
 </script>
 </body>
 </html>
