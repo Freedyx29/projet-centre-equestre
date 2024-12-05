@@ -156,6 +156,18 @@ class Inscrit {
         $executesql = $con->query($sql);                   
         return $executesql;
     }
+
+    public function getCavaliersForCours($idcours) {
+        $con = connexionPDO();
+        $sql = "SELECT cavaliers.nomcava
+                FROM inscrit
+                JOIN cavaliers ON inscrit.refidcava = cavaliers.idcava
+                WHERE inscrit.refidcours = :idcours AND inscrit.supprime = 0";
+        $data = [':idcours' => $idcours];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        return $executesql->fetchAll();
+    }
 }
 
 ?>
