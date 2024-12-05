@@ -307,49 +307,57 @@ $cavalerieList = $cavalerie->CavalerieALL();
 
         <?php endforeach; ?>
     </div>
-<script>
-function autocompletCavalierajout() {
-    var input = document.getElementById("nomcava");
-    var filter = input.value.toLowerCase();
-    var ul = document.getElementById("nom_list_cavalier_id");
-    ul.innerHTML = "";
 
-    if (filter) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "../include/autocomplete_cavalier.php?q=" + filter, true);
-        xhr.onload = function() {
-            if (this.status == 200) {
-                var cavaliers = JSON.parse(this.responseText);
-                cavaliers.forEach(function(cavalier) {
-                    var li = document.createElement("li");
-                    li.innerHTML = cavalier.nomcava;
-                    li.addEventListener("click", function() {
-                        input.value = cavalier.nomcava;
-                        document.getElementById("idcava").value = cavalier.idcava;
-                        ul.innerHTML = "";
-                    });
-                    ul.appendChild(li);
-                });
-            }
-        };
-        xhr.send();
-    }
-}
-</script>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        $(document).ready(function(){
-            $("#searchInput").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#cavalerieTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
+$(document).ready(function(){
+    // Variables de base
+    var $rows = $("#cavalerieTable tbody tr");
+    var page = 1;
+    var limit = 5;
+    var total = Math.ceil($rows.length / limit);
+
+    // Fonction pour afficher les lignes
+    function showRows() {
+        $rows.hide().slice((page-1)*limit, page*limit).show();
+        $("#pageNum").text(`Page ${page}/${total}`);
+    }
+
+    // Modification de la fonction de recherche
+    $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        if(value === "") {
+            // Réinitialiser la pagination quand le champ est vide
+            page = 1;
+            $rows.hide();
+            showRows();
+        } else {
+            // Pendant la recherche, afficher uniquement les résultats filtrés
+            $("#cavalerieTable tbody tr").each(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
-        });
-    </script>
+        }
+    });
+
+    // Ajoute les boutons et le numéro de page
+    $("#cavalerieTable").after(`
+        <div class="text-center mt-3">
+            <button id="prev" class="btn btn-brown">&laquo;</button>
+            <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
+            <button id="next" class="btn btn-brown">&raquo;</button>
+        </div>
+    `);
+
+    // Clics sur les boutons
+    $("#next").click(() => { if(page < total) { page++; showRows(); }});
+    $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
+
+    showRows();
+});
+</script>
 
 </body>
 </html>
