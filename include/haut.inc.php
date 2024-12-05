@@ -12,7 +12,6 @@
             <a href="../vue/vue.cours.php">Cours</a>
             <a href="../vue/vue.inscrit.php">Inscriptions</a>
             <a href="../vue/vue.pension.php">Pensions</a>
-            <a href="../vue/vue.prend.php">Prêts</a>
             <a href="../vue/vue.evenements.php">Événements</a>
         </div>
     </div>
