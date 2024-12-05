@@ -77,27 +77,50 @@ class Cours {
     }
     
 
+    public function getCavaliersForCours($idcours) {
+        $con = connexionPDO();
+        $sql = "SELECT c.nomcava, c.idcava 
+                FROM cavaliers c 
+                JOIN inscrit i ON c.idcava = i.refidcava 
+                WHERE i.refidcours = :idcours AND i.supprime = 0";
+        $stmt = $con->prepare($sql);
+        $stmt->execute([':idcours' => $idcours]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     //Modèle UPDATE : modifier
     public function Modifier($id, $libc, $hd, $hf, $j){
-        $con = connexionPDO();
-        $data = [
-            ':libc' => $libc,
-            ':hd' => $hd,
-            ':hf' => $hf,
-            ':j' => $j,
-            ':id' => $id
-        ];
+        try {
+            $con = connexionPDO();
+            $con->beginTransaction();
+
+            // 1. Mettre à jour le cours
+            $data = [
+                ':libc' => $libc,
+                ':hd' => $hd,
+                ':hf' => $hf,
+                ':j' => $j,
+                ':id' => $id
+            ];
     
-        $sql = "UPDATE cours 
-                SET libcours = :libc, hdebut =:hd, hfin = :hf, jour =:j
-                WHERE idcours = :id";
-        $stmn = $con->prepare($sql);
-    
-        if ($stmn->execute($data)) {
-            echo "Cours modifiée";
+            $sql = "UPDATE cours 
+                    SET libcours = :libc, hdebut =:hd, hfin = :hf, jour =:j
+                    WHERE idcours = :id";
+            $stmn = $con->prepare($sql);
+            $stmn->execute($data);
+
+            // 2. Supprimer les anciennes occurrences dans le calendrier
+            $sqlDelete = "DELETE FROM calendrier WHERE idcoursbase = :id";
+            $stmnDelete = $con->prepare($sqlDelete);
+            $stmnDelete->execute([':id' => $id]);
+
+            // 3. Ajouter les nouvelles occurrences
+            $this->ajouterOccurrencesCalendrier($id, $j);
+
+            $con->commit();
             return true;
-        } else {
-            echo $stmn->errorInfo();
+        } catch (Exception $e) {
+            $con->rollBack();
+            error_log("Erreur lors de la modification : " . $e->getMessage());
             return false;
         }
     }
@@ -107,27 +130,28 @@ class Cours {
     public function Supprimer($id) {
         try {
             $con = connexionPDO();
-            $data = [':id' => $id];
+            $con->beginTransaction();
 
-            $sql = "UPDATE cours SET supprime = 1 WHERE idcours = :id;";
-            $stmn = $con->prepare($sql);
+            // 1. Supprimer les inscriptions
+            $sqlInscriptions = "UPDATE inscrit SET supprime = 1 WHERE refidcours = :id";
+            $stmtInscriptions = $con->prepare($sqlInscriptions);
+            $stmtInscriptions->execute([':id' => $id]);
 
-            $result = $stmn->execute($data);
+            // 2. Marquer les entrées du calendrier comme supprimées
+            $sqlCalendrier = "UPDATE calendrier SET supprime = 1 WHERE idcoursbase = :id";
+            $stmnCalendrier = $con->prepare($sqlCalendrier);
+            $stmnCalendrier->execute([':id' => $id]);
 
-            if ($result) {
-                if ($stmn->rowCount() > 0) {
-                    return true;
-                } else {
-                    error_log("Aucune ligne n'a été modifiée pour l'ID: " . $id);
-                    return false;
-                }
-            } else {
-                $errorInfo = $stmn->errorInfo();
-                error_log("Erreur SQL: " . $errorInfo[2]);
-                return false;
-            }
-        } catch (PDOException $e) {
-            error_log("Exception PDO: " . $e->getMessage());
+            // 3. Marquer le cours comme supprimé
+            $sqlCours = "UPDATE cours SET supprime = 1 WHERE idcours = :id";
+            $stmnCours = $con->prepare($sqlCours);
+            $stmnCours->execute([':id' => $id]);
+
+            $con->commit();
+            return true;
+        } catch (Exception $e) {
+            $con->rollBack();
+            error_log("Erreur lors de la suppression : " . $e->getMessage());
             return false;
         }
     }
@@ -198,6 +222,21 @@ class Cours {
             $startDate->modify('+1 week');
         }
     }    
+
+    public function ajouterInscription($idcours, $idcava) {
+        try {
+            $con = connexionPDO();
+            $sql = "INSERT INTO inscrit (refidcours, refidcava) VALUES (:idcours, :idcava)";
+            $stmt = $con->prepare($sql);
+            return $stmt->execute([
+                ':idcours' => $idcours,
+                ':idcava' => $idcava
+            ]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de l'ajout de l'inscription : " . $e->getMessage());
+            return false;
+        }
+    }
 
 }
 
