@@ -28,37 +28,37 @@ class PDF extends FPDF {
         // Affiche la date et le numéro de page
         $this->SetFont('Arial', 'I', 8);
         $this->SetTextColor(100, 100, 100);
-        $this->Cell(0, 10, 'Vu le : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, utf8_decode('Vu le : ') . date('d/m/Y H:i:s') . utf8_decode(' | Page ') . $this->PageNo(), 0, 0, 'C');
     }
 
     // En-tête du tableau
-    function TableHeader() {
-        $this->SetFont('Arial', 'B', 8); // Réduction de la taille de la police
-        $this->SetFillColor(60, 36, 21); // Couleur de fond : #3C2415
-        $this->SetTextColor(255, 255, 255); // Couleur du texte : blanc
-        $this->SetDrawColor(60, 36, 21); // Couleur des bordures : #3C2415
-        // Calculer la position pour centrer le tableau
-        $tableWidth = 270; // Largeur totale des cellules
-        $pageWidth = 297; // Largeur de la page en paysage
-        $startX = ($pageWidth - $tableWidth) / 2 - 10; // Déplacer légèrement vers la gauche
+     function TableHeader() {
+        $this->SetFont('Arial', 'B', 8);
+        $this->SetFillColor(60, 36, 21);
+        $this->SetTextColor(255, 255, 255);
+        $this->SetDrawColor(60, 36, 21);
+        $tableWidth = 270;
+        $pageWidth = 297;
+        $startX = ($pageWidth - $tableWidth) / 2; // Centrer le tableau
         $this->SetX($startX);
-        $this->Cell(20, 10, 'Nom Cav.', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'Prenom Cav.', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'JJ/MM/AAAA', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'Num Licence', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'Galop', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'Nom Resp.', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'Prenom Resp.', 1, 0, 'C', true);
-        $this->Cell(15, 10, 'Rue Resp.', 1, 0, 'C', true);
-        $this->Cell(35, 10, 'Ville Resp.', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'CP Resp.', 1, 0, 'C', true);
-        $this->Cell(20, 10, 'Tel Resp.', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'Email Resp.', 1, 0, 'C', true);
-        $this->Cell(25, 10, 'Assurance', 1, 0, 'C', true);
+        
+        // Ajustement des largeurs
+        $this->Cell(20, 10, utf8_decode('Nom Cav.'), 1, 0, 'C', true);
+        $this->Cell(20, 10, utf8_decode('Prénom Cav.'), 1, 0, 'C', true);
+        $this->Cell(18, 10, utf8_decode('Date Naiss.'), 1, 0, 'C', true);
+        $this->Cell(15, 10, utf8_decode('Num Lic.'), 1, 0, 'C', true);
+        $this->Cell(12, 10, utf8_decode('Galop'), 1, 0, 'C', true);
+        $this->Cell(20, 10, utf8_decode('Nom Resp.'), 1, 0, 'C', true);
+        $this->Cell(20, 10, utf8_decode('Prénom Resp.'), 1, 0, 'C', true);
+        $this->Cell(15, 10, utf8_decode('Rue'), 1, 0, 'C', true);
+        $this->Cell(45, 10, utf8_decode('Ville Resp.'), 1, 0, 'C', true);
+        $this->Cell(15, 10, utf8_decode('CP'), 1, 0, 'C', true);
+        $this->Cell(20, 10, utf8_decode('Tél'), 1, 0, 'C', true);
+        $this->Cell(38, 10, utf8_decode('Email Resp.'), 1, 0, 'C', true);
+        $this->Cell(15, 10, utf8_decode('Ass.'), 1, 0, 'C', true);
         $this->Ln();
     }
 
-    // Contenu du tableau
     function TableRow($nomcava, $prenomcava, $datenacava, $numlic, $galop, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp, $emailresp, $assurance, $alternate) {
         $this->SetFont('Arial', '', 8);
         $this->SetFillColor($alternate ? 240 : 255, $alternate ? 240 : 255, $alternate ? 240 : 255);
@@ -66,24 +66,25 @@ class PDF extends FPDF {
         
         $tableWidth = 270;
         $pageWidth = 297;
-        $startX = ($pageWidth - $tableWidth) / 2 - 10;
+        $startX = ($pageWidth - $tableWidth) / 2; // Centrer le tableau
         $this->SetX($startX);
 
         $datenacava = date('d/m/Y', strtotime($datenacava));
 
+        // Mêmes largeurs que dans TableHeader
         $this->Cell(20, 10, utf8_decode($nomcava), 1, 0, 'C', true);
         $this->Cell(20, 10, utf8_decode($prenomcava), 1, 0, 'C', true);
-        $this->Cell(20, 10, $datenacava, 1, 0, 'C', true);
-        $this->Cell(20, 10, $numlic, 1, 0, 'C', true);
-        $this->Cell(20, 10, utf8_decode($galop), 1, 0, 'C', true);
+        $this->Cell(18, 10, utf8_decode($datenacava), 1, 0, 'C', true);
+        $this->Cell(15, 10, utf8_decode($numlic), 1, 0, 'C', true);
+        $this->Cell(12, 10, utf8_decode($galop), 1, 0, 'C', true);
         $this->Cell(20, 10, utf8_decode($nomresp), 1, 0, 'C', true);
         $this->Cell(20, 10, utf8_decode($prenomresp), 1, 0, 'C', true);
         $this->Cell(15, 10, utf8_decode($rueresp), 1, 0, 'C', true);
-        $this->Cell(35, 10, utf8_decode($vilresp), 1, 0, 'C', true);
-        $this->Cell(20, 10, $cpresp, 1, 0, 'C', true);
-        $this->Cell(20, 10, $telresp, 1, 0, 'C', true);
-        $this->Cell(30, 10, utf8_decode($emailresp), 1, 0, 'C', true);
-        $this->Cell(25, 10, utf8_decode($assurance), 1, 0, 'C', true);
+        $this->Cell(45, 10, utf8_decode($vilresp), 1, 0, 'C', true);
+        $this->Cell(15, 10, utf8_decode($cpresp), 1, 0, 'C', true);
+        $this->Cell(20, 10, utf8_decode($telresp), 1, 0, 'C', true);
+        $this->Cell(38, 10, utf8_decode($emailresp), 1, 0, 'C', true);
+        $this->Cell(15, 10, utf8_decode($assurance), 1, 0, 'C', true);
         $this->Ln();
     }
 }
