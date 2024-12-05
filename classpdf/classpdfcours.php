@@ -6,14 +6,14 @@ class PDF extends FPDF {
     // En-tête
     function Header() {
         // Ajout du logo
-        $this->Image('../photos/equip.png', 10, 10, 30); // Chemin, x, y, largeur
+        $this->Image('../photos/equip.png', 10, 10, 30);
         $this->SetFont('Arial', 'B', 16);
-        $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
-        $this->Cell(0, 20, 'Liste des Cours', 0, 1, 'C');
-        $this->Ln(10); // Espacement après l'en-tête
+        $this->SetTextColor(60, 36, 21);
+        $this->Cell(0, 20, utf8_decode('Liste des Cours'), 0, 1, 'C');
+        $this->Ln(10);
 
         // Ligne de séparation
-        $this->SetDrawColor(212, 164, 94); // #D4A45E
+        $this->SetDrawColor(212, 164, 94);
         $this->SetLineWidth(0.5);
         $this->Line(10, $this->GetY(), 200, $this->GetY());
         $this->Ln(10);
@@ -24,49 +24,48 @@ class PDF extends FPDF {
         $this->SetY(-30);
 
         // Ligne de séparation
-        $this->SetDrawColor(212, 164, 94); // #D4A45E
+        $this->SetDrawColor(212, 164, 94);
         $this->SetLineWidth(0.5);
         $this->Line(10, $this->GetY(), 200, $this->GetY());
-        $this->Ln(5); // Espacement après la ligne
+        $this->Ln(5);
 
         // Affiche la date et le numéro de page
         $this->SetFont('Arial', 'I', 8);
         $this->SetTextColor(100, 100, 100);
-        $this->Cell(0, 10, 'Vu le : ' . date('Y-m-d H:i:s') . ' | Page ' . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, utf8_decode('Vu le : ') . date('d/m/Y H:i:s') . utf8_decode(' | Page ') . $this->PageNo(), 0, 0, 'C');
     }
 
     // En-tête du tableau
     function TableHeader() {
         $this->SetFont('Arial', 'B', 12);
-        $this->SetFillColor(60, 36, 21); // Couleur de fond : #3C2415
-        $this->SetTextColor(255, 255, 255); // Couleur du texte : blanc
-        $this->SetDrawColor(60, 36, 21); // Couleur des bordures : #3C2415
+        $this->SetFillColor(60, 36, 21);
+        $this->SetTextColor(255, 255, 255);
+        $this->SetDrawColor(60, 36, 21);
 
         // Calculer la position pour centrer le tableau
-        $this->SetX((210 - 180) / 2); // 210 est la largeur de la page, 180 est la largeur totale des cellules
+        $this->SetX((210 - 180) / 2);
 
-        $this->Cell(40, 10, 'ID Cours', 1, 0, 'C', true); // Fond activé avec `true`
-        $this->Cell(40, 10, 'Libelle', 1, 0, 'C', true);
-        $this->Cell(40, 10, 'Heure Debut', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'Heure Fin', 1, 0, 'C', true);
-        $this->Cell(30, 10, 'Jour', 1, 0, 'C', true);
+        $this->Cell(40, 10, utf8_decode('ID Cours'), 1, 0, 'C', true);
+        $this->Cell(40, 10, utf8_decode('Libellé'), 1, 0, 'C', true);
+        $this->Cell(40, 10, utf8_decode('Heure début'), 1, 0, 'C', true);
+        $this->Cell(30, 10, utf8_decode('Heure fin'), 1, 0, 'C', true);
+        $this->Cell(30, 10, utf8_decode('Jour'), 1, 0, 'C', true);
         $this->Ln();
     }
 
     // Contenu du tableau
     function TableRow($idcours, $libcours, $hdebut, $hfin, $jour, $alternate) {
         $this->SetFont('Arial', '', 12);
-        $this->SetFillColor($alternate ? 240 : 255, $alternate ? 240 : 255, $alternate ? 240 : 255); // Nuances de beige
-        $this->SetTextColor(60, 36, 21); // Couleur du texte : #3C2415
+        $this->SetFillColor($alternate ? 240 : 255, $alternate ? 240 : 255, $alternate ? 240 : 255);
+        $this->SetTextColor(60, 36, 21);
 
-        // Calculer la position pour centrer le tableau
-        $this->SetX((210 - 180) / 2); // 210 est la largeur de la page, 180 est la largeur totale des cellules
+        $this->SetX((210 - 180) / 2);
 
-        $this->Cell(40, 10, $idcours, 1, 0, 'C', true); // Utilisation du fond
-        $this->Cell(40, 10, $libcours, 1, 0, 'C', true);
-        $this->Cell(40, 10, $hdebut, 1, 0, 'C', true);
-        $this->Cell(30, 10, $hfin, 1, 0, 'C', true);
-        $this->Cell(30, 10, $jour, 1, 0, 'C', true);
+        $this->Cell(40, 10, utf8_decode($idcours), 1, 0, 'C', true);
+        $this->Cell(40, 10, utf8_decode($libcours), 1, 0, 'C', true);
+        $this->Cell(40, 10, utf8_decode($hdebut), 1, 0, 'C', true);
+        $this->Cell(30, 10, utf8_decode($hfin), 1, 0, 'C', true);
+        $this->Cell(30, 10, utf8_decode($jour), 1, 0, 'C', true);
         $this->Ln();
     }
 }
@@ -85,11 +84,11 @@ $pdf->SetFont('Arial', 'B', 12);
 $pdf->TableHeader();
 
 // Contenu du tableau
-$alternate = false; // Pour les couleurs alternées des lignes
+$alternate = false;
 foreach ($listeCours as $c) {
     if ($c['supprime'] != '1') {
         $pdf->TableRow($c['idcours'], $c['libcours'], $c['hdebut'], $c['hfin'], $c['jour'], $alternate);
-        $alternate = !$alternate; // Alterne entre deux fonds
+        $alternate = !$alternate;
     }
 }
 
