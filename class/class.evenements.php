@@ -1,9 +1,7 @@
 <?php
-
 include_once '../include/bdd.inc.php';
 
 class Evenements {
-
     private $ideve;
     private $titre;
     private $commentaire;
@@ -20,7 +18,6 @@ class Evenements {
                 commentaire : $this->commentaire";
     }
 
-
     public function getideve() {
         return $this->ideve;
     }
@@ -33,7 +30,6 @@ class Evenements {
         return $this->commentaire;
     }
 
-
     public function settitre($tt) {
         $this->titre = $tt;
     }
@@ -41,7 +37,6 @@ class Evenements {
     public function setcommentaire($cmt) {
         $this->commentaire = $cmt;
     }
-
 
     public function EvenementsAll(){
         $con = connexionPDO();
@@ -51,7 +46,6 @@ class Evenements {
         $resultat = $executesql->fetchAll();
         return $resultat;
     }
-
 
     public function Modifier($id, $tt, $cmt){
         $con = connexionPDO();
@@ -75,7 +69,6 @@ class Evenements {
             return false;
         }
     }
-
 
     public function Supprimer($id){
         try {
@@ -105,7 +98,6 @@ class Evenements {
         }
     }
 
-
     public function EvenementsAjt($titre, $commentaire){
         $con = connexionPDO();
         $data = [
@@ -125,6 +117,58 @@ class Evenements {
             return false;
         }
     }
+
+    public function getPhotosByIdeve($ideve) {
+        $con = connexionPDO();
+        $sql = "SELECT idphotos, lienphoto FROM photos WHERE ideve = :ideve";
+        $data = [':ideve' => $ideve];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetchAll();
+        return $resultat;
+    }
+
+    public function getSinglePhotoByIdeve($ideve) {
+        $con = connexionPDO();
+        $sql = "SELECT lienphoto FROM photos WHERE ideve = :ideve LIMIT 1";
+        $data = [':ideve' => $ideve];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        $resultat = $executesql->fetch();
+        return $resultat ? $resultat['lienphoto'] : 0;
+    }
+
+    public function ajouterPhoto($ideve, $photo) {
+    $con = connexionPDO();
+    $data = [
+        ':ideve' => $ideve,
+        ':lienphoto' => $photo,
+        ':numsire' => null // Assurez-vous que numsire est NULL pour les photos des événements
+    ];
+    $sql = "INSERT INTO photos (ideve, lienphoto, numsire) VALUES (:ideve, :lienphoto, :numsire);";
+    $stmm = $con->prepare($sql);
+    if ($stmm->execute($data)) {
+        echo "Photo insérée";
+        return true;
+    } else {
+        echo $stmm->errorInfo();
+        return false;
+    }
 }
 
+
+    public function supprimerPhoto($idphotos) {
+        $con = connexionPDO();
+        $data = [':idphotos' => $idphotos];
+        $sql = "DELETE FROM photos WHERE idphotos = :idphotos";
+        $stmm = $con->prepare($sql);
+        if ($stmm->execute($data)) {
+            echo "Photo supprimée";
+            return true;
+        } else {
+            echo $stmm->errorInfo();
+            return false;
+        }
+    }
+}
 ?>
