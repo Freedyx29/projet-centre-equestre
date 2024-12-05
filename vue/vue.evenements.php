@@ -150,7 +150,7 @@ $listeEvenements = $evenements->EvenementsAll();
                                     <input type="file" name="photo" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>Photos existantes</label>
+                                    <label> Selectionner Pour La suppression Des Photos Existantes</label>
                                     <?php
                                     $photos = $evenements->getPhotosByIdeve($e['ideve']);
                                     if (!empty($photos)):
@@ -264,6 +264,54 @@ $listeEvenements = $evenements->EvenementsAll();
             });
         });
     });
+    
 </script>
+<script>
+$(document).ready(function(){
+    // Variables de base
+    var $rows = $("#evenementsTable tbody tr");
+    var page = 1;
+    var limit = 5;
+    var total = Math.ceil($rows.length / limit);
+
+    // Fonction pour afficher les lignes
+    function showRows() {
+        $rows.hide().slice((page-1)*limit, page*limit).show();
+        $("#pageNum").text(`Page ${page}/${total}`);
+    }
+
+    // Modification de la fonction de recherche
+    $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        if(value === "") {
+            // Réinitialiser la pagination quand le champ est vide
+            page = 1;
+            $rows.hide();
+            showRows();
+        } else {
+            // Pendant la recherche, afficher uniquement les résultats filtrés
+            $("#evenementsTable tbody tr").each(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        }
+    });
+
+    // Ajoute les boutons et le numéro de page
+    $("#evenementsTable").after(`
+        <div class="text-center mt-3">
+            <button id="prev" class="btn btn-brown">&laquo;</button>
+            <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
+            <button id="next" class="btn btn-brown">&raquo;</button>
+        </div>
+    `);
+
+    // Clics sur les boutons
+    $("#next").click(() => { if(page < total) { page++; showRows(); }});
+    $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
+
+    showRows();
+});
+</script>
+
 </body>
 </html>
