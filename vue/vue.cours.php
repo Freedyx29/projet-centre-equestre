@@ -114,19 +114,19 @@ $listeCours = $cours->CoursAll();
 
                             <!-- Deuxième partie : ajout des cavaliers -->
                             <hr>
-                            <h5 class="mb-3">Ajouter des cavaliers</h5>
+                            <h5>Ajouter des cavaliers</h5>
                             <div id="cavaliersContainer">
                                 <div class="cavalier-input mb-3">
                                     <div class="form-group">
                                         <label>Cavalier</label>
                                         <input type="text" id="nomcava" name="nomcava[]" class="form-control" onkeyup="autocompletCoursCavaajout()" placeholder="Rechercher un cavalier...">
                                         <input type="hidden" id="id_cava" name="cavaliers[]">
-                                        <ul id="nom_list_cours_cava_id" class="autocomplete-list"></ul>
+                                        <ul id="nom_list_cours_cava_id" class="cavalier-suggestions"></ul>
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-brown" id="addCavalierBtn">
-                                <i class="fas fa-plus"></i> Ajouter un autre cavalier
+                            <button type="button" class="btn btn-secondary btn-sm" id="addCavalierBtn">
+                                + Ajouter un autre cavalier
                             </button>
                         </div>
                         <div class="modal-footer">
@@ -182,7 +182,7 @@ $listeCours = $cours->CoursAll();
                                     foreach ($cavaliers as $index => $cavalier): 
                                     ?>
                                     <div class="cavalier-input mb-3">
-                                        <div class="form-group">
+                                        <div class="form-group position-relative">
                                             <label>Cavalier <?php echo $index + 1; ?></label>
                                             <input type="text" 
                                                    id="nomcava<?php echo $c['idcours']; ?>_<?php echo $index; ?>" 
@@ -266,7 +266,7 @@ $listeCours = $cours->CoursAll();
                             </div>
 
                             <div class="detail-group">
-                                    <label>Jour :</label>
+                                <label>Jour :</label>
                                 <p><?php echo $c['jour']; ?></p>
                             </div>
 
@@ -345,6 +345,31 @@ $(document).ready(function(){
 });
 </script>
 
+<style>
+.cavalier-suggestions {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cavalier-suggestions li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.cavalier-suggestions li:hover {
+    background-color: #f0f0f0;
+}
+</style>
+
 <script>
 $(document).ready(function() {
     let cavalierCount = 0;
@@ -357,7 +382,7 @@ $(document).ready(function() {
                     <label>Cavalier</label>
                     <input type="text" id="nomcava${cavalierCount}" name="nomcava[]" class="form-control" onkeyup="autocompletCoursCava(${cavalierCount})" placeholder="Rechercher un cavalier...">
                     <input type="hidden" id="id_cava${cavalierCount}" name="cavaliers[]">
-                    <ul id="nom_list_cours_cava_id${cavalierCount}" class="autocomplete-list"></ul>
+                    <ul id="nom_list_cours_cava_id${cavalierCount}" class="cavalier-suggestions"></ul>
                 </div>
             </div>
         `;
@@ -371,7 +396,7 @@ function ajouterCavalier(idcours, index) {
     const newIndex = parseInt(index) + 1;
     const newInput = `
         <div class="cavalier-input mb-3">
-            <div class="form-group">
+            <div class="form-group position-relative">
                 <label>Cavalier ${newIndex + 1}</label>
                 <input type="text" 
                        id="nomcava${idcours}_${newIndex}" 
