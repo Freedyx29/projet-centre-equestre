@@ -13,6 +13,10 @@
             <a href="../vue/vue.inscrit.php">Inscriptions</a>
             <a href="../vue/vue.pension.php">Pensions</a>
             <a href="../vue/vue.evenements.php">Événements</a>
+            <a href="../utilisateurs/logout.php" class="btn-equestre">
+                <i class="fas fa-door-open"></i>
+                <span>Déconnexion</span>
+            </a>
         </div>
     </div>
 </nav>
