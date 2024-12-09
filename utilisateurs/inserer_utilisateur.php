@@ -1,7 +1,8 @@
 <?php
 try {
     // Connexion à la base de données
-    require_once('../fullcalendar/bdd.php');
+    require_once('../include/bdd.inc.php');
+    $con = connexionPDO();
 
     // Supprime les anciens utilisateurs
     $con->query("TRUNCATE TABLE utilisateurs");
