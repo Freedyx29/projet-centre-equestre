@@ -3,8 +3,8 @@ session_start();
 
 try {
     // Connexion à la base de données
-    require_once('../fullcalendar/bdd.php');
-    
+   require_once('../include/bdd.inc.php');
+    $con = connexionPDO();
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mailuti = $_POST['mailuti'];
         $password = $_POST['mdputi'];
