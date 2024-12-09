@@ -71,14 +71,25 @@ class Pension {
         $this->numsire = $nums;
     }
     
+public function selectNomCava(){
+    $con = connexionPDO();
+    $sql = "SELECT * FROM cavaliers;";
+    $executesql = $con->query($sql);
+    return $executesql;
+}
 
-    public function PensionAll(){
-        $con = connexionPDO();
-        $sql = "SELECT * FROM pension;";
-        $executesql = $con->prepare($sql);
-        $executesql->execute();
-        $resultat = $executesql->fetchAll();
-        return $resultat;
+    public function PensionALL() {
+        try {
+            $con = connexionPDO();
+            $sql = "SELECT * FROM pension WHERE supprime = 0 OR supprime IS NULL ORDER BY idpen DESC;";
+            $executesql = $con->prepare($sql);
+            $executesql->execute();
+            $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
+            return $resultat;
+        } catch (PDOException $e) {
+            error_log("Erreur dans PensionALL: " . $e->getMessage());
+            return [];
+        }
     }
 
     public function PensionNumsire($id) {
