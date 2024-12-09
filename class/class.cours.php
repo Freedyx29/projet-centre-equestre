@@ -158,7 +158,7 @@ class Cours {
     
 
     //Modèle INSERT : créer
-    public function CoursAjt($libcours, $hdebut, $hfin, $jour){
+    public function CoursAjt($libcours, $hdebut, $hfin, $jour) {
         $con = connexionPDO();
         $data = [
             ':libcours' => $libcours,
@@ -166,20 +166,24 @@ class Cours {
             ':hfin' => $hfin,
             ':jour' => $jour,
         ];
-    
+
         $sql = "INSERT INTO cours (libcours, hdebut, hfin, jour) VALUES (:libcours, :hdebut, :hfin, :jour);";
         $stmn = $con->prepare($sql);
-    
+
         if ($stmn->execute($data)) {
             $idcours = $con->lastInsertId();
-            echo "Cours insérée";
-
-            // Ajouter les occurrences dans le calendrier
-            $this->ajouterOccurrencesCalendrier($idcours, $jour);
+            
+            // Vérifiez que le cours a été ajouté avant d'ajouter des occurrences
+            if ($idcours) {
+                // Ajouter les occurrences dans le calendrier
+                $this->ajouterOccurrencesCalendrier($idcours, $jour);
+                
+                // Ajouter les participations après la création des séances
+                $this->ajouterParticipationsPourCours($idcours);
+            }
 
             return $idcours;
         } else {
-            echo $stmn->errorInfo();
             return false;
         }
     }
@@ -206,6 +210,13 @@ class Cours {
 
         $startDate = new DateTime("first $jourEn of January $year");
         $endDate = new DateTime("last day of December $year");
+
+        // Vérifiez si le cours existe avant d'ajouter des occurrences
+        $stmtCours = $con->prepare("SELECT COUNT(*) FROM cours WHERE idcours = :idcours");
+        $stmtCours->execute([':idcours' => $idcours]);
+        if ($stmtCours->fetchColumn() == 0) {
+            throw new Exception("Cours ID $idcours n'existe pas.");
+        }
 
         // Créer les occurrences dans calendrier
         while ($startDate <= $endDate) {
@@ -235,6 +246,91 @@ class Cours {
         } catch (PDOException $e) {
             error_log("Erreur lors de l'ajout de l'inscription : " . $e->getMessage());
             return false;
+        }
+    }
+
+    public function ajouterParticipationsPourCours($idcoursbase) {
+        try {
+            $con = connexionPDO();
+            
+            // Récupérer toutes les séances du calendrier pour ce cours
+            $sqlCalendrier = "SELECT idcoursseance FROM calendrier WHERE idcoursbase = :idcoursbase AND supprime = 0";
+            $stmtCalendrier = $con->prepare($sqlCalendrier);
+            $stmtCalendrier->execute([':idcoursbase' => $idcoursbase]);
+            $seances = $stmtCalendrier->fetchAll(PDO::FETCH_COLUMN);
+
+            // Debug : Vérifiez les séances récupérées
+            var_dump("Séances récupérées :", $seances);
+
+            // Récupérer les cavaliers inscrits pour ce cours
+            $sqlCavaliers = "SELECT refidcava FROM inscrit WHERE refidcours = :idcoursbase AND supprime = 0";
+            $stmtCavaliers = $con->prepare($sqlCavaliers);
+            $stmtCavaliers->execute([':idcoursbase' => $idcoursbase]);
+            $cavaliers = $stmtCavaliers->fetchAll(PDO::FETCH_COLUMN);
+
+            // Debug : Vérifiez les cavaliers récupérés
+            var_dump("Cavaliers récupérés :", $cavaliers);
+
+            // Vérifiez si des séances et des cavaliers existent
+            if (empty($seances) || empty($cavaliers)) {
+                error_log("Aucune séance ou cavalier trouvé pour le cours ID: $idcoursbase");
+                return false; // Pas de séances ou de cavaliers à ajouter
+            }
+
+            // Ajouter une participation pour chaque cavalier et chaque séance
+            $sqlParticipe = "INSERT INTO participe (refidcava, refidcoursbase, refidcoursseance, participe) 
+                            VALUES (:refidcava, :refidcoursbase, :refidcoursseance, 1)"; // 1 pour "oui"
+            $stmtParticipe = $con->prepare($sqlParticipe);
+
+            foreach ($cavaliers as $refidcava) {
+                foreach ($seances as $refidcoursseance) {
+                    try {
+                        // Vérifiez si les références existent
+                        $this->verifierReferences($refidcava, $idcoursbase, $refidcoursseance);
+
+                        // Log des valeurs avant l'insertion
+                        error_log("Insertion dans participe : refidcava = $refidcava, refidcoursbase = $idcoursbase, refidcoursseance = $refidcoursseance");
+                        
+                        $stmtParticipe->execute([
+                            ':refidcava' => $refidcava,
+                            ':refidcoursbase' => $idcoursbase,
+                            ':refidcoursseance' => $refidcoursseance
+                        ]);
+                    } catch (PDOException $e) {
+                        error_log("Erreur lors de l'insertion dans participe : " . $e->getMessage());
+                    }
+                }
+            }
+
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de l'ajout des participations : " . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function verifierReferences($refidcava, $refidcoursbase, $refidcoursseance) {
+        $con = connexionPDO();
+
+        // Vérifiez si le cavalier existe
+        $stmtCavalier = $con->prepare("SELECT COUNT(*) FROM cavaliers WHERE idcava = :refidcava");
+        $stmtCavalier->execute([':refidcava' => $refidcava]);
+        if ($stmtCavalier->fetchColumn() == 0) {
+            throw new Exception("Cavalier ID $refidcava n'existe pas.");
+        }
+
+        // Vérifiez si le cours existe
+        $stmtCours = $con->prepare("SELECT COUNT(*) FROM cours WHERE idcours = :refidcoursbase");
+        $stmtCours->execute([':refidcoursbase' => $refidcoursbase]);
+        if ($stmtCours->fetchColumn() == 0) {
+            throw new Exception("Cours ID $refidcoursbase n'existe pas.");
+        }
+
+        // Vérifiez si la séance existe
+        $stmtSeance = $con->prepare("SELECT COUNT(*) FROM calendrier WHERE idcoursseance = :refidcoursseance");
+        $stmtSeance->execute([':refidcoursseance' => $refidcoursseance]);
+        if ($stmtSeance->fetchColumn() == 0) {
+            throw new Exception("Séance ID $refidcoursseance n'existe pas.");
         }
     }
 
