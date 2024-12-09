@@ -1,5 +1,12 @@
 <?php
-// Inclusion de la classe Cavalier et création d'une instance
+session_start();
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['iduti'])) {
+    $current_page = urlencode($_SERVER['PHP_SELF']);
+    header("Location: ../utilisateurs/vue.login.php?redirect_to=" . $current_page);
+    exit();
+}
 include_once '../class/class.cavaliers.php';
 include_once '../include/haut.inc.php';
 
@@ -16,12 +23,22 @@ $cavaliersList = $cavalier->CavaliersALL();
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="../css/style_crud.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../js/script_cavaliers.js"></script>
         <script src="../js/script_communes.js"></script>
     </head>
     <body>
         <div class="container mt-4">
+        <!-- Bouton de déconnexion style équestre -->
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-end">
+                <a href="../utilisateurs/logout.php" class="btn-equestre">
+                    <i class="fas fa-door-open"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
             <h2>Liste des Cavaliers</h2>
 
             <!-- Section des messages d'alerte -->
