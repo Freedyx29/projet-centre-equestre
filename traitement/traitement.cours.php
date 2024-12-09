@@ -9,25 +9,19 @@ if (isset($_POST['ajouter'])) {
     $hdebut = $_POST['hdebut'];
     $hfin = $_POST['hfin'];
     $jour = $_POST['jour'];
-    
+    $cavaliers = isset($_POST['cavaliers']) && is_array($_POST['cavaliers']) ? $_POST['cavaliers'] : [];
+
     // Ajouter le cours
-    $idcours = $ocours->CoursAjt($libcours, $hdebut, $hfin, $jour);
-    
+    $idcours = $ocours->CoursAjt($libcours, $hdebut, $hfin, $jour, $cavaliers);
+
     if ($idcours) {
-        // Ajouter les inscriptions
-        if (isset($_POST['cavaliers']) && is_array($_POST['cavaliers'])) {
-            foreach ($_POST['cavaliers'] as $idcava) {
-                if (!empty($idcava)) {
-                    $ocours->ajouterInscription($idcours, $idcava);
-                }
-            }
-        }
         header("Location: ../vue/vue.cours.php?success=1&message=Cours et inscriptions ajoutés avec succès");
     } else {
         header("Location: ../vue/vue.cours.php?success=0&message=Erreur lors de l'ajout du cours");
     }
     exit();
 }
+
 
 if (isset($_POST['modifier'])) {
     $idcours = $_POST['idcours'];
