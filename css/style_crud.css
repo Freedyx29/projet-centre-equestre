@@ -190,9 +190,9 @@ h2 {
 
 /* Style pour la modal de détail */
 .detail-group {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
     border-bottom: 1px solid #E8E0D5;
-    padding-bottom: 10px;
+    padding-bottom: 0.5rem;
 }
 
 .detail-group:last-child {
@@ -202,9 +202,8 @@ h2 {
 .detail-group label {
     font-weight: 600;
     color: var(--brown-dark);
-    margin-bottom: 8px;
+    margin-bottom: 0.3rem;
     display: block;
-    font-size: 1.1em;
 }
 
 .detail-group p {
@@ -352,61 +351,103 @@ h2 {
     width: 100%;
 }
 
-/* Cavaliers list */
-.cavaliers-list {
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid var(--gold);
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px 0;
-    background-color: var(--cream);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre plus prononcée */
-}
-
-.cavalier-item {
-    background-color: var(--brown-light); /* Couleur de fond plus vive */
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    border-left: 5px solid var(--gold); /* Bordure gauche dorée pour accentuer */
-    transition: all 0.3s ease;
-    font-size: 1.1em; /* Taille de police légèrement augmentée */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--cream); /* Texte en couleur crème pour contraste */
-}
-
-.cavalier-item:last-child {
-    margin-bottom: 0;
-    border-bottom: none;
-}
-
-.cavalier-item:hover {
-    background-color: var(--brown-dark); /* Changement de couleur au survol */
-    transform: scale(1.02); /* Légère mise à l'échelle pour effet interactif */
-}
-
-.autocomplete-list {
-    position: absolute;
-    z-index: 1050;
-    background: white;
-    width: calc(100% - 30px);
-    border: 1px solid #ddd;
-    border-top: none;
-    max-height: 150px;
-    overflow-y: auto;
-    list-style: none;
+/* Ajouter ces styles à votre fichier CSS */
+.commune_list {
+    list-style-type: none;
     padding: 0;
     margin: 0;
+    border: 1px solid #ddd;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    z-index: 1000;
+    display: none;
 }
 
-.autocomplete-list li {
+.commune_list li {
     padding: 8px 12px;
     cursor: pointer;
+    border-bottom: 1px solid #eee;
 }
 
-.autocomplete-list li:hover {
-    background-color: #f0f0f0;
+.commune_list li:hover {
+    background-color: #f5f5f5;
 }
+
+.form-group {
+    position: relative;
+}
+            .btn-equestre {
+    background: linear-gradient(135deg, #8B4513, #A0522D);  /* Tons de marron sellerie */
+    color: #FFF8DC;  /* Blanc cassé */
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid #DEB887;  /* Bordure style cuir */
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-equestre:hover {
+    background: linear-gradient(135deg, #A0522D, #8B4513);
+    color: #FFF8DC;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+    text-decoration: none;
+    border-color: #F4A460;  /* Bordure plus claire au survol */
+}
+
+.btn-equestre:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+}
+
+.btn-equestre i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Effet de brillance au survol */
+.btn-equestre::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.2) 40%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.2) 60%,
+        rgba(255, 255, 255, 0.2) 100%
+    );
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.btn-equestre:hover::after {
+    opacity: 1;
+    animation: shine 1.5s ease-out infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: rotate(45deg) translate(-100%, -100%);
+    }
+    100% {
+        transform: rotate(45deg) translate(100%, 100%);
+    }
+}
+
