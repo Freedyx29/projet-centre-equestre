@@ -31,14 +31,7 @@ $cavaliersList = $cavalier->CavaliersALL();
     <body>
         <div class="container mt-4">
         <!-- Bouton de déconnexion style équestre -->
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-end">
-                <a href="../utilisateurs/logout.php" class="btn-equestre">
-                    <i class="fas fa-door-open"></i>
-                    <span>Déconnexion</span>
-                </a>
-            </div>
-        </div>
+       
             <h2>Liste des Cavaliers</h2>
 
             <!-- Section des messages d'alerte -->
