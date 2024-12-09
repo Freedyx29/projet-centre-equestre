@@ -158,7 +158,7 @@ class Cours {
     
 
     //Modèle INSERT : créer
-    public function CoursAjt($libcours, $hdebut, $hfin, $jour) {
+    public function CoursAjt($libcours, $hdebut, $hfin, $jour, $cavaliers) {
         $con = connexionPDO();
         $data = [
             ':libcours' => $libcours,
@@ -166,32 +166,34 @@ class Cours {
             ':hfin' => $hfin,
             ':jour' => $jour,
         ];
-
+    
         $sql = "INSERT INTO cours (libcours, hdebut, hfin, jour) VALUES (:libcours, :hdebut, :hfin, :jour);";
         $stmn = $con->prepare($sql);
-
+    
         if ($stmn->execute($data)) {
             $idcours = $con->lastInsertId();
-            
-            // Vérifiez que le cours a été ajouté avant d'ajouter des occurrences
-            if ($idcours) {
-                // Ajouter les occurrences dans le calendrier
-                $this->ajouterOccurrencesCalendrier($idcours, $jour);
-                
-                // Ajouter les participations après la création des séances
-                $this->ajouterParticipationsPourCours($idcours);
-            }
-
+    
+            // Ajouter les occurrences dans le calendrier
+            $seances = $this->ajouterOccurrencesCalendrier($idcours, $jour);
+    
+            // Ajouter les inscriptions
+            $this->ajouterInscription($idcours, $cavaliers);
+    
+            // Ajouter les participations
+            $this->ajouterParticipations($idcours, $seances, $cavaliers);
+    
             return $idcours;
         } else {
             return false;
         }
     }
+    
 
-    private function ajouterOccurrencesCalendrier($idcours, $jour): void {
-        $con = connexionPDO();
-        $year = date('Y');
+    private function ajouterOccurrencesCalendrier($idcours, $jour): array {
+        $con = connexionPDO(); // Établit une connexion à la base de données
+        $year = date('Y'); // Récupère l'année actuelle
 
+        // Tableau de correspondance entre les jours en français et en anglais
         $joursEn = [
             'LUNDI' => 'Monday',
             'MARDI' => 'Tuesday',
@@ -202,135 +204,88 @@ class Cours {
             'DIMANCHE' => 'Sunday'
         ];
 
-        $jour = strtoupper($jour);
+        $jour = strtoupper($jour); // Convertit le jour en majuscules
+        // Vérifie si le jour fourni est valide
         if (!isset($joursEn[$jour])) {
             throw new Exception("Jour invalide : $jour");
         }
-        $jourEn = $joursEn[$jour];
+        $jourEn = $joursEn[$jour]; // Récupère le jour en anglais
 
+        // Définit la date de début comme le premier jour du jour spécifié de l'année
         $startDate = new DateTime("first $jourEn of January $year");
+        // Définit la date de fin comme le dernier jour de l'année
         $endDate = new DateTime("last day of December $year");
 
-        // Vérifiez si le cours existe avant d'ajouter des occurrences
+        // Vérifie si le cours existe avant d'ajouter des occurrences
         $stmtCours = $con->prepare("SELECT COUNT(*) FROM cours WHERE idcours = :idcours");
         $stmtCours->execute([':idcours' => $idcours]);
         if ($stmtCours->fetchColumn() == 0) {
             throw new Exception("Cours ID $idcours n'existe pas.");
         }
 
-        // Créer les occurrences dans calendrier
+        $seances = []; // Tableau pour stocker les ID des séances créées
+
+        // Créer les occurrences dans le calendrier
         while ($startDate <= $endDate) {
             $data = [
                 ':idcoursbase' => $idcours,
-                ':datecours' => $startDate->format('Y-m-d'),
+                ':datecours' => $startDate->format('Y-m-d'), // Formate la date pour l'insertion
             ];
 
-            $sql = "INSERT INTO calendrier (idcoursbase, datecours) 
+            // Insère une nouvelle occurrence dans la table calendrier
+            $sql = "INSERT INTO calendrier (idcoursbase, datecours)
                     VALUES (:idcoursbase, :datecours)";
             $stmn = $con->prepare($sql);
             $stmn->execute($data);
 
-            $startDate->modify('+1 week');
-        }
-    }    
+            $seances[] = $con->lastInsertId(); // Ajoute l'ID de la séance créée au tableau
 
-    public function ajouterInscription($idcours, $idcava) {
-        try {
-            $con = connexionPDO();
-            $sql = "INSERT INTO inscrit (refidcours, refidcava) VALUES (:idcours, :idcava)";
-            $stmt = $con->prepare($sql);
-            return $stmt->execute([
-                ':idcours' => $idcours,
-                ':idcava' => $idcava
-            ]);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout de l'inscription : " . $e->getMessage());
-            return false;
+            $startDate->modify('+1 week'); // Passe à la semaine suivante
+        }
+
+        return $seances; // Retourne le tableau des ID des séances créées
+    }
+    
+    
+
+    private function ajouterInscription($idcours, $cavaliers): void {
+        $con = connexionPDO(); // Établit une connexion à la base de données
+
+        // Parcourt chaque cavalier pour ajouter une inscription
+        foreach ($cavaliers as $cavalierId) {
+            $data = [
+                ':refidcours' => $idcours, // ID du cours
+                ':refidcava' => $cavalierId, // ID du cavalier
+            ];
+
+            // Insère une nouvelle inscription dans la table inscrit
+            $sql = "INSERT INTO inscrit (refidcours, refidcava)
+                    VALUES (:refidcours, :refidcava)";
+            $stmn = $con->prepare($sql);
+            $stmn->execute($data); // Exécute la requête
         }
     }
+    
 
-    public function ajouterParticipationsPourCours($idcoursbase) {
-        try {
-            $con = connexionPDO();
-            
-            // Récupérer toutes les séances du calendrier pour ce cours
-            $sqlCalendrier = "SELECT idcoursseance FROM calendrier WHERE idcoursbase = :idcoursbase AND supprime = 0";
-            $stmtCalendrier = $con->prepare($sqlCalendrier);
-            $stmtCalendrier->execute([':idcoursbase' => $idcoursbase]);
-            $seances = $stmtCalendrier->fetchAll(PDO::FETCH_COLUMN);
+    private function ajouterParticipations($idcours, $seances, $cavaliers): void {
+        $con = connexionPDO(); // Établit une connexion à la base de données
 
-            // Debug : Vérifiez les séances récupérées
-            var_dump("Séances récupérées :", $seances);
+        // Parcourt chaque séance pour ajouter des participations
+        foreach ($seances as $seanceId) {
+            foreach ($cavaliers as $cavalierId) {
+                $data = [
+                    ':refidcava' => $cavalierId, // ID du cavalier
+                    ':refidcoursbase' => $idcours, // ID du cours
+                    ':refidcoursseance' => $seanceId, // ID de la séance
+                    ':participe' => 1, // Indique que le cavalier participe
+                ];
 
-            // Récupérer les cavaliers inscrits pour ce cours
-            $sqlCavaliers = "SELECT refidcava FROM inscrit WHERE refidcours = :idcoursbase AND supprime = 0";
-            $stmtCavaliers = $con->prepare($sqlCavaliers);
-            $stmtCavaliers->execute([':idcoursbase' => $idcoursbase]);
-            $cavaliers = $stmtCavaliers->fetchAll(PDO::FETCH_COLUMN);
-
-            // Debug : Vérifiez les cavaliers récupérés
-            var_dump("Cavaliers récupérés :", $cavaliers);
-
-            // Vérifiez si des séances et des cavaliers existent
-            if (empty($seances) || empty($cavaliers)) {
-                error_log("Aucune séance ou cavalier trouvé pour le cours ID: $idcoursbase");
-                return false; // Pas de séances ou de cavaliers à ajouter
+                // Insère une nouvelle participation dans la table participe
+                $sql = "INSERT INTO participe (refidcava, refidcoursbase, refidcoursseance, participe)
+                        VALUES (:refidcava, :refidcoursbase, :refidcoursseance, :participe)";
+                $stmn = $con->prepare($sql);
+                $stmn->execute($data); // Exécute la requête
             }
-
-            // Ajouter une participation pour chaque cavalier et chaque séance
-            $sqlParticipe = "INSERT INTO participe (refidcava, refidcoursbase, refidcoursseance, participe) 
-                            VALUES (:refidcava, :refidcoursbase, :refidcoursseance, 1)"; // 1 pour "oui"
-            $stmtParticipe = $con->prepare($sqlParticipe);
-
-            foreach ($cavaliers as $refidcava) {
-                foreach ($seances as $refidcoursseance) {
-                    try {
-                        // Vérifiez si les références existent
-                        $this->verifierReferences($refidcava, $idcoursbase, $refidcoursseance);
-
-                        // Log des valeurs avant l'insertion
-                        error_log("Insertion dans participe : refidcava = $refidcava, refidcoursbase = $idcoursbase, refidcoursseance = $refidcoursseance");
-                        
-                        $stmtParticipe->execute([
-                            ':refidcava' => $refidcava,
-                            ':refidcoursbase' => $idcoursbase,
-                            ':refidcoursseance' => $refidcoursseance
-                        ]);
-                    } catch (PDOException $e) {
-                        error_log("Erreur lors de l'insertion dans participe : " . $e->getMessage());
-                    }
-                }
-            }
-
-            return true;
-        } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout des participations : " . $e->getMessage());
-            return false;
-        }
-    }
-
-    private function verifierReferences($refidcava, $refidcoursbase, $refidcoursseance) {
-        $con = connexionPDO();
-
-        // Vérifiez si le cavalier existe
-        $stmtCavalier = $con->prepare("SELECT COUNT(*) FROM cavaliers WHERE idcava = :refidcava");
-        $stmtCavalier->execute([':refidcava' => $refidcava]);
-        if ($stmtCavalier->fetchColumn() == 0) {
-            throw new Exception("Cavalier ID $refidcava n'existe pas.");
-        }
-
-        // Vérifiez si le cours existe
-        $stmtCours = $con->prepare("SELECT COUNT(*) FROM cours WHERE idcours = :refidcoursbase");
-        $stmtCours->execute([':refidcoursbase' => $refidcoursbase]);
-        if ($stmtCours->fetchColumn() == 0) {
-            throw new Exception("Cours ID $refidcoursbase n'existe pas.");
-        }
-
-        // Vérifiez si la séance existe
-        $stmtSeance = $con->prepare("SELECT COUNT(*) FROM calendrier WHERE idcoursseance = :refidcoursseance");
-        $stmtSeance->execute([':refidcoursseance' => $refidcoursseance]);
-        if ($stmtSeance->fetchColumn() == 0) {
-            throw new Exception("Séance ID $refidcoursseance n'existe pas.");
         }
     }
 
