@@ -2,6 +2,8 @@
 
 include_once '../include/bdd.inc.php';
 
+include_once 'class.cours.php';
+
 class Inscrit {
 
     private $refidcours;
@@ -12,7 +14,7 @@ class Inscrit {
         $this->refidcava = $ridca;
     }
 
-    public function getPrend() {
+    public function getInscrit() {
         return "Ref idcours : $this->refidcours,
                 Ref idcava : $this->refidcava";
     }
@@ -73,6 +75,17 @@ class Inscrit {
 
     public function Modifier($id_cours_first, $id_cava_first, $refidcours, $refidcava) {
         $con = connexionPDO();
+        
+        // Vérifiez si la nouvelle combinaison existe déjà
+        $checkSql = "SELECT COUNT(*) FROM inscrit WHERE refidcours = :refidcours AND refidcava = :refidcava";
+        $checkStmt = $con->prepare($checkSql);
+        $checkStmt->execute([':refidcours' => $refidcours, ':refidcava' => $refidcava]);
+
+        if ($checkStmt->fetchColumn() > 0) {
+            echo "Cette inscription existe déjà.";
+            return false;
+        }
+
         $data = [
             ':refidcours' => $refidcours,
             ':refidcava' => $refidcava,
@@ -84,9 +97,19 @@ class Inscrit {
                 SET refidcours = :refidcours, refidcava = :refidcava 
                 WHERE refidcours = :id_cours_first AND refidcava = :id_cava_first";
         $stmt = $con->prepare($sql);
- 
+
         if ($stmt->execute($data)) {
-            echo "Inscrit modifiée";
+            // Récupérer le jour du cours
+            $sqlJour = "SELECT jour FROM cours WHERE idcours = :idcours";
+            $stmtJour = $con->prepare($sqlJour);
+            $stmtJour->execute([':idcours' => $refidcours]);
+            $jour = $stmtJour->fetchColumn();
+
+            // Mettre à jour les participations
+            $cours = new Cours();
+            $seances = $cours->ajouterOccurrencesCalendrier($refidcours, $jour);
+            $cours->ajouterParticipations($refidcours, $seances, [$refidcava]);
+
             return true;
         } else {
             echo $stmt->errorInfo();
@@ -134,7 +157,17 @@ class Inscrit {
         $stmt = $con->prepare($sql);
         
         if ($stmt->execute($data)) {
-            echo "Prend insérée";
+            // Récupérer le jour du cours
+            $sqlJour = "SELECT jour FROM cours WHERE idcours = :idcours";
+            $stmtJour = $con->prepare($sqlJour);
+            $stmtJour->execute([':idcours' => $refidcours]);
+            $jour = $stmtJour->fetchColumn();
+
+            // Ajouter les participations après l'inscription
+            $cours = new Cours();
+            $seances = $cours->ajouterOccurrencesCalendrier($refidcours, $jour);
+            $cours->ajouterParticipations($refidcours, $seances, [$refidcava]);
+            
             return $con->lastInsertId();
         } else {
             echo $stmt->errorInfo();
