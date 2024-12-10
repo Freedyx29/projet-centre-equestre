@@ -14,7 +14,7 @@ if(isset($_POST['keyword'])) {
 
     foreach ($list as $res) {
         $Listechevaux = str_replace($_POST['keyword'], '<b>'.$_POST['keyword'].'</b>', $res['nomche']);
-        echo '<li onclick="set_item_pension_ajout(\''.str_replace("'", "\'", $res['nomche']).'\', '.$res['numsire'].')">'.$Listechevaux.'</li>';
+        echo '<li onclick="set_item_pension(\''.str_replace("'", "\'", $res['nomche']).'\', '.$_POST['index'].', '.$res['numsire'].')">'.$Listechevaux.'</li>';
     }
 }
 ?>
