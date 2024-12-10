@@ -1,6 +1,6 @@
 <?php
 
-include '../include/bdd.inc.php';
+include_once '../include/bdd.inc.php';
 
 class Cours {
 
@@ -112,6 +112,7 @@ class Cours {
             $sqlDelete = "DELETE FROM calendrier WHERE idcoursbase = :id";
             $stmnDelete = $con->prepare($sqlDelete);
             $stmnDelete->execute([':id' => $id]);
+            error_log("Anciennes occurrences supprimées pour le cours ID: $id");
 
             // 3. Ajouter les nouvelles occurrences
             $this->ajouterOccurrencesCalendrier($id, $j);
@@ -177,7 +178,7 @@ class Cours {
             $seances = $this->ajouterOccurrencesCalendrier($idcours, $jour);
     
             // Ajouter les inscriptions
-            $this->ajouterInscription($idcours, $cavaliers);
+            $this->ajouterInscription($idcours, $cavaliers, $seances);
     
             // Ajouter les participations
             $this->ajouterParticipations($idcours, $seances, $cavaliers);
@@ -189,7 +190,7 @@ class Cours {
     }
     
 
-    private function ajouterOccurrencesCalendrier($idcours, $jour): array {
+    public function ajouterOccurrencesCalendrier($idcours, $jour): array {
         $con = connexionPDO(); // Établit une connexion à la base de données
         $year = date('Y'); // Récupère l'année actuelle
 
@@ -248,7 +249,7 @@ class Cours {
     
     
 
-    private function ajouterInscription($idcours, $cavaliers): void {
+    private function ajouterInscription($idcours, $cavaliers, $seances): void {
         $con = connexionPDO(); // Établit une connexion à la base de données
 
         // Parcourt chaque cavalier pour ajouter une inscription
@@ -263,29 +264,67 @@ class Cours {
                     VALUES (:refidcours, :refidcava)";
             $stmn = $con->prepare($sql);
             $stmn->execute($data); // Exécute la requête
+
+            // Ajoutez la participation dans la table participe
+            $this->ajouterParticipations($idcours, $seances, [$cavalierId]);
         }
     }
     
 
-    private function ajouterParticipations($idcours, $seances, $cavaliers): void {
+    public function ajouterParticipations($idcours, $seances, $cavaliers): void {
         $con = connexionPDO(); // Établit une connexion à la base de données
 
         // Parcourt chaque séance pour ajouter des participations
         foreach ($seances as $seanceId) {
             foreach ($cavaliers as $cavalierId) {
-                $data = [
-                    ':refidcava' => $cavalierId, // ID du cavalier
-                    ':refidcoursbase' => $idcours, // ID du cours
-                    ':refidcoursseance' => $seanceId, // ID de la séance
-                    ':participe' => 1, // Indique que le cavalier participe
-                ];
+                // Vérifiez si la participation existe déjà
+                $checkSql = "SELECT COUNT(*) FROM participe WHERE refidcava = :refidcava AND refidcoursbase = :refidcoursbase AND refidcoursseance = :refidcoursseance";
+                $checkStmt = $con->prepare($checkSql);
+                $checkStmt->execute([
+                    ':refidcava' => $cavalierId,
+                    ':refidcoursbase' => $idcours,
+                    ':refidcoursseance' => $seanceId
+                ]);
 
-                // Insère une nouvelle participation dans la table participe
-                $sql = "INSERT INTO participe (refidcava, refidcoursbase, refidcoursseance, participe)
-                        VALUES (:refidcava, :refidcoursbase, :refidcoursseance, :participe)";
-                $stmn = $con->prepare($sql);
-                $stmn->execute($data); // Exécute la requête
+                if ($checkStmt->fetchColumn() == 0) { // Si la participation n'existe pas
+                    $data = [
+                        ':refidcava' => $cavalierId, // ID du cavalier
+                        ':refidcoursbase' => $idcours, // ID du cours
+                        ':refidcoursseance' => $seanceId, // ID de la séance
+                        ':participe' => 1, // Indique que le cavalier participe
+                    ];
+
+                    // Insère une nouvelle participation dans la table participe
+                    $sql = "INSERT INTO participe (refidcava, refidcoursbase, refidcoursseance, participe)
+                            VALUES (:refidcava, :refidcoursbase, :refidcoursseance, :participe)";
+                    $stmn = $con->prepare($sql);
+                    $stmn->execute($data); // Exécute la requête
+                }
             }
+        }
+    }
+
+    public function SupprimerCavalier($idcavalier, $idcours) {
+        try {
+            $con = connexionPDO();
+            $con->beginTransaction();
+
+            // 1. Supprimer le cavalier de la table inscrit
+            $sqlInscriptions = "DELETE FROM inscrit WHERE refidcava = :idcavalier AND refidcours = :idcours";
+            $stmtInscriptions = $con->prepare($sqlInscriptions);
+            $stmtInscriptions->execute([':idcavalier' => $idcavalier, ':idcours' => $idcours]);
+
+            // 2. Supprimer les participations associées dans la table participe
+            $sqlParticipe = "DELETE FROM participe WHERE refidcava = :idcavalier AND refidcoursbase = :idcours";
+            $stmtParticipe = $con->prepare($sqlParticipe);
+            $stmtParticipe->execute([':idcavalier' => $idcavalier, ':idcours' => $idcours]);
+
+            $con->commit();
+            return true;
+        } catch (Exception $e) {
+            $con->rollBack();
+            error_log("Erreur lors de la suppression du cavalier : " . $e->getMessage());
+            return false;
         }
     }
 
