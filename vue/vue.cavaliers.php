@@ -30,17 +30,16 @@ $cavaliersList = $cavalier->CavaliersALL();
     </head>
     <body>
         <div class="container mt-4">
-        <!-- Bouton de déconnexion style équestre -->
-       
+
             <h2>Liste des Cavaliers</h2>
 
             <!-- Section des messages d'alerte -->
-            <?php 
+            <?php
             if(isset($_GET['success']) && isset($_GET['message'])) {
                 $alertClass = $_GET['success'] == 1 ? 'alert-success' : 'alert-danger';
             ?>
                 <div class="alert <?php echo $alertClass; ?> alert-dismissible fade show">
-                    <?php echo htmlspecialchars($_GET['message']); ?>   
+                    <?php echo htmlspecialchars($_GET['message']); ?>
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                 </div>
             <?php } ?>
@@ -48,11 +47,13 @@ $cavaliersList = $cavalier->CavaliersALL();
             <div class="row mb-3">
                 <div class="col-md-6">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                        Ajouter un cavalier
+                        <i class="fas fa-plus"></i>
+                        <span>Ajouter un cavalier</span>
                     </button>
                     <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
                     <a href="../classpdf/classpdfcavaliers.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;" target="_blank">
-                        📋 Afficher le PDF
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Afficher le PDF</span>
                     </a>
                 </div>
                 <div class="col-md-6">
@@ -73,7 +74,7 @@ $cavaliersList = $cavalier->CavaliersALL();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($cavaliersList as $c): 
+                    <?php foreach($cavaliersList as $c):
                         if ($c['supprime'] != '1'): ?>
                         <tr>
                             <td><?php echo $c['nomcava']; ?></td>
@@ -82,15 +83,24 @@ $cavaliersList = $cavalier->CavaliersALL();
                             <td><?php echo $c['numlic']; ?></td>
                             <td><?php echo $cavalier->CavaliersGalop($c['idgalop']); ?></td>
                             <td>
-                                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal<?php echo $c['idcava']; ?>">
-                                    Détail
-                                </button>
-                                <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $c['idcava']; ?>">
-                                    Modifier
-                                </button>
-                                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $c['idcava']; ?>">
-                                    Supprimer
-                                </button>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal<?php echo $c['idcava']; ?>">
+                                        <i class="fas fa-eye"></i>
+                                        <span>Détail</span>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $c['idcava']; ?>">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Modifier</span>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $c['idcava']; ?>">
+                                        <i class="fas fa-trash"></i>
+                                        <span>Supprimer</span>
+                                    </button>
+                                    <a href="../classpdf/classpdfidentifiants.php?idcava=<?php echo $c['idcava']; ?>" class="btn btn-sm btn-secondary" target="_blank">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span>Afficher Identifiants</span>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     <?php endif; endforeach; ?>
@@ -160,13 +170,13 @@ $cavaliersList = $cavalier->CavaliersALL();
                                         </div>
                                         <div class="form-group">
                                             <label>Ville responsable</label>
-                                            <input type="text" name="vilresp" id="ville" class="form-control" 
+                                            <input type="text" name="vilresp" id="ville" class="form-control"
                                                 onkeyup="autocompleteCommuneAjout('ville')" required>
                                             <div id="commune_list_ville" class="commune_list"></div>
                                         </div>
                                         <div class="form-group">
                                             <label>Code postal responsable</label>
-                                            <input type="text" name="cpresp" id="cp" class="form-control" 
+                                            <input type="text" name="cpresp" id="cp" class="form-control"
                                                 onkeyup="autocompleteCommuneAjout('cp')" required>
                                             <div id="commune_list_cp" class="commune_list"></div>
                                         </div>
@@ -182,8 +192,14 @@ $cavaliersList = $cavalier->CavaliersALL();
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                <button type="submit" name="ajouter" class="btn btn-primary">
+                                    <i class="fas fa-check"></i>
+                                    <span>Ajouter</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i>
+                                    <span>Fermer</span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -191,7 +207,7 @@ $cavaliersList = $cavalier->CavaliersALL();
             </div>
 
             <!-- Modals Modification et Suppression et Détail -->
-            <?php foreach($cavaliersList as $c): 
+            <?php foreach($cavaliersList as $c):
                 if ($c['supprime'] != '1'): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $c['idcava']; ?>">
@@ -226,8 +242,8 @@ $cavaliersList = $cavalier->CavaliersALL();
                                         </div>
                                         <div class="form-group">
                                             <label>Galop</label>
-                                            <input type="text" id="libgalop<?php echo $c['idcava']; ?>" class="form-control" 
-                                                value="<?php echo $cavalier->CavaliersGalop($c['idgalop']); ?>" 
+                                            <input type="text" id="libgalop<?php echo $c['idcava']; ?>" class="form-control"
+                                                value="<?php echo $cavalier->CavaliersGalop($c['idgalop']); ?>"
                                                 onkeyup="autocompletGalop(<?php echo $c['idcava']; ?>)" required>
                                             <input type="hidden" id="id_galop<?php echo $c['idcava']; ?>" name="idgalop" value="<?php echo $c['idgalop']; ?>">
                                             <ul id="nom_list_galop_id<?php echo $c['idcava']; ?>" class="suggestion-list"></ul>
@@ -259,15 +275,15 @@ $cavaliersList = $cavalier->CavaliersALL();
                                         </div>
                                         <div class="form-group">
                                             <label>Ville responsable</label>
-                                            <input type="text" name="vilresp" id="ville<?php echo $c['idcava']; ?>" class="form-control" 
-                                                value="<?php echo $c['vilresp']; ?>" 
+                                            <input type="text" name="vilresp" id="ville<?php echo $c['idcava']; ?>" class="form-control"
+                                                value="<?php echo $c['vilresp']; ?>"
                                                 onkeyup="autocompleteCommune(<?php echo $c['idcava']; ?>, 'ville')" required>
                                             <div id="commune_list_ville_<?php echo $c['idcava']; ?>" class="commune_list"></div>
                                         </div>
                                         <div class="form-group">
                                             <label>Code postal responsable</label>
-                                            <input type="text" name="cpresp" id="cp<?php echo $c['idcava']; ?>" class="form-control" 
-                                                value="<?php echo $c['cpresp']; ?>" 
+                                            <input type="text" name="cpresp" id="cp<?php echo $c['idcava']; ?>" class="form-control"
+                                                value="<?php echo $c['cpresp']; ?>"
                                                 onkeyup="autocompleteCommune(<?php echo $c['idcava']; ?>, 'cp')" required>
                                             <div id="commune_list_cp_<?php echo $c['idcava']; ?>" class="commune_list"></div>
                                         </div>
@@ -283,8 +299,14 @@ $cavaliersList = $cavalier->CavaliersALL();
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" name="modifier" class="btn btn-warning">Modifier</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                <button type="submit" name="modifier" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Modifier</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i>
+                                    <span>Fermer</span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -306,12 +328,18 @@ $cavaliersList = $cavalier->CavaliersALL();
 
                         <form action="../traitement/traitement.cavaliers.php" method="post">
                             <input type="hidden" name="idcava" value="<?php echo $c['idcava']; ?>">
-                        
+
                             <div class="modal-footer">
-                                <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="submit" name="supprimer" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Supprimer</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i>
+                                    <span>Annuler</span>
+                                </button>
                             </div>
-                        
+
                         </form>
                     </div>
                 </div>
@@ -410,7 +438,10 @@ $cavaliersList = $cavalier->CavaliersALL();
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    <span>Fermer</span>
+                </button>
             </div>
         </div>
     </div>
@@ -452,12 +483,12 @@ $cavaliersList = $cavalier->CavaliersALL();
                 }
             });
 
-            // Ajoute les boutons et le numéro de page
+            // Ajoute les boutons et le numéro de page avec icônes de chevrons
             $("#cavalierTable").after(`
                 <div class="text-center mt-3">
-                    <button id="prev" class="btn btn-brown">&laquo;</button>
+                    <button id="prev" class="btn btn-brown"><i class="fas fa-chevron-left"></i></button>
                     <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
-                    <button id="next" class="btn btn-brown">&raquo;</button>
+                    <button id="next" class="btn btn-brown"><i class="fas fa-chevron-right"></i></button>
                 </div>
             `);
 
@@ -468,6 +499,13 @@ $cavaliersList = $cavalier->CavaliersALL();
             showRows();
         });
         </script>
-
+<style>
+    
+    #cavalierTable th, #cavalierTable td {
+        padding: 15px; 
+        width: 150px; 
+    }
+    
+</style>
     </body>
 </html>
