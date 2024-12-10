@@ -1,14 +1,7 @@
 <?php
 include_once '../include/bdd.inc.php';
 class Pension {
-    private $idpen;
-    private $libpen;
-    private $dateD;
-    private $dateF;
-    private $tarif;
-    private $numsire;
-
-    public function __construct($idp = null, $libp = null, $datD = null, $datF = null, $tarif = null, $nums = null) {
+     public function __construct($idp = null, $libp = null, $datD = null, $datF = null, $tarif = null, $nums = null) {
         $this->idpen = $idp;
         $this->libpen = $libp;
         $this->dateD = $datD;
@@ -16,6 +9,20 @@ class Pension {
         $this->tarif = $tarif;
         $this->numsire = $nums;
     }
+
+    public function getNomCavalier($idcava) {
+        // Récupérer le nom du cavalier en fonction de son ID
+        $con = connexionPDO();
+        $sql = "SELECT nomcava FROM cavaliers WHERE idcava = :idcava";
+        $req = $con->prepare($sql);
+        $req->bindParam(':idcava', $idcava, PDO::PARAM_INT);
+        $req->execute();
+        $result = $req->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['nomcava'] : '';
+    }
+
+
+ 
 
     public function getPension() {
         return "idpen: $this->idpen,
@@ -81,7 +88,11 @@ public function selectNomCava(){
     public function PensionALL() {
         try {
             $con = connexionPDO();
-            $sql = "SELECT * FROM pension WHERE supprime = 0 OR supprime IS NULL ORDER BY idpen DESC;";
+            $sql = "SELECT p.*, pr.refidcava as idcava 
+                    FROM pension p 
+                    LEFT JOIN prend pr ON p.idpen = pr.refidpen 
+                    WHERE p.supprime = 0 OR p.supprime IS NULL 
+                    ORDER BY p.idpen DESC;";
             $executesql = $con->prepare($sql);
             $executesql->execute();
             $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
