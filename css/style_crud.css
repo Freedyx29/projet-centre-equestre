@@ -379,9 +379,11 @@ h2 {
 .form-group {
     position: relative;
 }
-            .btn-equestre {
-    background: linear-gradient(135deg, #8B4513, #A0522D);  /* Tons de marron sellerie */
-    color: #FFF8DC;  /* Blanc cassé */
+/* Supprimez les styles existants pour le bouton de déconnexion */
+/*
+.btn-equestre {
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: #FFF8DC;
     padding: 12px 28px;
     border-radius: 8px;
     font-family: 'Playfair Display', serif;
@@ -390,7 +392,7 @@ h2 {
     text-decoration: none;
     box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
     transition: all 0.3s ease;
-    border: 2px solid #DEB887;  /* Bordure style cuir */
+    border: 2px solid #DEB887;
     display: inline-flex;
     align-items: center;
     position: relative;
@@ -403,13 +405,70 @@ h2 {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
     text-decoration: none;
-    border-color: #F4A460;  /* Bordure plus claire au survol */
+    border-color: #F4A460;
 }
 
 .btn-equestre:active {
     transform: translateY(0);
     box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
 }
+
+.btn-equestre i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.btn-equestre::after {
+    display: none;
+}
+
+.btn-equestre:hover::after {
+    display: none;
+}
+*/
+
+/* Ajoutez un nouveau style pour la bordure blanche */
+.btn-equestre {
+    border: 2px solid white;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: none; /* Supprimez la transition */
+}
+
+.btn-equestre:hover {
+    border-color: white; /* Gardez la bordure blanche au survol */
+    transform: none; /* Supprimez la transformation au survol */
+    box-shadow: none; /* Supprimez l'ombre au survol */
+    text-decoration: none;
+}
+
+.btn-equestre:active {
+    transform: none; /* Supprimez la transformation à l'état actif */
+    box-shadow: none; /* Supprimez l'ombre à l'état actif */
+}
+
+.btn-equestre i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Supprimez l'effet de brillance au survol pour le bouton de déconnexion */
+.btn-equestre::after {
+    display: none;
+}
+
+.btn-equestre:hover::after {
+    display: none;
+}
+
 
 .btn-equestre i {
     margin-right: 10px;
@@ -450,95 +509,3 @@ h2 {
         transform: rotate(45deg) translate(100%, 100%);
     }
 }
-/* Style pour le bouton de déconnexion */
-.btn-danger {
-    background: linear-gradient(135deg, #8B4513, #A0522D);  /* Tons de marron sellerie */
-    color: #FFF8DC;  /* Blanc cassé */
-    padding: 15px 35px;  /* Ajustez le padding pour agrandir le bouton */
-    border-radius: 10px;  /* Bordures plus arrondies */
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    font-size: 18px;  /* Ajustez la taille de la police */
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-    transition: all 0.3s ease;
-    border: 2px solid #DEB887;  /* Bordure style cuir */
-    display: inline-flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-danger:hover {
-    background: linear-gradient(135deg, #A0522D, #8B4513);
-    color: #FFF8DC;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
-    text-decoration: none;
-    border-color: #F4A460;  /* Bordure plus claire au survol */
-}
-
-.btn-danger:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-}
-
-.btn-danger i {
-    margin-right: 10px;
-    font-size: 20px;  /* Ajustez la taille de l'icône */
-}
-
-/* Effet de brillance au survol */
-.btn-danger::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        to bottom right,
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.2) 40%,
-        rgba(255, 255, 255, 0.4) 50%,
-        rgba(255, 255, 255, 0.2) 60%,
-        rgba(255, 255, 255, 0.2) 100%
-    );
-    transform: rotate(45deg);
-    transition: all 0.3s ease;
-    opacity: 0;
-}
-
-.btn-danger:hover::after {
-    opacity: 1;
-    animation: shine 1.5s ease-out infinite;
-}
-
-@keyframes shine {
-    0% {
-        transform: rotate(45deg) translate(-100%, -100%);
-    }
-    100% {
-        transform: rotate(45deg) translate(100%, 100%);
-    }
-}
-
-/* Ajout d'un effet de flou pour un aspect plus moderne */
-.btn-danger::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    filter: blur(10px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.btn-danger:hover::before {
-    opacity: 1;
-}
-
-
