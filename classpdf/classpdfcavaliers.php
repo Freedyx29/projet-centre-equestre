@@ -4,7 +4,7 @@ include_once '../class/class.cavaliers.php';
 
 class PDF extends FPDF {
     // En-tête
-    function Header() {
+        function Header() {
         // Ajout du logo
         $this->Image('../photos/equip.png', 10, 10, 30); // Chemin, x, y, largeur
         $this->SetFont('Arial', 'B', 16);
@@ -16,6 +16,9 @@ class PDF extends FPDF {
         $this->SetLineWidth(0.5);
         $this->Line(10, $this->GetY(), 287, $this->GetY()); // Ajusté pour le paysage
         $this->Ln(10);
+        
+        // Appel de l'en-tête du tableau
+        $this->TableHeader();
     }
 
     // Pied de page
@@ -98,9 +101,6 @@ $pdf = new PDF('L', 'mm', 'A4'); // 'L' pour paysage
 $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetFont('Arial', 'B', 12);
-
-// En-tête du tableau
-$pdf->TableHeader();
 
 // Contenu du tableau
 $alternate = false; // Pour les couleurs alternées des lignes
