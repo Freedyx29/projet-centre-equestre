@@ -393,7 +393,7 @@ $(document).ready(function() {
 
 <script>
 function ajouterCavalier(idcours, index) {
-    const newIndex = parseInt(index) + 1;
+    const newIndex = parseInt(index);
     const newInput = `
         <div class="cavalier-input mb-3">
             <div class="form-group position-relative">
