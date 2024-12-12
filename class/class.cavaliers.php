@@ -3,22 +3,7 @@
 include_once '../include/bdd.inc.php';
 
 class Cavaliers {
-
-    private $idcava;
-    private $nomcava;
-    private $prenomcava;
-    private $datenacava;
-    private $numlic;
-    private $nomresp;
-    private $prenomresp;
-    private $rueresp;
-    private $vilresp;
-    private $cpresp;
-    private $telresp;
-    private $emailresp;
-    private $password;
-    private $assurance;
-    private $idgalop;
+    private $db; // Add this property to hold the database connection
 
     public function __construct($idca = null, $nc = null, $pc = null, $dnc = null, $nl = null, 
                                 $nr = null, $pr = null, $rr = null, $vr = null, $cpr = null, $tr = null, 
@@ -38,6 +23,18 @@ class Cavaliers {
         $this->password = $pw;
         $this->assurance = $assu;
         $this->idgalop = $idga;
+
+        // Initialize the database connection
+        $this->db = connexionPDO();
+    }
+
+    public function verifyCredentials($email, $password) {
+        $query = "SELECT * FROM cavaliers WHERE emailresp = :email AND password = :password";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password); // Ensure the password is hashed
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 
@@ -296,7 +293,16 @@ class Cavaliers {
         }
     }
 
-    
+        public function getCavalierById($id) {
+        $con = connexionPDO();
+        $sql = "SELECT * FROM cavaliers WHERE idcava = :idcava";
+        $data = [':idcava' => $id];
+        $executesql = $con->prepare($sql);
+        $executesql->execute($data);
+        return $executesql->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function selectTypeGalop() {
         $con = connexionPDO();
         $sql = "SELECT * FROM galop;";
