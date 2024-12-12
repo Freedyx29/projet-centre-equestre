@@ -22,6 +22,7 @@
                 <a href="../vue/vue.inscrit.php">Inscriptions</a>
                 <a href="../vue/vue.pension.php">Pensions</a>
                 <a href="../vue/vue.evenements.php">Événements</a>
+                <a href="../vue/vue.calendrier.php">Calendrier</a>
                 <!-- Ajout du bouton de déconnexion -->
                 <a href="../utilisateurs/logout.php" class="btn btn-danger">Déconnexion</a>
             </div>
