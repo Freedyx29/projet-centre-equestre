@@ -290,6 +290,14 @@
             <p class="welcome-text">Bienvenue sur votre espace de gestion</p>
             
             <div class="decorative-line"></div>
+
+            <!-- Error message display -->
+            <?php if (isset($_SESSION['error_message'])): ?>
+                <div class="alert alert-danger" role="alert">
+                    <?php echo $_SESSION['error_message']; ?>
+                </div>
+                <?php unset($_SESSION['error_message']); ?>
+            <?php endif; ?>
             
             <form action="login.php" method="POST" class="fh5co-form">
                 <input type="hidden" name="redirect_to" value="<?php echo isset($_GET['redirect_to']) ? htmlspecialchars($_GET['redirect_to']) : '../vue/vue.race.php'; ?>">
