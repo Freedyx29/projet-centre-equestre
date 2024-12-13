@@ -1,15 +1,14 @@
 <?php
-include '../include/haut.inc.php';
-session_start(); // Ensure session is started
+session_start();
 
-// Display the welcome message if it exists
-if (isset($_SESSION['welcome_message'])) {
-    echo "<div class='alert alert-success'>" . $_SESSION['welcome_message'] . "</div>";
-    // Unset the welcome message after displaying it
-    unset($_SESSION['welcome_message']);
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['iduti'])) {
+    $current_page = urlencode($_SERVER['PHP_SELF']);
+    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
+    exit();
 }
+include '../include/haut.inc.php';
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -27,30 +26,27 @@ if (isset($_SESSION['welcome_message'])) {
   <div id="editForm">
     <form id="editCourseForm">
       <input type="hidden" id="courseId" name="courseId">
-      <input type="hidden" id="action" name="action" value="modifier">
       
       <label for="libcours">Nom du cours</label>
-      <input type="text" id="libcours" name="libcours" required>
+      <input type="text" id="libcours" name="libcours" readonly>
       
       <label for="hdebut">Heure de début</label>
-      <input type="time" id="hdebut" name="hdebut" required>
+      <input type="time" id="hdebut" name="hdebut" readonly>
       
       <label for="hfin">Heure de fin</label>
-      <input type="time" id="hfin" name="hfin" required>
+      <input type="time" id="hfin" name="hfin" readonly>
 
       <div class="cavaliers-section">
           <label for="cavaliers">Cavaliers inscrits</label>
           <div class="cavaliers-list">
-              <select id="cavaliers" name="cavaliers[]" multiple class="form-control">
+              <select id="cavaliers" name="cavaliers[]" multiple class="form-control" disabled>
                   <!-- Les cavaliers seront ajoutés ici dynamiquement -->
               </select>
           </div>
       </div>
       
       <div class="form-buttons">
-          <button type="submit" class="btn-modifier">Modifier</button>
-          <button type="button" class="btn-supprimer" onclick="deleteCourse()">Supprimer</button>
-          <button type="button" class="btn-annuler" onclick="closeEditForm()">Annuler</button>
+          <button type="button" class="btn-annuler" onclick="closeEditForm()">Retour</button>
       </div>
     </form>
   </div>
@@ -61,7 +57,7 @@ if (isset($_SESSION['welcome_message'])) {
   <script>
     function loadCavaliers(eventId) {
         console.log("Chargement des cavaliers pour le cours ID:", eventId);
-        fetch(`../vue/getCavaliers.php?courseId=${eventId}`)
+        fetch(`../fullcalendar/getCavaliers.php?courseId=${eventId}`)
             .then(response => {
                 console.log("Réponse reçue:", response);
                 return response.json();
@@ -97,7 +93,7 @@ if (isset($_SESSION['welcome_message'])) {
 
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
-        fetch('../vue/getEvents.php')
+        fetch('../fullcalendar/getEvents.php')
           .then(response => response.json())
           .then(data => {
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -125,6 +121,9 @@ if (isset($_SESSION['welcome_message'])) {
               slotEventOverlap: false,
               eventClick: function(info) {
                 openEditForm(info.event);
+              },
+              eventContent: function(arg) {
+                return { html: `<b>${arg.event.title}</b>` };
               }
             });
             calendar.render();
