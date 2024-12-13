@@ -1,4 +1,13 @@
 <?php
+session_start();
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['iduti'])) {
+    $current_page = urlencode($_SERVER['PHP_SELF']);
+    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
+    exit();
+}
+
 // Inclusion de la classe Robe et création d'une instance
 include_once '../class/class.robe.php';
 include_once '../include/haut.inc.php';
@@ -37,7 +46,7 @@ $listeRobes = $robe->RobeAll();
             Ajouter une robe
         </button>
         <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
-        <a href="../classpdf/classpdfrobe.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif "target="_blank";>
+        <a href="../classpdf/classpdfrobe.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;" target="_blank">
             📋 Afficher le PDF
         </a>
     </div>
