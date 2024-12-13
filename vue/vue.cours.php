@@ -1,4 +1,13 @@
 <?php
+session_start();
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['iduti'])) {
+    $current_page = urlencode($_SERVER['PHP_SELF']);
+    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
+    exit();
+}
+
 include_once '../class/class.cours.php';
 include_once '../include/haut.inc.php';
 $cours = new Cours();
@@ -154,23 +163,23 @@ $listeCours = $cours->CoursAll();
                                 <input type="hidden" name="idcours" value="<?php echo $c['idcours']; ?>">
                                 
                                 <div class="form-group">
-                                    <label>Libellé</label>
-                                    <input type="text" name="libcours" class="form-control" value="<?php echo $c['libcours']; ?>" required>
+                                    <label for="libcours<?php echo $c['idcours']; ?>">Libellé</label>
+                                    <input type="text" id="libcours<?php echo $c['idcours']; ?>" name="libcours" class="form-control" value="<?php echo $c['libcours']; ?>" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Heure début</label>
-                                    <input type="time" name="hdebut" class="form-control" value="<?php echo $c['hdebut']; ?>" required>
+                                    <label for="hdebut<?php echo $c['idcours']; ?>">Heure début</label>
+                                    <input type="time" id="hdebut<?php echo $c['idcours']; ?>" name="hdebut" class="form-control" value="<?php echo $c['hdebut']; ?>" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Heure fin</label>
-                                    <input type="time" name="hfin" class="form-control" value="<?php echo $c['hfin']; ?>" required>
+                                    <label for="hfin<?php echo $c['idcours']; ?>">Heure fin</label>
+                                    <input type="time" id="hfin<?php echo $c['idcours']; ?>" name="hfin" class="form-control" value="<?php echo $c['hfin']; ?>" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Jour</label>
-                                    <input type="text" name="jour" class="form-control" value="<?php echo $c['jour']; ?>" required>
+                                    <label for="jour<?php echo $c['idcours']; ?>">Jour</label>
+                                    <input type="text" id="jour<?php echo $c['idcours']; ?>" name="jour" value="<?php echo $c['jour']; ?>" class="form-control" required>
                                 </div>
 
                                 <!-- Section des cavaliers -->
@@ -183,7 +192,7 @@ $listeCours = $cours->CoursAll();
                                     ?>
                                     <div class="cavalier-input mb-3">
                                         <div class="form-group position-relative">
-                                            <label>Cavalier <?php echo $index + 1; ?></label>
+                                            <label for="nomcava<?php echo $c['idcours']; ?>_<?php echo $index; ?>">Cavalier <?php echo $index + 1; ?></label>
                                             <input type="text" 
                                                    id="nomcava<?php echo $c['idcours']; ?>_<?php echo $index; ?>" 
                                                    name="nomcava[]" 
@@ -285,6 +294,7 @@ $listeCours = $cours->CoursAll();
                                     ?>
                                 </div>
                             </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -345,30 +355,6 @@ $(document).ready(function(){
 });
 </script>
 
-<style>
-.cavalier-suggestions {
-    position: absolute;
-    background: white;
-    border: 1px solid #ddd;
-    border-top: none;
-    max-height: 150px;
-    overflow-y: auto;
-    width: 100%;
-    z-index: 1000;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.cavalier-suggestions li {
-    padding: 8px 12px;
-    cursor: pointer;
-}
-
-.cavalier-suggestions li:hover {
-    background-color: #f0f0f0;
-}
-</style>
 
 <script>
 $(document).ready(function() {
@@ -427,5 +413,30 @@ $(document).ready(function() {
     });
 });
 </script>
+
+<style>
+    .cavalier-suggestions {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cavalier-suggestions li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.cavalier-suggestions li:hover {
+    background-color: #f0f0f0;
+}
+</style>
 </body>
 </html>
