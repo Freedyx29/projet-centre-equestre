@@ -1,4 +1,13 @@
 <?php
+session_start();
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['iduti'])) {
+    $current_page = urlencode($_SERVER['PHP_SELF']);
+    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
+    exit();
+}
+
 require_once '../class/class.cavalerie.php';
 include_once '../include/haut.inc.php';
 $cavalerie = new Cavalerie();
