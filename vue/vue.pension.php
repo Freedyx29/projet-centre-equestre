@@ -82,7 +82,7 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
                     <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $p['idpen']; ?>">
                         Modifier
                     </button>
-                    <button class="btn-delete" data-toggle="modal" data-target="#suppModal<?php echo $p['idpen']; ?>">
+                    <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $p['idpen']; ?>">
                         Supprimer
                     </button>
                 </td>
