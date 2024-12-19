@@ -85,14 +85,21 @@ class Pension {
     public function PensionALL() {
         try {
             $con = connexionPDO();
-            $sql = "SELECT p.*, pr1.refidcava as idcava1, c1.nomcava as nomcava1, pr2.refidcava as idcava2, c2.nomcava as nomcava2
-                    FROM pension p
-                    LEFT JOIN prend pr1 ON p.idpen = pr1.refidpen
-                    LEFT JOIN cavaliers c1 ON pr1.refidcava = c1.idcava
-                    LEFT JOIN prend pr2 ON p.idpen = pr2.refidpen AND pr2.refidcava != pr1.refidcava
-                    LEFT JOIN cavaliers c2 ON pr2.refidcava = c2.idcava
-                    WHERE p.supprime = 0 OR p.supprime IS NULL
-                    ORDER BY p.idpen DESC;";
+            $sql = "SELECT
+                        p.*,
+                        GROUP_CONCAT(DISTINCT c.nomcava ORDER BY c.nomcava SEPARATOR ', ') AS noms_cavaliers
+                    FROM
+                        pension p
+                    LEFT JOIN
+                        prend pr ON p.idpen = pr.redifpen
+                    LEFT JOIN
+                        cavaliers c ON pr.refidcava = c.idcava
+                    WHERE
+                        p.supprime = 0 OR p.supprime IS NULL
+                    GROUP BY
+                        p.idpen
+                    ORDER BY
+                        p.idpen DESC;";
             $executesql = $con->prepare($sql);
             $executesql->execute();
             $resultat = $executesql->fetchAll(PDO::FETCH_ASSOC);
@@ -109,7 +116,7 @@ class Pension {
             $sql = "SELECT c.*
                     FROM cavaliers c
                     JOIN prend p ON c.idcava = p.refidcava
-                    WHERE p.refidpen = :idpen
+                    WHERE p.redifpen = :idpen
                     AND (p.supprime = 0 OR p.supprime IS NULL)";
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':idpen', $idpen, PDO::PARAM_INT);
@@ -118,23 +125,6 @@ class Pension {
         } catch (PDOException $e) {
             error_log("Erreur dans getCavaliersForPension: " . $e->getMessage());
             return [];
-        }
-    }
-
-    public function removeCavalierFromPension($idcava, $idpen) {
-        try {
-            $con = connexionPDO();
-            $sql = "UPDATE prend
-                    SET supprime = 1
-                    WHERE refidcava = :idcava
-                    AND refidpen = :idpen";
-            $stmt = $con->prepare($sql);
-            $stmt->bindParam(':idcava', $idcava, PDO::PARAM_INT);
-            $stmt->bindParam(':idpen', $idpen, PDO::PARAM_INT);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log("Erreur dans removeCavalierFromPension: " . $e->getMessage());
-            return false;
         }
     }
 
@@ -149,61 +139,63 @@ class Pension {
         $ligne = $executesql->fetch();
         return $ligne['nomche'];
     }
-public function Modifier($id, $libp, $datD, $datF, $tarif, $nums){
-    $con = connexionPDO();
-    $data = [
-        ':libp' => $libp,
-        ':datD' => $datD,
-        ':datF' => $datF,
-        ':tarif' => $tarif,
-        ':nums' => $nums,
-        ':id' => $id
-    ];
 
-    $sql = "UPDATE pension
-            SET libpen = :libp, dateD = :datD, dateF = :datF, tarif = :tarif, numsire = :nums
-            WHERE idpen = :id;";
-    $stmn = $con->prepare($sql);
+    public function Modifier($id, $libp, $datD, $datF, $tarif, $nums) {
+        $con = connexionPDO();
+        $data = [
+            ':libp' => $libp,
+            ':datD' => $datD,
+            ':datF' => $datF,
+            ':tarif' => $tarif,
+            ':nums' => $nums,
+            ':id' => $id
+        ];
 
-    if ($stmn->execute($data)) {
-        error_log("Requête SQL exécutée avec succès : $sql");
-        return true;
-    } else {
-        $errorInfo = $stmn->errorInfo();
-        error_log("Erreur SQL dans Modifier: " . $errorInfo[2]);
-        return false;
-    }
-}
+        $sql = "UPDATE pension
+                SET libpen = :libp, dateD = :datD, dateF = :datF, tarif = :tarif, numsire = :nums
+                WHERE idpen = :id;";
+        $stmn = $con->prepare($sql);
 
-public function updateCavaliers($idpen, $idcava1, $idcava2) {
-    $con = connexionPDO();
-    $data = [
-        ':idpen' => $idpen,
-        ':idcava1' => $idcava1,
-        ':idca'
-        . 'idcava2' => $idcava2
-    ];
-
-    // Supprimer les anciens cavaliers associés à cette pension
-    $sqlDelete = "Delete From prend  WHERE refidpen = :idpen;";
-    $stmnDelete = $con->prepare($sqlDelete);
-    $stmnDelete->execute([':idpen' => $idpen]);
-
-    // Ajouter les nouveaux cavaliers
-    if ($idcava1) {
-        $sqlInsert1 = "INSERT INTO prend (refidcava, refidpen) VALUES (:idcava1, :idpen);";
-        $stmnInsert1 = $con->prepare($sqlInsert1);
-        $stmnInsert1->execute([':idcava1' => $idcava1, ':idpen' => $idpen]);
+        if ($stmn->execute($data)) {
+            error_log("Requête SQL exécutée avec succès : $sql");
+            return true;
+        } else {
+            $errorInfo = $stmn->errorInfo();
+            error_log("Erreur SQL dans Modifier: " . $errorInfo[2]);
+            return false;
+        }
     }
 
-    if ($idcava2) {
-        $sqlInsert2 = "INSERT INTO prend (refidcava, refidpen) VALUES (:idcava2, :idpen);";
-        $stmnInsert2 = $con->prepare($sqlInsert2);
-        $stmnInsert2->execute([':idcava2' => $idcava2, ':idpen' => $idpen]);
-    }
+    public function updateCavaliers($idpen, $idcava1, $idcava2) {
+        $con = connexionPDO();
+        $data = [
+            ':idpen' => $idpen,
+            ':idcava1' => $idcava1,
+            ':idcava2' => $idcava2
+        ];
 
-    error_log("Cavaliers mis à jour pour la pension ID: $idpen avec IDs cavaliers: $idcava1, $idcava2");
-}
+        // Supprimer les anciens cavaliers associés à cette pension
+        $sqlDelete = "DELETE FROM prend WHERE redifpen = :idpen;";
+        $stmnDelete = $con->prepare($sqlDelete);
+        $stmnDelete->execute([':idpen' => $idpen]);
+
+        // Ajouter les nouveaux cavaliers
+        if ($idcava1) {
+            $sqlInsert1 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava1, :idpen);";
+            $stmnInsert1 = $con->prepare($sqlInsert1);
+            $stmnInsert1->execute([':idcava1' => $idcava1, ':idpen' => $idpen]);
+            error_log("Cavalier 1 ajouté : $sqlInsert1");
+        }
+
+        if ($idcava2) {
+            $sqlInsert2 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava2, :idpen);";
+            $stmnInsert2 = $con->prepare($sqlInsert2);
+            $stmnInsert2->execute([':idcava2' => $idcava2, ':idpen' => $idpen]);
+            error_log("Cavalier 2 ajouté : $sqlInsert2");
+        }
+
+        error_log("Cavaliers mis à jour pour la pension ID: $idpen avec IDs cavaliers: $idcava1, $idcava2");
+    }
 
     public function Supprimer($id){
         try {
