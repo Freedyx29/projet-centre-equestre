@@ -4,11 +4,9 @@ session_start();
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['iduti'])) {
     $current_page = urlencode($_SERVER['PHP_SELF']);
-    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
+    header("Location: ../utilisateurs/vue.login.php?redirect_to=" . $current_page);
     exit();
 }
-
-// Inclusion de la classe Race et création d'une instance
 include_once '../class/class.race.php';
 include_once '../include/haut.inc.php';
 
@@ -23,14 +21,16 @@ $listeRaces = $race->RaceALL();
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style_crud.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container mt-4">
+
         <h2>Liste des Races</h2>
 
         <!-- Section des messages d'alerte -->
-        <?php 
+        <?php
         if(isset($_GET['success']) && isset($_GET['message'])) {
             $alertClass = $_GET['success'] == 1 ? 'alert-success' : 'alert-danger';
         ?>
@@ -39,21 +39,23 @@ $listeRaces = $race->RaceALL();
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         <?php } ?>
+
         <!-- Bouton Ajouter et Générer PDF -->
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
-                Ajouter une race
-            </button>
-            <!-- Bouton "Afficher le PDF" avec une couleur légèrement plus foncée -->
-            <a href="../classpdf/classpdfrace.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;" target="_blank">
-                📋 Afficher le PDF
-            </a>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ajoutModal">
+                    <i class="fas fa-plus"></i>
+                    <span>Ajouter une race</span>
+                </button>
+                <a href="../classpdf/classpdfrace.php" class="btn" style="background-color: #B88C47; color: white; text-decoration: none; border-radius: 6px; padding: 10px 20px; font-size: 16px; font-family: Arial, sans-serif;" target="_blank">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Afficher le PDF</span>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+            </div>
         </div>
-        <div class="col-md-6">
-            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
-        </div>
-    </div>
 
         <!-- Tableau principal des races -->
         <table class="table table-striped" id="raceTable">
@@ -64,20 +66,25 @@ $listeRaces = $race->RaceALL();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($listeRaces as $r): 
+                <?php foreach($listeRaces as $r):
                     if ($r['supprime'] != '1'): ?>
                     <tr>
                         <td><?php echo $r['librace']; ?></td>
                         <td>
-                            <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal<?php echo $r['idrace']; ?>">
-                                Détail
-                            </button>
-                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $r['idrace']; ?>">
-                                Modifier
-                            </button>
-                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $r['idrace']; ?>">
-                                Supprimer
-                            </button>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailModal<?php echo $r['idrace']; ?>">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Détail</span>
+                                </button>
+                                <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modifModal<?php echo $r['idrace']; ?>">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Modifier</span>
+                                </button>
+                                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#suppModal<?php echo $r['idrace']; ?>">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Supprimer</span>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 <?php endif; endforeach; ?>
@@ -100,8 +107,14 @@ $listeRaces = $race->RaceALL();
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" name="ajouter" class="btn btn-primary">Ajouter</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button type="submit" name="ajouter" class="btn btn-primary">
+                                <i class="fas fa-check"></i>
+                                <span>Ajouter</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                <i class="fas fa-times"></i>
+                                <span>Fermer</span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -109,7 +122,7 @@ $listeRaces = $race->RaceALL();
         </div>
 
         <!-- Modals Modification, Suppression et Détail -->
-        <?php foreach($listeRaces as $r): 
+        <?php foreach($listeRaces as $r):
             if ($r['supprime'] != '1'): ?>
             <!-- Modal Modification -->
             <div class="modal fade" id="modifModal<?php echo $r['idrace']; ?>">
@@ -128,8 +141,14 @@ $listeRaces = $race->RaceALL();
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" name="modifier" class="btn btn-warning">Modifier</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                <button type="submit" name="modifier" class="btn btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Modifier</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i>
+                                    <span>Fermer</span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -150,8 +169,14 @@ $listeRaces = $race->RaceALL();
                         <form action="../traitement/traitement.race.php" method="post">
                             <input type="hidden" name="idrace" value="<?php echo $r['idrace']; ?>">
                             <div class="modal-footer">
-                                <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="submit" name="supprimer" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Supprimer</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i>
+                                    <span>Annuler</span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -171,9 +196,16 @@ $listeRaces = $race->RaceALL();
                                 <label>ID Race :</label>
                                 <p><?php echo $r['idrace']; ?></p>
                             </div>
+                            <div class="detail-group">
+                                <label>Libellé :</label>
+                                <p><?php echo $r['librace']; ?></p>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                <i class="fas fa-times"></i>
+                                <span>Fermer</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -184,53 +216,45 @@ $listeRaces = $race->RaceALL();
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Ensuite le script de pagination -->
     <script>
-$(document).ready(function(){
-    // Variables de base
-    var $rows = $("#raceTable tbody tr");
-    var page = 1;
-    var limit = 5;
-    var total = Math.ceil($rows.length / limit);
+    $(document).ready(function(){
+        var $rows = $("#raceTable tbody tr");
+        var page = 1;
+        var limit = 5;
+        var total = Math.ceil($rows.length / limit);
 
-    // Fonction pour afficher les lignes
-    function showRows() {
-        $rows.hide().slice((page-1)*limit, page*limit).show();
-        $("#pageNum").text(`Page ${page}/${total}`);
-    }
-
-    // Modification de la fonction de recherche
-    $("#searchInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        if(value === "") {
-            // Réinitialiser la pagination quand le champ est vide
-            page = 1;
-            $rows.hide();
-            showRows();
-        } else {
-            // Pendant la recherche, afficher uniquement les résultats filtrés
-            $("#raceTable tbody tr").each(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
+        function showRows() {
+            $rows.hide().slice((page-1)*limit, page*limit).show();
+            $("#pageNum").text(`Page ${page}/${total}`);
         }
+
+        $("#searchInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            if(value === "") {
+                page = 1;
+                $rows.hide();
+                showRows();
+            } else {
+                $("#raceTable tbody tr").each(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            }
+        });
+
+        $("#raceTable").after(`
+            <div class="text-center mt-3">
+                <button id="prev" class="btn btn-brown"><i class="fas fa-chevron-left"></i></button>
+                <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
+                <button id="next" class="btn btn-brown"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        `);
+
+        $("#next").click(() => { if(page < total) { page++; showRows(); }});
+        $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
+
+        showRows();
     });
-
-    // Ajoute les boutons et le numéro de page
-    $("#raceTable").after(`
-        <div class="text-center mt-3">
-            <button id="prev" class="btn btn-brown">&laquo;</button>
-            <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
-            <button id="next" class="btn btn-brown">&raquo;</button>
-        </div>
-    `);
-
-    // Clics sur les boutons
-    $("#next").click(() => { if(page < total) { page++; showRows(); }});
-    $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
-
-    showRows();
-});
-</script>
+    </script>
 
 </body>
 </html>
