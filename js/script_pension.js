@@ -71,9 +71,10 @@ function autocompletCavalierajout2() {
     }
 }
 // Autocomplétion pour le champ "Nom Cavalier" dans le formulaire de modification
-function autocompletCavaliermodif1() {
+// Autocomplétion pour le champ "Nom Cavalier" dans le formulaire de modification
+function autocompletCavaliermodif1(id) {
     var keyword = $('#nomcava3').val();
-    
+
     if (keyword.length == 0) {
         $('#nom_list_cavalier_id3').slideUp();
     } else {
@@ -83,9 +84,10 @@ function autocompletCavaliermodif1() {
         });
     }
 }
-function autocompletCavaliermodif2() {
+
+function autocompletCavaliermodif2(id) {
     var keyword = $('#nomcava4').val();
-    
+
     if (keyword.length == 0) {
         $('#nom_list_cavalier_id4').slideUp();
     } else {
@@ -95,6 +97,8 @@ function autocompletCavaliermodif2() {
         });
     }
 }
+
+
 // Fonction pour définir l'élément sélectionné dans le champ "Nom Cavalier" dans le formulaire d'ajout
 function set_item_cava_ajout1(item, id) {
     $('#nomcava1').val(item);
@@ -125,8 +129,10 @@ function set_item_pension(item, id, num_sire) {
 }
 
 // Fonction pour définir l'élément sélectionné dans le champ "Cheval" dans le formulaire d'ajout
-function set_item_pension_ajout(item, num_sire) {
+function set_item_pension_ajout(item, index ,num_sire) {
+   
     $('#nomche').val(item);
     $('#nom_list_pension_id').hide();
     $('#num_sire').val(num_sire);
 }
+
