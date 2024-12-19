@@ -83,7 +83,7 @@
         </div>
 
         <!-- Appointment button on the right -->
-        <a href="../vue/vue.utilisateurs.php" class="login-button">
+        <a href="vue.utilisateurs.php" class="login-button">
             <i class="fas fa-user"></i> Espace Utilisateur
         </a>
     </div>
