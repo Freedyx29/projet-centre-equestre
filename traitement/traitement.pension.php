@@ -1,5 +1,6 @@
 <?php
-include '../class/class.pension.php';
+include_once '../include/bdd.inc.php';
+include_once '../class/class.pension.php';
 
 $opension = new Pension();
 
@@ -10,7 +11,7 @@ if (isset($_POST['ajouter'])) {
     $tarif = $_POST['tarif'];
     $numsire = $_POST['numsire'];
     $idcava1 = $_POST['idcava1'];
-    $idcava2 = $_POST['idcava2'];
+    $idcava2 = isset($_POST['idcava2']) ? $_POST['idcava2'] : null;
 
     // Validation des dates
     if (strtotime($dateD) > strtotime($dateF)) {
@@ -28,9 +29,13 @@ if (isset($_POST['ajouter'])) {
     $stmtCheck->execute();
     $count1 = $stmtCheck->fetchColumn();
 
-    $stmtCheck->bindParam(':idcava', $idcava2, PDO::PARAM_INT);
-    $stmtCheck->execute();
-    $count2 = $stmtCheck->fetchColumn();
+    if ($idcava2) {
+        $stmtCheck->bindParam(':idcava', $idcava2, PDO::PARAM_INT);
+        $stmtCheck->execute();
+        $count2 = $stmtCheck->fetchColumn();
+    } else {
+        $count2 = 1; // Si idcava2 est null, on considère qu'il est valide
+    }
 
     // Vérifiez si `numsire` existe dans la table `cavalerie`
     $sqlCheckNumsire = "SELECT COUNT(*) FROM cavalerie WHERE numsire = :numsire";
@@ -52,20 +57,25 @@ if (isset($_POST['ajouter'])) {
             $stmn = $con->prepare($sql);
 
             if ($stmn->execute($data)) {
-                $data = [
-                    ':refidcava' => $idcava2,
-                    ':redifpen' => $idpen
-                ];
+                if ($idcava2) {
+                    $data = [
+                        ':refidcava' => $idcava2,
+                        ':redifpen' => $idpen
+                    ];
 
-                $sql = "INSERT INTO prend (refidcava, redifpen) VALUES (:refidcava, :redifpen);";
-                $stmn = $con->prepare($sql);
+                    $sql = "INSERT INTO prend (refidcava, redifpen) VALUES (:refidcava, :redifpen);";
+                    $stmn = $con->prepare($sql);
 
-                if ($stmn->execute($data)) {
-                    header('Location: ../vue/vue.pension.php?success=1&message=Pension ajoutée avec succès');
-                    exit();
+                    if ($stmn->execute($data)) {
+                        header('Location: ../vue/vue.pension.php?success=1&message=Pension ajoutée avec succès');
+                        exit();
+                    } else {
+                        error_log("Erreur lors de l'ajout du deuxième cavalier");
+                        header('Location: ../vue/vue.pension.php?success=0&message=Erreur lors de l\'ajout du deuxième cavalier');
+                        exit();
+                    }
                 } else {
-                    error_log("Erreur lors de l'ajout du deuxième cavalier");
-                    header('Location: ../vue/vue.pension.php?success=0&message=Erreur lors de l\'ajout du deuxième cavalier');
+                    header('Location: ../vue/vue.pension.php?success=1&message=Pension ajoutée avec succès');
                     exit();
                 }
             } else {
@@ -93,7 +103,7 @@ if (isset($_POST['modifier'])) {
     $tarif = $_POST['tarif'];
     $numsire = $_POST['numsire'];
     $idcava1 = $_POST['idcava3']; // Utilisez idcava3 pour le premier cavalier
-    $idcava2 = $_POST['idcava4']; // Utilisez idcava4 pour le deuxième cavalier
+    $idcava2 = isset($_POST['idcava4']) ? $_POST['idcava4'] : null; // Utilisez idcava4 pour le deuxième cavalier
 
     // Validation des dates
     if (strtotime($dateD) > strtotime($dateF)) {
@@ -112,9 +122,13 @@ if (isset($_POST['modifier'])) {
     $stmtCheck->execute();
     $count1 = $stmtCheck->fetchColumn();
 
-    $stmtCheck->bindParam(':idcava', $idcava2, PDO::PARAM_INT);
-    $stmtCheck->execute();
-    $count2 = $stmtCheck->fetchColumn();
+    if ($idcava2) {
+        $stmtCheck->bindParam(':idcava', $idcava2, PDO::PARAM_INT);
+        $stmtCheck->execute();
+        $count2 = $stmtCheck->fetchColumn();
+    } else {
+        $count2 = 1; // Si idcava2 est null, on considère qu'il est valide
+    }
 
     if ($count1 > 0 && $count2 > 0) {
         $success = $opension->Modifier($idpen, $libpen, $dateD, $dateF, $tarif, $numsire);
@@ -132,6 +146,7 @@ if (isset($_POST['modifier'])) {
         exit();
     }
 }
+
 
 if (isset($_POST['supprimer'])) {
     $idpen = $_POST['idpen'];
