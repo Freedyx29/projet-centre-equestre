@@ -28,14 +28,19 @@ class Cavaliers {
         $this->db = connexionPDO();
     }
 
-    public function verifyCredentials($email, $password) {
-        $query = "SELECT * FROM cavaliers WHERE emailresp = :email AND password = :password";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $password); // Ensure the password is hashed
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+   public function verifyCredentials($email, $password) {
+    $query = "SELECT * FROM cavaliers WHERE emailresp = :email";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['password'])) {
+        return $user;
+    } else {
+        return false;
     }
+}
 
 
     public function getCavaliers() {
@@ -195,42 +200,41 @@ class Cavaliers {
     }
 
 
-    public function Modifier($id, $nc, $pc, $dnc, $nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
-        $con = connexionPDO();
-        $data = [
-            ':nomcava' => $nc,
-            ':prenomcava' => $pc,
-            ':datenacava' => $dnc,
-            ':numlic' => $nl,
-            ':nomresp' => $nr,
-            ':prenomresp' => $pr,
-            ':rueresp' => $rr,
-            ':vilresp' => $vr,
-            ':cpresp' => $cpr,
-            ':telresp' => $tr,
-            ':emailresp' => $emr,
-            ':password' => $pw,
-            ':assurance' => $assu,
-            ':idgalop' => $idga,
-            ':id' => $id
-        ];
+  public function Modifier($id, $nc, $pc, $dnc, $nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
+    $con = connexionPDO();
+    $data = [
+        ':nomcava' => $nc,
+        ':prenomcava' => $pc,
+        ':datenacava' => $dnc,
+        ':numlic' => $nl,
+        ':nomresp' => $nr,
+        ':prenomresp' => $pr,
+        ':rueresp' => $rr,
+        ':vilresp' => $vr,
+        ':cpresp' => $cpr,
+        ':telresp' => $tr,
+        ':emailresp' => $emr,
+        ':password' => password_hash($pw, PASSWORD_DEFAULT), // Hacher le mot de passe
+        ':assurance' => $assu,
+        ':idgalop' => $idga,
+        ':id' => $id
+    ];
 
-        $sql = "UPDATE cavaliers 
-                SET nomcava = :nomcava, prenomcava = :prenomcava, datenacava = :datenacava, numlic = :numlic,
-                    nomresp = :nomresp, prenomresp = :prenomresp, rueresp = :rueresp, vilresp = :vilresp, cpresp = :cpresp, 
-                    telresp = :telresp, emailresp = :emailresp, password = :password, assurance = :assurance, idgalop = :idgalop
-                WHERE idcava = :id;";
-        $stmn = $con->prepare($sql);
-        
-        if ($stmn->execute($data)) {
-            echo "Cavalier modifié";
-            return true;
-        } else {
-            echo $stmn->errorInfo();
-            return false;
-        }
+    $sql = "UPDATE cavaliers
+            SET nomcava = :nomcava, prenomcava = :prenomcava, datenacava = :datenacava, numlic = :numlic,
+                nomresp = :nomresp, prenomresp = :prenomresp, rueresp = :rueresp, vilresp = :vilresp, cpresp = :cpresp,
+                telresp = :telresp, emailresp = :emailresp, password = :password, assurance = :assurance, idgalop = :idgalop
+            WHERE idcava = :id;";
+    $stmn = $con->prepare($sql);
+
+    if ($stmn->execute($data)) {
+        echo "Cavalier modifié";
+        return true;
+    } else {
+        echo $stmn->errorInfo();
+        return false;
     }
-
+}
 
     public function Supprimer($id) {
         try {
@@ -261,38 +265,37 @@ class Cavaliers {
     }
 
 
-    public function CavaliersAjt($nc, $pc, $dnc, $nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
-        $con = connexionPDO();
-        $data = [
-            ':nomcava' => $nc,
-            ':prenomcava' => $pc,
-            ':datenacava' => $dnc,
-            ':numlic' => $nl,
-            ':nomresp' => $nr,
-            ':prenomresp' => $pr,
-            ':rueresp' => $rr,
-            ':vilresp' => $vr,
-            ':cpresp' => $cpr,
-            ':telresp' => $tr,
-            ':emailresp' => $emr,
-            ':password' => $pw,
-            ':assurance' => $assu,
-            ':idgalop' => $idga
-        ];
+   public function CavaliersAjt($nc, $pc, $dnc, $nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
+    $con = connexionPDO();
+    $data = [
+        ':nomcava' => $nc,
+        ':prenomcava' => $pc,
+        ':datenacava' => $dnc,
+        ':numlic' => $nl,
+        ':nomresp' => $nr,
+        ':prenomresp' => $pr,
+        ':rueresp' => $rr,
+        ':vilresp' => $vr,
+        ':cpresp' => $cpr,
+        ':telresp' => $tr,
+        ':emailresp' => $emr,
+        ':password' => password_hash($pw, PASSWORD_DEFAULT), // Hacher le mot de passe
+        ':assurance' => $assu,
+        ':idgalop' => $idga
+    ];
 
-        $sql = "INSERT INTO cavaliers (nomcava, prenomcava, datenacava, numlic, nomresp, prenomresp, rueresp, vilresp, cpresp, telresp, emailresp, password, assurance, idgalop) 
-                VALUES (:nomcava, :prenomcava, :datenacava, :numlic, :nomresp, :prenomresp, :rueresp, :vilresp, :cpresp, :telresp, :emailresp, :password, :assurance, :idgalop);";
-        $stmn = $con->prepare($sql);
+    $sql = "INSERT INTO cavaliers (nomcava, prenomcava, datenacava, numlic, nomresp, prenomresp, rueresp, vilresp, cpresp, telresp, emailresp, password, assurance, idgalop)
+            VALUES (:nomcava, :prenomcava, :datenacava, :numlic, :nomresp, :prenomresp, :rueresp, :vilresp, :cpresp, :telresp, :emailresp, :password, :assurance, :idgalop);";
+    $stmn = $con->prepare($sql);
 
-        if ($stmn->execute($data)) {
-            echo "Cavalier ajouté";
-            return true;
-        } else {
-            echo $stmn->errorInfo();
-            return false;
-        }
+    if ($stmn->execute($data)) {
+        echo "Cavalier ajouté";
+        return true;
+    } else {
+        echo $stmn->errorInfo();
+        return false;
     }
-
+}
         public function getCavalierById($id) {
         $con = connexionPDO();
         $sql = "SELECT * FROM cavaliers WHERE idcava = :idcava";
