@@ -140,7 +140,7 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
                             </div>
                             <div class="form-group">
                                 <label>Nom Cavalier 2</label>
-                                <input type="text" id="nomcava2" class="form-control" onkeyup="autocompletCavalierajout2()" required>
+                                <input type="text" id="nomcava2" class="form-control" onkeyup="autocompletCavalierajout2()">
                                 <input type="hidden" id="idcava2" name="idcava2">
                                 <ul id="nom_list_cavalier_id2"></ul>
                             </div>
