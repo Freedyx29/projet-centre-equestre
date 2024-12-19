@@ -16,5 +16,5 @@ if(isset($_POST['keyword'])) {
         $Listecavaliersajout = str_replace($_POST['keyword'], '<b>'.$_POST['keyword'].'</b>', $res['nomcava']);
         echo '<li onclick="set_item_cava_modif3(\''.str_replace("'", "\'", $res['nomcava']).'\',  '.$res['idcava'].')">'.$Listecavaliersajout.'</li>';
     }
-}
+} 
 ?>
