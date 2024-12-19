@@ -51,7 +51,7 @@ function autocompletCavalierajout1() {
     if (keyword.length == 0) {
         $('#nom_list_cavalier_id1').slideUp();
     } else {
-        $.post('../ajax/ajax.pension.idcavaajout.php', {keyword: keyword}, function(data) {
+        $.post('../ajax/ajax.pension.idcavaajout1.php', {keyword: keyword}, function(data) {
             $('#nom_list_cavalier_id1').html(data);
             $('#nom_list_cavalier_id1').slideDown();
         });
@@ -64,7 +64,7 @@ function autocompletCavalierajout2() {
     if (keyword.length == 0) {
         $('#nom_list_cavalier_id2').slideUp();
     } else {
-        $.post('../ajax/ajax.pension.idcavaajoutt.php', {keyword: keyword}, function(data) {
+        $.post('../ajax/ajax.pension.idcavaajout2.php', {keyword: keyword}, function(data) {
             $('#nom_list_cavalier_id2').html(data);
             $('#nom_list_cavalier_id2').slideDown();
         });
@@ -78,7 +78,7 @@ function autocompletCavaliermodif1(id) {
     if (keyword.length == 0) {
         $('#nom_list_cavalier_id3').slideUp();
     } else {
-        $.post('../ajax/ajax.pension.idcavamodif.php', {keyword: keyword}, function(data) {
+        $.post('../ajax/ajax.pension.idcavamodif1.php', {keyword: keyword}, function(data) {
             $('#nom_list_cavalier_id3').html(data);
             $('#nom_list_cavalier_id3').slideDown();
         });
@@ -91,7 +91,7 @@ function autocompletCavaliermodif2(id) {
     if (keyword.length == 0) {
         $('#nom_list_cavalier_id4').slideUp();
     } else {
-        $.post('../ajax/ajax.pension.idcavamodift.php', {keyword: keyword}, function(data) {
+        $.post('../ajax/ajax.pension.idcavamodif2.php', {keyword: keyword}, function(data) {
             $('#nom_list_cavalier_id4').html(data);
             $('#nom_list_cavalier_id4').slideDown();
         });
