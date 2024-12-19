@@ -7,11 +7,11 @@ if(isset($_POST['keyword'])) {
     $type = $_POST['type']; // Garder le type
 
     if ($type === 'ville') {
-        $sql = "SELECT * FROM commune.v_commune_2023 WHERE ville LIKE (:var) ORDER BY ville ASC LIMIT 0, 100";
+        $sql = "SELECT ville_nom AS ville, ville_code_postal AS cp FROM villes_france_free WHERE ville_nom LIKE (:var) ORDER BY ville_nom ASC LIMIT 0, 100";
     } else {
-        $sql = "SELECT * FROM commune.v_commune_2023 WHERE cp LIKE (:var) ORDER BY cp ASC LIMIT 0, 100";
+        $sql = "SELECT ville_nom AS ville, ville_code_postal AS cp FROM villes_france_free WHERE ville_code_postal LIKE (:var) ORDER BY ville_code_postal ASC LIMIT 0, 100";
     }
-    
+
     $req = $con->prepare($sql);
     $req->bindParam(':var', $keyword, PDO::PARAM_STR);
     $req->execute();
