@@ -2,6 +2,14 @@
 include_once '../include/bdd.inc.php';
 
 class Pension {
+
+    private $idpen;
+    private $libpen;
+    private $dateD;
+    private $dateF;
+    private $tarif;
+    private $numsire;
+
     public function __construct($idp = null, $libp = null, $datD = null, $datF = null, $tarif = null, $nums = null) {
         $this->idpen = $idp;
         $this->libpen = $libp;
