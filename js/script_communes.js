@@ -62,3 +62,4 @@ function set_item_commune(ville, cp, id) {
         $('#commune_list_cp_' + id).hide();
     }
 }
+
