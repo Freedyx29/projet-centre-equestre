@@ -4,7 +4,7 @@ session_start();
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['iduti'])) {
     $current_page = urlencode($_SERVER['PHP_SELF']);
-    header("Location: ../utilisateurs/vue.index.php?redirect_to=" . $current_page);
+    header("Location: ../utilisateurs/vue.login.php?redirect_to=" . $current_page);
     exit();
 }
 include_once '../class/class.cavaliers.php';
@@ -500,12 +500,12 @@ $cavaliersList = $cavalier->CavaliersALL();
         });
         </script>
 <style>
-    
+
     #cavalierTable th, #cavalierTable td {
-        padding: 15px; 
-        width: 150px; 
+        padding: 15px;
+        width: 150px;
     }
-    
+
 </style>
     </body>
 </html>
