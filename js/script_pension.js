@@ -136,3 +136,25 @@ function set_item_pension_ajout(item, index ,num_sire) {
     $('#num_sire').val(num_sire);
 }
 
+// Fonction pour afficher ou masquer le champ du deuxième cavalier dans le formulaire d'ajout
+function toggleCavalier2Ajout() {
+    var cavalier2Group = document.getElementById('cavalier2Group');
+    if (cavalier2Group.style.display === 'none') {
+        cavalier2Group.style.display = 'block';
+    } else {
+        cavalier2Group.style.display = 'none';
+    }
+}
+
+// Fonction pour afficher ou masquer le champ du deuxième cavalier dans le formulaire de modification
+function toggleCavalier2Modif(id) {
+    var cavalier2Group = document.getElementById('cavalier2Group' + id);
+    if (cavalier2Group.style.display === 'none') {
+        cavalier2Group.style.display = 'block';
+    } else {
+        cavalier2Group.style.display = 'none';
+    }
+}
+
+
+
