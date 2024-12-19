@@ -100,140 +100,141 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
             </tbody>
         </table>
 
-        <!-- Modal Ajout -->
-        <div class="modal fade" id="ajoutModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Ajouter une pension</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+       <!-- Modal Ajout -->
+<div class="modal fade" id="ajoutModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ajouter une pension</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form action="../traitement/traitement.pension.php" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Libellé</label>
+                        <input type="text" name="libpen" class="form-control" required>
                     </div>
-                    <form action="../traitement/traitement.pension.php" method="post">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Libellé</label>
-                                <input type="text" name="libpen" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Date début</label>
-                                <input type="date" name="dateD" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Date fin</label>
-                                <input type="date" name="dateF" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Tarif en euro</label>
-                                <input type="number" name="tarif" class="form-control" step="1" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Cheval</label>
-                                <input type="text" id="nomche" class="form-control" onkeyup="autocompletPensionajout()" required>
-                                <input type="hidden" id="num_sire" name="numsire">
-                                <ul id="nom_list_pension_id"></ul>
-                            </div>
-                            <div class="form-group">
-                                <label>Nom Cavalier 1</label>
-                                <input type="text" id="nomcava1" class="form-control" onkeyup="autocompletCavalierajout1()" required>
-                                <input type="hidden" id="idcava1" name="idcava1">
-                                <ul id="nom_list_cavalier_id1"></ul>
-                            </div>
-                            <div class="form-group">
-                                <label>Nom Cavalier 2</label>
-                                <input type="text" id="nomcava2" class="form-control" onkeyup="autocompletCavalierajout2()">
-                                <input type="hidden" id="idcava2" name="idcava2">
-                                <ul id="nom_list_cavalier_id2"></ul>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" name="ajouter" class="btn btn-primary">
-                                <i class="fas fa-check"></i>
-                                <span>Ajouter</span>
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                <i class="fas fa-times"></i>
-                                <span>Fermer</span>
-                            </button>
-                        </div>
-                    </form>
+                    <div class="form-group">
+                        <label>Date début</label>
+                        <input type="date" name="dateD" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date fin</label>
+                        <input type="date" name="dateF" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tarif en euro</label>
+                        <input type="number" name="tarif" class="form-control" step="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cheval</label>
+                        <input type="text" id="nomche" class="form-control" onkeyup="autocompletPensionajout()" required>
+                        <input type="hidden" id="num_sire" name="numsire">
+                        <ul id="nom_list_pension_id"></ul>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom Cavalier 1</label>
+                        <input type="text" id="nomcava1" class="form-control" onkeyup="autocompletCavalierajout1()" required>
+                        <input type="hidden" id="idcava1" name="idcava1">
+                        <ul id="nom_list_cavalier_id1"></ul>
+                    </div>
+                    <div class="form-group" id="cavalier2Group" style="display: none;">
+                        <label>Nom Cavalier 2</label>
+                        <input type="text" id="nomcava2" class="form-control" onkeyup="autocompletCavalierajout2()">
+                        <input type="hidden" id="idcava2" name="idcava2">
+                        <ul id="nom_list_cavalier_id2"></ul>
+                    </div>
+                    <button type="button" class="btn btn-link" onclick="toggleCavalier2Ajout()">Ajouter un deuxième cavalier</button>
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" name="ajouter" class="btn btn-primary">
+                        <i class="fas fa-check"></i>
+                        <span>Ajouter</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        <span>Fermer</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Modification -->
+<?php foreach($listePensions as $p): ?>
+    <div class="modal fade" id="modifModal<?php echo $p['idpen']; ?>">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Modifier la pension</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form action="../traitement/traitement.pension.php" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="idpen" value="<?php echo $p['idpen']; ?>">
+                        <div class="form-group">
+                            <label>Libellé</label>
+                            <input type="text" name="libpen" class="form-control" value="<?php echo $p['libpen']; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date début</label>
+                            <input type="date" name="dateD" class="form-control" value="<?php echo $p['dateD']; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date fin</label>
+                            <input type="date" name="dateF" class="form-control" value="<?php echo $p['dateF']; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tarif en euro</label>
+                            <input type="number" name="tarif" class="form-control" step="1" value="<?php echo $p['tarif']; ?>" required>
+                        </div>
+                        <div class="form-group">
+                          <label>Cheval</label>
+                            <input type="text" id="nomche<?php echo $p['idpen']; ?>" class="form-control"
+                                   value="<?php echo $pension->PensionNumsire($p['numsire']); ?>"
+                                   onkeyup="autocompletPension(<?php echo $p['idpen']; ?>)" required>
+                            <input type="hidden" id="num_sire<?php echo $p['idpen']; ?>" name="numsire" value="<?php echo $p['numsire']; ?>">
+                            <ul id="nom_list_pension_id<?php echo $p['idpen']; ?>"></ul>
+                        </div>
+                        <?php
+                        $cavaliers = $pension->getCavaliersForPension($p['idpen']);
+                        $nomcava1 = isset($cavaliers[0]['nomcava']) ? $cavaliers[0]['nomcava'] : '';
+                        $nomcava2 = isset($cavaliers[1]['nomcava']) ? $cavaliers[1]['nomcava'] : '';
+                        ?>
+                        <div class="form-group">
+                            <label>Nom Cavalier 1</label>
+                            <input type="text" id="nomcava3" class="form-control"
+                                   value="<?php echo $nomcava1; ?>"
+                                   onkeyup="autocompletCavaliermodif1(<?php echo $p['idpen']; ?>)" required>
+                            <input type="hidden" id="idcava3" name="idcava3" value="<?php echo isset($cavaliers[0]['idcava']) ? $cavaliers[0]['idcava'] : ''; ?>">
+                            <ul id="nom_list_cavalier_id3"></ul>
+                        </div>
+                        <div class="form-group">
+                            <label>Nom Cavalier 2</label>
+                            <input type="text" id="nomcava4" class="form-control"
+                                   value="<?php echo $nomcava2; ?>"
+                                   onkeyup="autocompletCavaliermodif2(<?php echo $p['idpen']; ?>)" >
+                            <input type="hidden" id="idcava4" name="idcava4" value="<?php echo isset($cavaliers[1]['idcava']) ? $cavaliers[1]['idcava'] : ''; ?>">
+                            <ul id="nom_list_cavalier_id4"></ul>
+                        </div>
+                        <button type="button" class="btn btn-link" onclick="toggleCavalier2Modif(<?php echo $p['idpen']; ?>)">Ajouter un deuxième cavalier</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="modifier" class="btn btn-warning">
+                            <i class="fas fa-check"></i>
+                            <span>Modifier</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times"></i>
+                            <span>Fermer</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <!-- Modal Modification -->
-        <?php foreach($listePensions as $p): ?>
-            <div class="modal fade" id="modifModal<?php echo $p['idpen']; ?>">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Modifier la pension</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <form action="../traitement/traitement.pension.php" method="post">
-                            <div class="modal-body">
-                                <input type="hidden" name="idpen" value="<?php echo $p['idpen']; ?>">
-                                <div class="form-group">
-                                    <label>Libellé</label>
-                                    <input type="text" name="libpen" class="form-control" value="<?php echo $p['libpen']; ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Date début</label>
-                                    <input type="date" name="dateD" class="form-control" value="<?php echo $p['dateD']; ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Date fin</label>
-                                    <input type="date" name="dateF" class="form-control" value="<?php echo $p['dateF']; ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tarif en euro</label>
-                                    <input type="number" name="tarif" class="form-control" step="1" value="<?php echo $p['tarif']; ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Cheval</label>
-                                    <input type="text" id="nomche<?php echo $p['idpen']; ?>" class="form-control"
-                                           value="<?php echo $pension->PensionNumsire($p['numsire']); ?>"
-                                           onkeyup="autocompletPension(<?php echo $p['idpen']; ?>)" required>
-                                    <input type="hidden" id="num_sire<?php echo $p['idpen']; ?>" name="numsire" value="<?php echo $p['numsire']; ?>">
-                                    <ul id="nom_list_pension_id<?php echo $p['idpen']; ?>"></ul>
-                                </div>
-                                <?php
-                                $cavaliers = $pension->getCavaliersForPension($p['idpen']);
-                                $nomcava1 = isset($cavaliers[0]['nomcava']) ? $cavaliers[0]['nomcava'] : '';
-                                $nomcava2 = isset($cavaliers[1]['nomcava']) ? $cavaliers[1]['nomcava'] : '';
-                                ?>
-                                <div class="form-group">
-                                    <label>Nom Cavalier 1</label>
-                                    <input type="text" id="nomcava3" class="form-control"
-                                           value="<?php echo $nomcava1; ?>"
-                                           onkeyup="autocompletCavaliermodif1(<?php echo $p['idpen']; ?>)" required>
-                                    <input type="hidden" id="idcava3" name="idcava3" value="<?php echo isset($cavaliers[0]['idcava']) ? $cavaliers[0]['idcava'] : ''; ?>">
-                                    <ul id="nom_list_cavalier_id3"></ul>
-                                </div>
-                                <div class="form-group">
-                                    <label>Nom Cavalier 2</label>
-                                    <input type="text" id="nomcava4" class="form-control"
-                                           value="<?php echo $nomcava2; ?>"
-                                           onkeyup="autocompletCavaliermodif2(<?php echo $p['idpen']; ?>)" >
-                                    <input type="hidden" id="idcava4" name="idcava4" value="<?php echo isset($cavaliers[1]['idcava']) ? $cavaliers[1]['idcava'] : ''; ?>">
-                                    <ul id="nom_list_cavalier_id4"></ul>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" name="modifier" class="btn btn-warning">
-                                    <i class="fas fa-check"></i>
-                                    <span>Modifier</span>
-                                </button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                    <i class="fas fa-times"></i>
-                                    <span>Fermer</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Suppression -->
+    </div>
+ <!-- Modal Suppression -->
             <div class="modal fade" id="suppModal<?php echo $p['idpen']; ?>">
                 <div class="modal-dialog">
                     <div class="modal-content">
