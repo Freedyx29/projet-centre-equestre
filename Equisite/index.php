@@ -1,3 +1,12 @@
+<?php
+include_once '../class/class.cavaliers.php';
+
+// Création d'une instance de la classe Cavalier
+$cavalier = new Cavaliers();
+// Récupération de toutes les cavaliers depuis la base de données
+$cavaliersList = $cavalier->CavaliersALL();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -49,22 +58,21 @@
             </button>
 
             <!-- Centered logo -->
-<a href="index.html" class="navbar-brand d-flex justify-content-center position-absolute start-50 translate-middle-x" style="top: -10px;"> <!-- Added top property -->
-    <img src="../photos/equip.png" alt="Logo" class="m-0" style="height: 100px;">
-</a>
+            <a href="index.html" class="navbar-brand d-flex justify-content-center position-absolute start-50 translate-middle-x" style="top: -10px;"> <!-- Added top property -->
+                <img src="../photos/equip.png" alt="Logo" class="m-0" style="height: 100px;">
+            </a>
 
             <!-- Links on the left -->
-<div class="collapse navbar-collapse justify-content-center" id="navbarCollapse">
-    <div class="navbar-nav p-4 p-lg-0">
-        <a href="index.php" class="nav-item nav-link active me-2" style="font-size: 15px !important;">Accueil</a>
-        <a href="propos.php" class="nav-item nav-link me-3" style="font-size: 15px !important; white-space: nowrap;">À propos</a>
-        <a href="cavaliers.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavaliers</a>
-        <a href="evenements.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Événements</a>
-        <a href="cours.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cours</a>
-        <a href="cavalerie.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavalerie</a>
-        <a href="contact.php" class="nav-item nav-link" style="font-size: 15px !important;">Contact</a>
-    </div>
-</div>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarCollapse">
+                <div class="navbar-nav p-4 p-lg-0">
+                    <a href="index.php" class="nav-item nav-link active me-2" style="font-size: 15px !important;">Accueil</a>
+                    <a href="propos.php" class="nav-item nav-link me-3" style="font-size: 15px !important; white-space: nowrap;">À propos</a>
+                    <a href="cavaliers.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavaliers</a>
+                    <a href="evenements.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Événements</a>
+                    <a href="cours.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cours</a>
+                    <a href="cavalerie.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavalerie</a>
+                    <a href="contact.php" class="nav-item nav-link" style="font-size: 15px !important;">Contact</a>
+                </div>
             </div>
 
             <!-- Topbar content on the right -->
@@ -80,153 +88,163 @@
                 </div>
             </div>
 
-<!-- Appointment button on the right -->
-<a href="../vue/vue.utilisateurs.php" class="login-button">
-    <i class="fas fa-user"></i> Espace Utilisateur
-</a>
-
+            <!-- Appointment button on the right -->
+            <a href="../vue/vue.utilisateurs.php" class="login-button">
+                <i class="fas fa-user"></i> Espace Utilisateur
+            </a>
         </div>
     </nav>
     <!-- Navbar End -->
 
-<!-- Header Start -->
-<div class="container-fluid header bg-primary p-0 mb-5">
-    <div class="row g-0 align-items-center flex-column-reverse flex-lg-row">
-        <div class="col-lg-6 p-5 wow fadeIn" data-wow-delay="0.1s">
-            <h1 class="display-4 text-white mb-5">Equihorizon</h1>
-            <div class="row g-4">
-                <div class="col-sm-4">
-                    <div class="border-start border-light ps-4">
-                        <h2 class="text-white mb-1" data-toggle="counter-up">4</h2>
-                        <p class="text-light mb-0">Cavaliers Expérimentés</p>
+    <!-- Header Start -->
+    <div class="container-fluid header bg-primary p-0 mb-5">
+        <div class="row g-0 align-items-center flex-column-reverse flex-lg-row">
+            <div class="col-lg-6 p-5 wow fadeIn" data-wow-delay="0.1s">
+                <h1 class="display-4 text-white mb-5">Equihorizon</h1>
+                <div class="row g-4">
+                    <div class="col-sm-4">
+                        <div class="border-start border-light ps-4">
+                            <h2 class="text-white mb-1" data-toggle="counter-up">4</h2>
+                            <p class="text-light mb-0">Cavaliers Expérimentés</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="border-start border-light ps-4">
-                        <h2 class="text-white mb-1" data-toggle="counter-up">123</h2>
-                        <p class="text-light mb-0">Équipements</p>
+                    <div class="col-sm-4">
+                        <div class="border-start border-light ps-4">
+                            <h2 class="text-white mb-1" data-toggle="counter-up">123</h2>
+                            <p class="text-light mb-0">Équipements</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="border-start border-light ps-4">
-                        <h2 class="text-white mb-1" data-toggle="counter-up">345</h2>
-                        <p class="text-light mb-0">Membres</p>
+                    <div class="col-sm-4">
+                        <div class="border-start border-light ps-4">
+                            <h2 class="text-white mb-1" data-toggle="counter-up">345</h2>
+                            <p class="text-light mb-0">Membres</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
-<div id="image-slider" class="owl-carousel owl-theme">
-    <div class="item"><img class="img-fluid" src="../photos/rider.jpg" alt="Image 1"></div>
-    <div class="item"><img class="img-fluid" src="../photos/cap.jpg" alt="Image 2"></div>
-    <div class="item"><img class="img-fluid" src="../photos/ele.jpg" alt="Image 3"></div>
-</div>
+            <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                <div id="image-slider" class="owl-carousel owl-theme">
+                    <div class="item"><img class="img-fluid" src="../photos/rider.jpg" alt="Image 1"></div>
+                    <div class="item"><img class="img-fluid" src="../photos/cap.jpg" alt="Image 2"></div>
+                    <div class="item"><img class="img-fluid" src="../photos/ele.jpg" alt="Image 3"></div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-<!-- Header End -->
+    <!-- Header End -->
 
-<!-- JavaScript Libraries -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="lib/wow/wow.min.js"></script>
-<script src="lib/easing/easing.min.js"></script>
-<script src="lib/waypoints/waypoints.min.js"></script>
-<script src="lib/counterup/counterup.min.js"></script>
-<script src="lib/owlcarousel/owl.carousel.min.js"></script>
-<script src="lib/tempusdominus/js/moment.min.js"></script>
-<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-<!-- Template Javascript -->
-<script src="js/main.js"></script>
-<style>
-    body {
-        overflow-x: hidden; /* Empêche le défilement horizontal */
-        margin: 0; /* Supprime les marges par défaut du body */
-    }
-    .container-fluid {
-        width: 100%; /* Assure que le conteneur prend toute la largeur */
-        padding: 0; /* Supprime les paddings qui pourraient causer un débordement */
-    }
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+            /* Empêche le défilement horizontal */
+            margin: 0;
+            /* Supprime les marges par défaut du body */
+        }
 
-/* Bouton de connexion */
-.login-button {
-    padding: 0.6rem 1.4rem;
-    background: var(--secondary-color);
-    color: white;
-    border-radius: 25px;
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(230, 126, 34, 0.2);
-    display: flex;
-    align-items: center;
-    white-space: nowrap; /* Empêche le texte de se diviser en plusieurs lignes */
-}
+        .container-fluid {
+            width: 100%;
+            /* Assure que le conteneur prend toute la largeur */
+            padding: 0;
+            /* Supprime les paddings qui pourraient causer un débordement */
+        }
 
-.login-button:hover {
-    background: var(--secondary-color); /* Garder la même couleur de fond */
-    color: white; /* Garder la même couleur de texte */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
-}
+        /* Bouton de connexion */
+        .login-button {
+            padding: 0.6rem 1.4rem;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(230, 126, 34, 0.2);
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            /* Empêche le texte de se diviser en plusieurs lignes */
+        }
 
-.login-button i {
-    margin-right: 8px; /* Ajuster l'espacement entre l'icône et le texte */
-}
+        .login-button:hover {
+            background: var(--secondary-color);
+            /* Garder la même couleur de fond */
+            color: white;
+            /* Garder la même couleur de texte */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+        }
 
-:root {
-    --secondary-color: #e67e22; /* Exemple de couleur secondaire */
-    --accent-color: #d35400; /* Exemple de couleur d'accent */
-}
-/* Ajouter une bordure jaune à certains éléments */
-.border-yellow {
-    border: 2px solid #f6ae2d !important;
-}
+        .login-button i {
+            margin-right: 8px;
+            /* Ajuster l'espacement entre l'icône et le texte */
+        }
 
-/* Changer la couleur de fond de certains éléments */
-.bg-yellow {
-    background-color: #f6ae2d !important;
-}
+        :root {
+            --secondary-color: #e67e22;
+            /* Exemple de couleur secondaire */
+            --accent-color: #d35400;
+            /* Exemple de couleur d'accent */
+        }
 
-/* Ajouter des effets de survol jaune */
-.hover-yellow:hover {
-    background-color: #f6ae2d !important;
-    color: white !important;
-}
+        /* Ajouter une bordure jaune à certains éléments */
+        .border-yellow {
+            border: 2px solid #f6ae2d !important;
+        }
 
-/* Ajouter une couleur jaune aux icônes */
-.text-yellow {
-    color: #f6ae2d !important;
-}
+        /* Changer la couleur de fond de certains éléments */
+        .bg-yellow {
+            background-color: #f6ae2d !important;
+        }
 
-/* Ajouter une couleur jaune aux boutons */
-.btn-yellow {
-    background-color: #f6ae2d !important;
-    border-color: #f6ae2d !important;
-}
+        /* Ajouter des effets de survol jaune */
+        .hover-yellow:hover {
+            background-color: #f6ae2d !important;
+            color: white !important;
+        }
 
-.btn-yellow:hover {
-    background-color: #e09f24 !important;
-    border-color: #e09f24 !important;
-}
+        /* Ajouter une couleur jaune aux icônes */
+        .text-yellow {
+            color: #f6ae2d !important;
+        }
 
-</style>
+        /* Ajouter une couleur jaune aux boutons */
+        .btn-yellow {
+            background-color: #f6ae2d !important;
+            border-color: #f6ae2d !important;
+        }
 
-<script>
-    $(document).ready(function(){
-        $("#image-slider").owlCarousel({
-            items: 1,
-            loop: true,
-            autoplay: true,
-            autoplayTimeout: 2000, // 2 seconds
-            autoplayHoverPause: true
+        .btn-yellow:hover {
+            background-color: #e09f24 !important;
+            border-color: #e09f24 !important;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $("#image-slider").owlCarousel({
+                items: 1,
+                loop: true,
+                autoplay: true,
+                autoplayTimeout: 2000, // 2 seconds
+                autoplayHoverPause: true
+            });
         });
-    });
-</script>
+    </script>
 
     <!-- About Start -->
     <div class="container-xxl py-5">
@@ -239,15 +257,15 @@
                     </div>
                 </div>
                 <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
-<h1 class="mb-4">Pourquoi Nous Faire Confiance ? Découvrez-Nous !</h1>
-<h3>Nos engagements</h3>
-<p><i class="far fa-check-circle text-primary me-3"></i>Soins de qualité pour les chevaux</p>
-<p>Nous veillons au bien-être des chevaux grâce à des soins personnalisés, adaptés à leurs besoins physiques et émotionnels. Votre cheval est entre de bonnes mains.</p>
-<p><i class="far fa-check-circle text-primary me-3"></i>Cavaliers qualifiés</p>
-<p>Notre équipe est composée de cavaliers expérimentés et certifiés, capables d’allier technique et sensibilité pour le respect de l’animal.</p>
-<p><i class="far fa-check-circle text-primary me-3"></i>Professionnels de la recherche équestre</p>
-<p>Nous contribuons à l’avancée des connaissances dans le domaine équestre en collaborant avec des experts et en mettant en place des pratiques innovantes.</p>
-<a class="btn btn-primary rounded-pill py-3 px-5 mt-3" href="">En savoir plus</a>
+                    <h1 class="mb-4">Pourquoi Nous Faire Confiance ? Découvrez-Nous !</h1>
+                    <h3>Nos engagements</h3>
+                    <p><i class="far fa-check-circle text-primary me-3"></i>Soins de qualité pour les chevaux</p>
+                    <p>Nous veillons au bien-être des chevaux grâce à des soins personnalisés, adaptés à leurs besoins physiques et émotionnels. Votre cheval est entre de bonnes mains.</p>
+                    <p><i class="far fa-check-circle text-primary me-3"></i>Cavaliers qualifiés</p>
+                    <p>Notre équipe est composée de cavaliers expérimentés et certifiés, capables d’allier technique et sensibilité pour le respect de l’animal.</p>
+                    <p><i class="far fa-check-circle text-primary me-3"></i>Professionnels de la recherche équestre</p>
+                    <p>Nous contribuons à l’avancée des connaissances dans le domaine équestre en collaborant avec des experts et en mettant en place des pratiques innovantes.</p>
+                    <a class="btn btn-primary rounded-pill py-3 px-5 mt-3" href="">En savoir plus</a>
                 </div>
             </div>
         </div>
@@ -269,7 +287,7 @@
                         </div>
                         <h4 class="mb-3">Équitation</h4>
                         <p class="mb-4">Découvrez les bases et perfectionnez votre technique à cheval.</p>
-                        <a class="btn" href=""><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
+                        <a class="btn" href="" data-bs-toggle="modal" data-bs-target="#equitationModal"><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
@@ -279,17 +297,17 @@
                         </div>
                         <h4 class="mb-3">Dressage</h4>
                         <p class="mb-4">Apprenez la maîtrise et l'élégance de votre monture.</p>
-                        <a class="btn" href=""><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
+                        <a class="btn" href="" data-bs-toggle="modal" data-bs-target="#dressageModal"><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="service-item bg-light rounded h-100 p-5">
                         <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 65px; height: 65px;">
-                        <i class="fa fa-horse-head text-primary fs-4"></i>
+                            <i class="fa fa-horse-head text-primary fs-4"></i>
                         </div>
                         <h4 class="mb-3">Saut d'obstacles</h4>
                         <p class="mb-4">Entraînez-vous au franchissement d'obstacles avec précision.</p>
-                        <a class="btn" href=""><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
+                        <a class="btn" href="" data-bs-toggle="modal" data-bs-target="#sautObstaclesModal"><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
@@ -299,7 +317,7 @@
                         </div>
                         <h4 class="mb-3">Cours pour enfants</h4>
                         <p class="mb-4">Des cours adaptés pour éveiller les jeunes cavaliers.</p>
-                        <a class="btn" href=""><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
+                        <a class="btn" href="" data-bs-toggle="modal" data-bs-target="#coursEnfantsModal"><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
@@ -309,7 +327,7 @@
                         </div>
                         <h4 class="mb-3">Cours pour adultes</h4>
                         <p class="mb-4">Apprenez ou progressez dans une ambiance conviviale.</p>
-                        <a class="btn" href=""><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
+                        <a class="btn" href="" data-bs-toggle="modal" data-bs-target="#coursAdultesModal"><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
@@ -319,13 +337,122 @@
                         </div>
                         <h4 class="mb-3">Pension pour chevaux</h4>
                         <p class="mb-4">Offrez un cadre sécurisé et confortable à votre cheval.</p>
-                        <a class="btn" href=""><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
+                        <a class="btn" href="" data-bs-toggle="modal" data-bs-target="#pensionChevauxModal"><i class="fa fa-plus text-primary me-3"></i>En savoir plus</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- Service End -->
+
+    <!-- Modals -->
+    <div class="modal fade" id="equitationModal" tabindex="-1" aria-labelledby="equitationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="equitationModalLabel">Équitation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid mb-3" src="../photos/1.jpg" alt="Équitation">
+                    <p>Découvrez les bases et perfectionnez votre technique à cheval. Nos cours d'équitation sont adaptés à tous les niveaux, des débutants aux cavaliers expérimentés. Apprenez à monter en toute sécurité et à développer une relation harmonieuse avec votre cheval.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dressageModal" tabindex="-1" aria-labelledby="dressageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dressageModalLabel">Dressage</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid mb-3" src="../photos/2.jpg" alt="Dressage">
+                    <p>Apprenez la maîtrise et l'élégance de votre monture. Nos cours de dressage sont conçus pour vous aider à développer une relation harmonieuse avec votre cheval, en mettant l'accent sur la précision et la finesse des mouvements.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="sautObstaclesModal" tabindex="-1" aria-labelledby="sautObstaclesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sautObstaclesModalLabel">Saut d'obstacles</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid mb-3" src="../photos/3.jpg" alt="Saut d'obstacles">
+                    <p>Entraînez-vous au franchissement d'obstacles avec précision. Nos cours de saut d'obstacles sont conçus pour vous aider à développer vos compétences et à améliorer votre technique de saut.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="coursEnfantsModal" tabindex="-1" aria-labelledby="coursEnfantsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="coursEnfantsModalLabel">Cours pour enfants</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid mb-3" src="../photos/4.jpg" alt="Cours pour enfants">
+                    <p>Des cours adaptés pour éveiller les jeunes cavaliers. Nos cours pour enfants sont conçus pour initier les jeunes à l'équitation de manière ludique et sécurisée.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="coursAdultesModal" tabindex="-1" aria-labelledby="coursAdultesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="coursAdultesModalLabel">Cours pour adultes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid mb-3" src="../photos/5.jpg" alt="Cours pour adultes">
+                    <p>Apprenez ou progressez dans une ambiance conviviale. Nos cours pour adultes sont conçus pour vous aider à développer vos compétences équestres, quel que soit votre niveau.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="pensionChevauxModal" tabindex="-1" aria-labelledby="pensionChevauxModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pensionChevauxModalLabel">Pension pour chevaux</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid mb-3" src="../photos/6.jpg" alt="Pension pour chevaux">
+                    <p>Offrez un cadre sécurisé et confortable à votre cheval. Notre pension pour chevaux est conçue pour offrir à votre cheval un environnement sûr et agréable, avec des soins personnalisés.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Feature Start -->
     <div class="container-fluid bg-primary overflow-hidden my-5 px-lg-0">
@@ -400,68 +527,19 @@
             <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
                 <p class="d-inline-block border rounded-pill py-1 px-4">Cavaliers</p>
                 <h1>Nos Cavaliers Expérimentés</h1>
+                <p id="total-cavaliers">Total de cavaliers: <span id="cavalier-count"><?php echo count($cavaliersList); ?></span></p>
             </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="owl-carousel team-carousel wow fadeInUp" data-wow-delay="0.1s">
+                <?php foreach ($cavaliersList as $cavalier): ?>
                     <div class="team-item position-relative rounded overflow-hidden">
                         <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-1.jpg" alt="Marie Dupont">
                         </div>
                         <div class="team-text bg-light text-center p-4">
-                            <h5>Marie Dupont</h5>
-                            <p class="text-primary">Instructrice en Équitation</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
+                            <h5><?php echo htmlspecialchars($cavalier['nomcava']); ?></h5>
+                            <p class="text-primary"><?php echo htmlspecialchars($cavalier['prenomcava']); ?></p>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-2.jpg" alt="Jean Martin">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Jean Martin</h5>
-                            <p class="text-primary">Spécialiste en Dressage</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-3.jpg" alt="Sophie Lefèvre">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Sophie Lefèvre</h5>
-                            <p class="text-primary">Experte en Saut d'Obstacles</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-4.jpg" alt="Pierre Durand">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Pierre Durand</h5>
-                            <p class="text-primary">Entraîneur de Cours pour Enfants</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
@@ -474,7 +552,6 @@
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
                     <p class="d-inline-block border rounded-pill py-1 px-4">Réservation</p>
                     <h1 class="mb-4">Réservez une Séance avec Nos Cavaliers</h1>
-                    <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
                     <div class="bg-light rounded d-flex align-items-center p-5 mb-4">
                         <div class="d-flex flex-shrink-0 align-items-center justify-content-center rounded-circle bg-white" style="width: 55px; height: 55px;">
                             <i class="fa fa-phone-alt text-primary"></i>
@@ -600,7 +677,6 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h5 class="text-light mb-4">Newsletter</h5>
-                    <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
                     <div class="position-relative mx-auto" style="max-width: 400px;">
                         <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Votre email">
                         <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">S'inscrire</button>
@@ -608,15 +684,16 @@
                 </div>
             </div>
         </div>
-<div class="container">
-    <div class="copyright text-center">
-        <div class="row">
-            <div class="col-12">
-                &copy; <a class="border-bottom" href="#">Equihorizon</a>, Tous Droits Réservés.
+        <div class="container">
+            <div class="copyright text-center">
+                <div class="row">
+                    <div class="col-12">
+                        &copy; <a class="border-bottom" href="#">Equihorizon</a>, Tous Droits Réservés.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <!-- Footer End -->
 
     <!-- Back to Top -->
@@ -636,6 +713,36 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialiser le carrousel des cavaliers
+            $(".team-carousel").owlCarousel({
+                items: 4,
+                loop: true,
+                margin: 30,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                nav: true,
+                navText: ["<span class='carousel-control-prev-icon' aria-hidden='true'></span>", "<span class='carousel-control-next-icon' aria-hidden='true'></span>"],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 2
+                    },
+                    1000: {
+                        items: 4
+                    }
+                }
+            });
+
+            // Mettre à jour le nombre total de cavaliers
+            var totalCavaliers = <?php echo count($cavaliersList); ?>;
+            $("#cavalier-count").text(totalCavaliers);
+        });
+    </script>
 </body>
 
 </html>
