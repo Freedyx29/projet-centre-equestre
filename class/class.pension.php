@@ -2,14 +2,6 @@
 include_once '../include/bdd.inc.php';
 
 class Pension {
-
-    private $idpen;
-    private $libpen;
-    private $dateD;
-    private $dateF;
-    private $tarif;
-    private $numsire;
-
     public function __construct($idp = null, $libp = null, $datD = null, $datF = null, $tarif = null, $nums = null) {
         $this->idpen = $idp;
         $this->libpen = $libp;
@@ -20,7 +12,6 @@ class Pension {
     }
 
     public function getNomCavalier($idcava) {
-        // Récupérer le nom du cavalier en fonction de son ID
         $con = connexionPDO();
         $sql = "SELECT nomcava FROM cavaliers WHERE idcava = :idcava";
         $req = $con->prepare($sql);
@@ -174,36 +165,37 @@ class Pension {
         }
     }
 
-    public function updateCavaliers($idpen, $idcava1, $idcava2) {
-        $con = connexionPDO();
-        $data = [
-            ':idpen' => $idpen,
-            ':idcava1' => $idcava1,
-            ':idcava2' => $idcava2
-        ];
+   public function updateCavaliers($idpen, $idcava1, $idcava2) {
+    $con = connexionPDO();
+    $data = [
+        ':idpen' => $idpen,
+        ':idcava1' => $idcava1,
+        ':idcava2' => $idcava2
+    ];
 
-        // Supprimer les anciens cavaliers associés à cette pension
-        $sqlDelete = "DELETE FROM prend WHERE redifpen = :idpen;";
-        $stmnDelete = $con->prepare($sqlDelete);
-        $stmnDelete->execute([':idpen' => $idpen]);
+    // Supprimer les anciens cavaliers associés à cette pension
+    $sqlDelete = "DELETE FROM prend WHERE redifpen = :idpen;";
+    $stmnDelete = $con->prepare($sqlDelete);
+    $stmnDelete->execute([':idpen' => $idpen]);
 
-        // Ajouter les nouveaux cavaliers
-        if ($idcava1) {
-            $sqlInsert1 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava1, :idpen);";
-            $stmnInsert1 = $con->prepare($sqlInsert1);
-            $stmnInsert1->execute([':idcava1' => $idcava1, ':idpen' => $idpen]);
-            error_log("Cavalier 1 ajouté : $sqlInsert1");
-        }
-
-        if ($idcava2) {
-            $sqlInsert2 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava2, :idpen);";
-            $stmnInsert2 = $con->prepare($sqlInsert2);
-            $stmnInsert2->execute([':idcava2' => $idcava2, ':idpen' => $idpen]);
-            error_log("Cavalier 2 ajouté : $sqlInsert2");
-        }
-
-        error_log("Cavaliers mis à jour pour la pension ID: $idpen avec IDs cavaliers: $idcava1, $idcava2");
+    // Ajouter les nouveaux cavaliers
+    if ($idcava1) {
+        $sqlInsert1 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava1, :idpen);";
+        $stmnInsert1 = $con->prepare($sqlInsert1);
+        $stmnInsert1->execute([':idcava1' => $idcava1, ':idpen' => $idpen]);
+        error_log("Cavalier 1 ajouté : $sqlInsert1");
     }
+
+    if ($idcava2) {
+        $sqlInsert2 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava2, :idpen);";
+        $stmnInsert2 = $con->prepare($sqlInsert2);
+        $stmnInsert2->execute([':idcava2' => $idcava2, ':idpen' => $idpen]);
+        error_log("Cavalier 2 ajouté : $sqlInsert2");
+    }
+
+    error_log("Cavaliers mis à jour pour la pension ID: $idpen avec IDs cavaliers: $idcava1, $idcava2");
+}
+
 
     public function Supprimer($id){
         try {
