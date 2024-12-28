@@ -5,11 +5,19 @@ include_once '../class/class.cavaliers.php';
 $cavalier = new Cavaliers();
 // Récupération de toutes les cavaliers depuis la base de données
 $cavaliersList = $cavalier->CavaliersALL();
+// Récupérer le nombre de cavaliers
+$cavalierCount = count($cavaliersList);
+
+// Vérifier si la requête est une requête AJAX pour récupérer le nombre de cavaliers
+if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
+    echo json_encode(['cavalierCount' => $cavalierCount]);
+    exit;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="utf-8">
     <title>Equihorizon - Centre Équestre</title>
@@ -34,14 +42,201 @@ $cavaliersList = $cavalier->CavaliersALL();
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.min.js"></script>
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 </head>
+<body>
+    <!-- Votre contenu HTML ici -->
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- AOS JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- Initialiser AOS -->
+    <script>
+        AOS.init();
+    </script>
 
 <body>
+    <style>
+/* Styles pour la section Actualités */
+.news {
+    padding: 30px 0;
+    background-color: #f8f9fa;
+    text-align: center; /* Centrer le texte */
+}
+
+.news h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #333;
+    font-family: 'Open Sans', sans-serif;
+    position: relative;
+}
+
+.news h2::after {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 3px;
+    background: #e67e22;
+    left: 50%;
+    bottom: -15px;
+    transform: translateX(-50%);
+}
+
+.news-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrer les articles */
+    gap: 15px;
+}
+
+.news-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    max-width: 300px; /* Réduire la largeur maximale */
+    margin: 10px; /* Ajouter une marge pour espacer les cartes */
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.news-card img {
+    width: 100%;
+    height: 150px; /* Réduire la hauteur des images */
+    border-bottom: 2px solid #e67e22;
+    transition: transform 0.3s;
+    object-fit: cover; /* Assurer que l'image couvre toute la zone */
+}
+
+.news-card:hover img {
+    transform: scale(1.05);
+}
+
+.news-content {
+    padding: 10px; /* Réduire le padding interne */
+}
+
+.news-content h3 {
+    margin-bottom: 10px;
+    font-size: 1.2rem; /* Réduire la taille du titre */
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    transition: color 0.3s;
+}
+
+.news-content h3:hover {
+    color: #e67e22;
+}
+
+.news-content p {
+    margin-bottom: 15px;
+    font-size: 0.9rem; /* Réduire la taille du texte */
+    color: #777;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.news-content .read-more {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    color: #e67e22; /* Changer la couleur du texte en orange */
+    border: none; /* Enlever la bordure */
+    background-color: transparent; /* Enlever le fond */
+    transition: transform 0.3s, color 0.3s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none; /* Enlever le soulignement du lien */
+    font-size: 0.9rem; /* Réduire la taille du texte du bouton */
+}
+
+.news-content .read-more:hover {
+    transform: translateY(-2px);
+    color: #d35400; /* Changer la couleur du texte au survol */
+}
+
+.news-content .read-more::after {
+    content: '\2192'; /* Code Unicode pour la flèche droite */
+    margin-left: 8px; /* Espacement entre le texte et la flèche */
+    transition: margin-left 0.3s;
+    font-size: 0.9rem; /* Réduire la taille de l'icône de flèche */
+}
+
+.news-content .read-more:hover::after {
+    margin-left: 12px; /* Déplacer légèrement la flèche vers la droite au survol */
+}
+
+.news-content .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: #e67e22;
+    color: #fff;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.news-content .date {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.news-content .date i {
+    margin-right: 5px;
+}
+
+/* Styles pour le bouton "Voir la suite" */
+.btn-primary {
+    background-color: #e67e22;
+    border-color: #e67e22;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+}
+
+</style>
+
+</style>
+
     <!-- Spinner Start -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -58,7 +253,7 @@ $cavaliersList = $cavalier->CavaliersALL();
             </button>
 
             <!-- Centered logo -->
-            <a href="index.html" class="navbar-brand d-flex justify-content-center position-absolute start-50 translate-middle-x" style="top: -10px;"> <!-- Added top property -->
+            <a href="index.php" class="navbar-brand d-flex justify-content-center position-absolute start-50 translate-middle-x" style="top: -10px;"> <!-- Added top property -->
                 <img src="../photos/equip.png" alt="Logo" class="m-0" style="height: 100px;">
             </a>
 
@@ -89,7 +284,7 @@ $cavaliersList = $cavalier->CavaliersALL();
             </div>
 
             <!-- Appointment button on the right -->
-            <a href="../vue/vue.utilisateurs.php" class="login-button">
+            <a href="vue.utilisateurs.php" class="login-button">
                 <i class="fas fa-user"></i> Espace Utilisateur
             </a>
         </div>
@@ -104,7 +299,7 @@ $cavaliersList = $cavalier->CavaliersALL();
                 <div class="row g-4">
                     <div class="col-sm-4">
                         <div class="border-start border-light ps-4">
-                            <h2 class="text-white mb-1" data-toggle="counter-up">4</h2>
+                            <h2 class="text-white mb-1" id="cavalier-count"><?php echo $cavalierCount; ?></h2>
                             <p class="text-light mb-0">Cavaliers Expérimentés</p>
                         </div>
                     </div>
@@ -232,18 +427,61 @@ $cavaliersList = $cavalier->CavaliersALL();
             background-color: #e09f24 !important;
             border-color: #e09f24 !important;
         }
+
     </style>
 
     <script>
-        $(document).ready(function () {
-            $("#image-slider").owlCarousel({
-                items: 1,
-                loop: true,
-                autoplay: true,
-                autoplayTimeout: 2000, // 2 seconds
-                autoplayHoverPause: true
-            });
+$(document).ready(function () {
+    $("#image-slider").owlCarousel({
+        items: 1,
+        loop: true,
+        autoplay: true,
+        autoplayTimeout: 2000, // 2 seconds
+        autoplayHoverPause: true
+    });
+
+    // Fonction pour mettre à jour le nombre de cavaliers
+    function updateCavalierCount() {
+        $.ajax({
+            url: 'index.php?action=get_cavalier_count',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Mettre à jour le nombre de cavaliers avec animation
+                const cavalierCountElement = document.getElementById('cavalier-count');
+                const cavalierCount = data.cavalierCount;
+                const options = {
+                    duration: 2, // Durée de l'animation en secondes
+                    useEasing: true, // Utiliser l'accélération
+                    useGrouping: true, // Utiliser les séparateurs de milliers
+                    separator: ' ', // Séparateur de milliers
+                    decimal: '.', // Séparateur décimal
+                };
+                const countUp = new CountUp(cavalierCountElement, cavalierCount, options);
+                countUp.start();
+
+                // Mettre à jour le nombre total de cavaliers sans animation
+                $("#total-cavaliers-count").text(cavalierCount);
+            },
+            error: function (xhr, status, error) {
+                console.error("Erreur lors de la récupération du nombre de cavaliers:", error);
+            }
         });
+    }
+
+    // Mettre à jour le nombre de cavaliers toutes les 5 secondes
+    setInterval(updateCavalierCount, 5000);
+
+    // Mettre à jour le nombre de cavaliers au chargement de la page
+    updateCavalierCount();
+
+    // Mettre à jour le nombre de cavaliers après chaque modification
+    $("form").on("submit", function () {
+        setTimeout(updateCavalierCount, 1000); // Attendre 1 seconde après la soumission du formulaire
+    });
+});
+
+
     </script>
 
     <!-- About Start -->
@@ -344,6 +582,63 @@ $cavaliersList = $cavalier->CavaliersALL();
         </div>
     </div>
     <!-- Service End -->
+
+<!-- Section Actualités -->
+<section class="news">
+    <h2>Nos Actualités</h2>
+    <div class="news-grid">
+        <article class="news-card" data-aos="fade-up">
+            <img src="../photos/1.jpg" alt="Stage d'été">
+            <div class="news-content">
+                <span class="badge">Nouveau</span>
+                <div class="date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>15 Juin 2024</span>
+                </div>
+                <h3>Stages d'été 2024</h3>
+                <p>Découvrez notre programme complet de stages pour cet été. Du débutant au confirmé, il y en a pour tous les niveaux !</p>
+                <a href="stages.php" class="read-more">Lire la suite</a>
+            </div>
+        </article>
+
+        <article class="news-card" data-aos="fade-up" data-aos-delay="100">
+            <img src="../photos/1.jpg" alt="Compétition">
+            <div class="news-content">
+                <span class="badge">Événement</span>
+                <div class="date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>15 Juin 2024</span>
+                </div>
+                <h3>Concours CSO - 15 Juin</h3>
+                <p>Participez à notre prochain concours de saut d'obstacles. Épreuves Club et Amateur au programme.</p>
+                <a href="competitions.php" class="read-more">Lire la suite</a>
+            </div>
+        </article>
+
+        <article class="news-card" data-aos="fade-up" data-aos-delay="200">
+            <img src="../photos/1.jpg" alt="Nouveau pensionnaire">
+            <div class="news-content">
+                <span class="badge">Nouveauté</span>
+                <div class="date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>15 Juin 2024</span>
+                </div>
+                <h3>Nouveau Pensionnaire</h3>
+                <p>Découvrez notre nouvelle recrue : Éclair, un magnifique Pure-sang Espagnol qui rejoint notre cavalerie.</p>
+                <a href="cavalerie.php" class="read-more">Lire la suite</a>
+            </div>
+        </article>
+    </div>
+    <div class="text-center mt-4">
+        <a href="evenements.php" class="btn btn-primary">Voir la suite</a>
+    </div>
+</section>
+
+
+
+
+
+
 
     <!-- Modals -->
     <div class="modal fade" id="equitationModal" tabindex="-1" aria-labelledby="equitationModalLabel" aria-hidden="true">
@@ -453,6 +748,82 @@ $cavaliersList = $cavalier->CavaliersALL();
             </div>
         </div>
     </div>
+<style>
+/* CSS pour les cases des cavaliers */
+.team-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    margin-bottom: 20px;
+    position: relative;
+    padding: 20px;
+    text-align: center;
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.team-content h5 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    transition: color 0.3s;
+}
+
+.team-content h5:hover {
+    color: #e67e22;
+}
+
+.team-content p {
+    margin-bottom: 15px;
+    font-size: 1rem;
+    color: #777;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.team-content .badge {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #e67e22;
+    color: #fff;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.team-content .date {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.team-content .date i {
+    margin-right: 5px;
+}
+
+/* Animations CSS pour les titres */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.team-content h5 {
+    animation: fadeInUp 1s ease-out;
+}
+</style>
 
     <!-- Feature Start -->
     <div class="container-fluid bg-primary overflow-hidden my-5 px-lg-0">
@@ -513,7 +884,7 @@ $cavaliersList = $cavalier->CavaliersALL();
                 </div>
                 <div class="col-lg-6 pe-lg-0 wow fadeIn" data-wow-delay="0.5s" style="min-height: 400px;">
                     <div class="position-relative h-100">
-                        <img class="position-absolute img-fluid w-100 h-100" src="img/feature.jpg" style="object-fit: cover;" alt="">
+                        <img class="position-absolute img-fluid w-100 h-100" src="../photos/1.jpg" style="object-fit: cover;" alt="">
                     </div>
                 </div>
             </div>
@@ -521,29 +892,32 @@ $cavaliersList = $cavalier->CavaliersALL();
     </div>
     <!-- Feature End -->
 
-    <!-- Team Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                <p class="d-inline-block border rounded-pill py-1 px-4">Cavaliers</p>
-                <h1>Nos Cavaliers Expérimentés</h1>
-                <p id="total-cavaliers">Total de cavaliers: <span id="cavalier-count"><?php echo count($cavaliersList); ?></span></p>
-            </div>
-            <div class="owl-carousel team-carousel wow fadeInUp" data-wow-delay="0.1s">
-                <?php foreach ($cavaliersList as $cavalier): ?>
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5><?php echo htmlspecialchars($cavalier['nomcava']); ?></h5>
-                            <p class="text-primary"><?php echo htmlspecialchars($cavalier['prenomcava']); ?></p>
-                        </div>
+<!-- Team Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <p class="d-inline-block border rounded-pill py-1 px-4">Cavaliers</p>
+            <h1>Nos Cavaliers Expérimentés</h1>
+            <p id="total-cavaliers">Total de cavaliers: <span id="total-cavaliers-count"><?php echo $cavalierCount; ?></span></p>
+        </div>
+        <div class="owl-carousel team-carousel wow fadeInUp" data-wow-delay="0.1s">
+            <?php foreach ($cavaliersList as $cavalier): ?>
+                <div class="team-card">
+                    <div class="team-content">
+                        <h5><?php echo htmlspecialchars($cavalier['nomcava']); ?></h5>
+                        <p class="text-primary"><?php echo htmlspecialchars($cavalier['prenomcava']); ?></p>
+                        <p class="text-secondary"><?php echo htmlspecialchars($cavalier['libgalop']); ?></p>
                     </div>
-                <?php endforeach; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="text-center mt-4">
+            <a href="cavaliers.php" class="btn btn-primary py-2 px-4">Voir tout</a>
         </div>
     </div>
-    <!-- Team End -->
+</div>
+<!-- Team End -->
+
 
     <!-- Appointment Start -->
     <div class="container-xxl py-5">
@@ -567,7 +941,7 @@ $cavaliersList = $cavalier->CavaliersALL();
                         </div>
                         <div class="ms-4">
                             <p class="mb-2">Écrivez-Nous Maintenant</p>
-                            <h5 class="mb-0">info@example.com</h5>
+                            <h5 class="mb-0">equi@horizon.fr</h5>
                         </div>
                     </div>
                 </div>
@@ -644,57 +1018,54 @@ $cavaliersList = $cavalier->CavaliersALL();
     </div>
     <!-- Testimonial End -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Adresse</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Rue, Paris, France</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+33 1 23 45 67 890</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Services</h5>
-                    <a class="btn btn-link" href="">Équitation</a>
-                    <a class="btn btn-link" href="">Dressage</a>
-                    <a class="btn btn-link" href="">Saut d'obstacles</a>
-                    <a class="btn btn-link" href="">Cours pour enfants</a>
-                    <a class="btn btn-link" href="">Cours pour adultes</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Liens Rapides</h5>
-                    <a class="btn btn-link" href="">À propos de nous</a>
-                    <a class="btn btn-link" href="">Contactez-nous</a>
-                    <a class="btn btn-link" href="">Nos Services</a>
-                    <a class="btn btn-link" href="">Conditions Générales</a>
-                    <a class="btn btn-link" href="">Support</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Newsletter</h5>
-                    <div class="position-relative mx-auto" style="max-width: 400px;">
-                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Votre email">
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">S'inscrire</button>
-                    </div>
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-light mb-4">Adresse</h5>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Rue, Paris, France</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+33 1 23 45 67 890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>equi@herizon.fr</p>
+                <div class="d-flex pt-2">
+                    <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-light mb-4">Services</h5>
+                <p><i class="fas fa-horse me-3"></i>Équitation</p>
+                <p><i class="fas fa-horse-head me-3"></i>Dressage</p>
+                <p><i class="fas fa-horse me-3"></i>Saut d'obstacles</p>
+                <p><i class="fas fa-child me-3"></i>Cours pour enfants</p>
+                <p><i class="fas fa-user me-3"></i>Cours pour adultes</p>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-light mb-4">Newsletter</h5>
+                <div class="position-relative mx-auto" style="max-width: 400px;">
+                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Votre email">
+                    <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">S'inscrire</button>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+                <img src="../photos/equi.png" alt="Logo" class="img-fluid" style="max-width: 150px;">
+            </div>
         </div>
-        <div class="container">
-            <div class="copyright text-center">
-                <div class="row">
-                    <div class="col-12">
-                        &copy; <a class="border-bottom" href="#">Equihorizon</a>, Tous Droits Réservés.
-                    </div>
+    </div>
+    <div class="container">
+        <div class="copyright text-center">
+            <div class="row">
+                <div class="col-12">
+                    &copy; Equihorizon, Tous Droits Réservés.
                 </div>
             </div>
         </div>
     </div>
-    <!-- Footer End -->
+</div>
+<!-- Footer End -->
+
+
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -713,36 +1084,74 @@ $cavaliersList = $cavalier->CavaliersALL();
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Initialiser le carrousel des cavaliers
-            $(".team-carousel").owlCarousel({
-                items: 4,
-                loop: true,
-                margin: 30,
-                autoplay: true,
-                autoplayTimeout: 3000,
-                autoplayHoverPause: true,
-                nav: true,
-                navText: ["<span class='carousel-control-prev-icon' aria-hidden='true'></span>", "<span class='carousel-control-next-icon' aria-hidden='true'></span>"],
-                responsive: {
-                    0: {
-                        items: 1
-                    },
-                    600: {
-                        items: 2
-                    },
-                    1000: {
-                        items: 4
-                    }
-                }
-            });
+   <script>
+$(document).ready(function () {
+    // Initialiser le carrousel des cavaliers
+    $(".team-carousel").owlCarousel({
+        items: 4,
+        loop: true,
+        margin: 30,
+        autoplay: true,
+        autoplayTimeout: 1000, // 1 seconde
+        autoplayHoverPause: true,
+        smartSpeed: 500, // Vitesse de transition en millisecondes
+        nav: true,
+        navText: ["<span class='carousel-control-prev-icon' aria-hidden='true'></span>", "<span class='carousel-control-next-icon' aria-hidden='true'></span>"],
+        responsive: {
+            0: {
+                items: 1
+            },
+            600: {
+                items: 2
+            },
+            1000: {
+                items: 4
+            }
+        }
+    });
 
-            // Mettre à jour le nombre total de cavaliers
-            var totalCavaliers = <?php echo count($cavaliersList); ?>;
-            $("#cavalier-count").text(totalCavaliers);
+    // Fonction pour mettre à jour le nombre de cavaliers
+    function updateCavalierCount() {
+        $.ajax({
+            url: 'index.php?action=get_cavalier_count',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Mettre à jour le nombre de cavaliers avec animation
+                const cavalierCountElement = document.getElementById('cavalier-count');
+                const cavalierCount = data.cavalierCount;
+                const options = {
+                    duration: 2, // Durée de l'animation en secondes
+                    useEasing: true, // Utiliser l'accélération
+                    useGrouping: true, // Utiliser les séparateurs de milliers
+                    separator: ' ', // Séparateur de milliers
+                    decimal: '.', // Séparateur décimal
+                };
+                const countUp = new CountUp(cavalierCountElement, cavalierCount, options);
+                countUp.start();
+
+                // Mettre à jour le nombre total de cavaliers sans animation
+                $("#total-cavaliers-count").text(cavalierCount);
+            },
+            error: function (xhr, status, error) {
+                console.error("Erreur lors de la récupération du nombre de cavaliers:", error);
+            }
         });
-    </script>
+    }
+
+    // Mettre à jour le nombre de cavaliers toutes les 5 secondes
+    setInterval(updateCavalierCount, 5000);
+
+    // Mettre à jour le nombre de cavaliers au chargement de la page
+    updateCavalierCount();
+
+    // Mettre à jour le nombre de cavaliers après chaque modification
+    $("form").on("submit", function () {
+        setTimeout(updateCavalierCount, 1000); // Attendre 1 seconde après la soumission du formulaire
+    });
+});
+</script>
+
 </body>
 
 </html>
