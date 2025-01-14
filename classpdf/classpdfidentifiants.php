@@ -1,4 +1,5 @@
 <?php
+session_start();
 require('../fpdf186/fpdf.php');
 include_once '../class/class.cavaliers.php';
 
@@ -76,7 +77,11 @@ if (isset($_GET['idcava'])) {
         $pdf->AliasNbPages();
         $pdf->AddPage();
         $pdf->TableHeader();
-        $pdf->TableRow($cavalier['emailresp'], $cavalier['password']);
+
+        // Récupérer le mot de passe en clair depuis la variable de session
+        $clear_password = isset($_SESSION['clear_password'][$cavalier['emailresp']]) ? $_SESSION['clear_password'][$cavalier['emailresp']] : 'Mot de passe non trouvé';
+
+        $pdf->TableRow($cavalier['emailresp'], $clear_password); // Afficher le mot de passe en clair
         $pdf->Output();
     } else {
         echo "Cavalier non trouvé.";
