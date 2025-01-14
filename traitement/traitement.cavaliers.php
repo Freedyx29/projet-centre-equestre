@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include '../class/class.cavaliers.php';
 
 $ocavaliers = new Cavaliers();
@@ -19,8 +19,12 @@ if (isset($_POST['ajouter'])) {
     $password = $_POST['password'];
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
-    $success = $ocavaliers->CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic,$nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
-                                        $emailresp, $password, $assurance, $idgalop ) ? 1 : 0;
+
+    // Stocker le mot de passe en clair dans une variable de session
+    $_SESSION['clear_password'][$emailresp] = $password;
+
+    $success = $ocavaliers->CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
+                                        $emailresp, password_hash($password, PASSWORD_DEFAULT), $assurance, $idgalop) ? 1 : 0;
     header("Location: ../vue/vue.cavaliers.php?success=1&message=Cavalier ajouté avec succès");
 }
 
@@ -40,9 +44,13 @@ if (isset($_POST['modifier'])) {
     $password = $_POST['password'];
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
+
+    // Stocker le mot de passe en clair dans une variable de session
+    $_SESSION['clear_password'][$emailresp] = $password;
+
     $success = $ocavaliers->Modifier($idcava, $nomcava, $prenomcava, $datenacava, $numlic,
     $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
-    $emailresp, $password, $assurance, $idgalop) ? 1 : 0;
+    $emailresp, password_hash($password, PASSWORD_DEFAULT), $assurance, $idgalop) ? 1 : 0;
     header("Location: ../vue/vue.cavaliers.php?success=1&message=Cavalier modifié avec succès");
 }
 
@@ -51,5 +59,4 @@ if (isset($_POST['supprimer'])) {
     $success = $ocavaliers->Supprimer($idcava) ? 1 : 0;
     header("Location: ../vue/vue.cavaliers.php?success=1&message=Cavalier supprimé avec succès");
 }
-
 ?>
