@@ -10,9 +10,17 @@ $cavalierCount = count($cavaliersList);
 
 // Vérifier si la requête est une requête AJAX pour récupérer le nombre de cavaliers
 if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
-    echo json_encode(['cavalierCount' => $cavalierCount]);
+    echo json_encode(['cavali erCount' => $cavalierCount]);
     exit;
 }
+
+include_once '../class/class.evenements.php';
+
+// Création d'une instance de la classe Evenements
+$evenements = new Evenements();
+// Récupération des 3 derniers événements depuis la base de données
+$evenementsList = $evenements->EvenementsAll();
+$evenementsList = array_slice($evenementsList, -3); // Prendre les 3 derniers éléments
 ?>
 
 
@@ -90,7 +98,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
 .news h2 {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 2rem;
+    font-size: 2.5rem; /* Augmenter la taille du titre */
     color: #333;
     font-family: 'Open Sans', sans-serif;
     position: relative;
@@ -121,7 +129,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
-    max-width: 300px; /* Réduire la largeur maximale */
+    max-width: 350px; /* Augmenter la largeur maximale */
     margin: 10px; /* Ajouter une marge pour espacer les cartes */
 }
 
@@ -132,7 +140,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
 
 .news-card img {
     width: 100%;
-    height: 150px; /* Réduire la hauteur des images */
+    height: 200px; /* Augmenter la hauteur des images */
     border-bottom: 2px solid #e67e22;
     transition: transform 0.3s;
     object-fit: cover; /* Assurer que l'image couvre toute la zone */
@@ -143,12 +151,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
 }
 
 .news-content {
-    padding: 10px; /* Réduire le padding interne */
+    padding: 15px; /* Augmenter le padding interne */
 }
 
 .news-content h3 {
-    margin-bottom: 10px;
-    font-size: 1.2rem; /* Réduire la taille du titre */
+    margin-bottom: 15px;
+    font-size: 1.5rem; /* Augmenter la taille du titre */
     color: #333;
     font-family: 'Roboto', sans-serif;
     transition: color 0.3s;
@@ -159,8 +167,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
 }
 
 .news-content p {
-    margin-bottom: 15px;
-    font-size: 0.9rem; /* Réduire la taille du texte */
+    margin-bottom: 20px;
+    font-size: 1.1rem; /* Augmenter la taille du texte */
     color: #777;
     font-family: 'Open Sans', sans-serif;
 }
@@ -168,7 +176,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
 .news-content .read-more {
     display: inline-flex;
     align-items: center;
-    padding: 8px 15px;
+    padding: 10px 20px;
     color: #e67e22; /* Changer la couleur du texte en orange */
     border: none; /* Enlever la bordure */
     background-color: transparent; /* Enlever le fond */
@@ -176,7 +184,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
     position: relative;
     overflow: hidden;
     text-decoration: none; /* Enlever le soulignement du lien */
-    font-size: 0.9rem; /* Réduire la taille du texte du bouton */
+    font-size: 1rem; /* Augmenter la taille du texte du bouton */
 }
 
 .news-content .read-more:hover {
@@ -188,7 +196,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
     content: '\2192'; /* Code Unicode pour la flèche droite */
     margin-left: 8px; /* Espacement entre le texte et la flèche */
     transition: margin-left 0.3s;
-    font-size: 0.9rem; /* Réduire la taille de l'icône de flèche */
+    font-size: 1rem; /* Augmenter la taille de l'icône de flèche */
 }
 
 .news-content .read-more:hover::after {
@@ -197,10 +205,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
 
 .news-content .badge {
     display: inline-block;
-    padding: 3px 8px;
+    padding: 5px 10px;
     background-color: #e67e22;
     color: #fff;
-    font-size: 0.8rem;
+    font-size: 0.9rem; /* Augmenter la taille du badge */
     border-radius: 10px;
     margin-bottom: 10px;
 }
@@ -208,9 +216,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
 .news-content .date {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #999;
-    font-size: 0.8rem;
+    font-size: 0.9rem; /* Augmenter la taille du texte de la date */
 }
 
 .news-content .date i {
@@ -222,8 +230,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
     background-color: #e67e22;
     border-color: #e67e22;
     color: #fff;
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 15px 30px;
+    font-size: 1.2rem;
     border-radius: 5px;
     transition: background-color 0.3s, transform 0.3s;
 }
@@ -232,8 +240,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'get_cavalier_count') {
     background-color: #d35400;
     transform: translateY(-2px);
 }
-
-</style>
 
 </style>
 
@@ -481,7 +487,6 @@ $(document).ready(function () {
     });
 });
 
-
     </script>
 
     <!-- About Start -->
@@ -587,58 +592,60 @@ $(document).ready(function () {
 <section class="news">
     <h2>Nos Actualités</h2>
     <div class="news-grid">
-        <article class="news-card" data-aos="fade-up">
-            <img src="../photos/1.jpg" alt="Stage d'été">
-            <div class="news-content">
-                <span class="badge">Nouveau</span>
-                <div class="date">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>15 Juin 2024</span>
+        <?php foreach ($evenementsList as $e): ?>
+            <article class="news-card" data-aos="fade-up">
+                <?php
+                $photos = $evenements->getPhotosByIdeve($e['ideve']);
+                if (!empty($photos)):
+                    if (count($photos) > 1): ?>
+                        <div id="carousel-<?php echo $e['ideve']; ?>" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <?php foreach ($photos as $index => $photo):
+                                    $photoPath = '../uploads/' . basename($photo['lienphoto']);
+                                    if (file_exists($photoPath)): ?>
+                                        <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                                            <img src="<?php echo $photoPath; ?>" alt="<?php echo $e['titre']; ?>" class="d-block w-100">
+                                        </div>
+                                    <?php endif;
+                                endforeach; ?>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-<?php echo $e['ideve']; ?>" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carousel-<?php echo $e['ideve']; ?>" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    <?php else:
+                        $photoPath = '../uploads/' . basename($photos[0]['lienphoto']);
+                        if (file_exists($photoPath)): ?>
+                            <img src="<?php echo $photoPath; ?>" alt="<?php echo $e['titre']; ?>" class="img-fluid">
+                        <?php else: ?>
+                            <span>Photo introuvable : <?php echo basename($photos[0]['lienphoto']); ?></span>
+                        <?php endif;
+                    endif;
+                else: ?>
+                    <img src="../photos/default.jpg" alt="Default Image" class="img-fluid">
+                <?php endif; ?>
+                <div class="news-content">
+                    <span class="badge">Nouveau</span>
+                    <div class="date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>15 Juin 2024</span>
+                    </div>
+                    <h3><?php echo htmlspecialchars($e['titre']); ?></h3>
+                    <p><?php echo htmlspecialchars($e['commentaire']); ?></p>
+                    <a href="evenements.php" class="read-more">Lire la suite</a>
                 </div>
-                <h3>Stages d'été 2024</h3>
-                <p>Découvrez notre programme complet de stages pour cet été. Du débutant au confirmé, il y en a pour tous les niveaux !</p>
-                <a href="stages.php" class="read-more">Lire la suite</a>
-            </div>
-        </article>
-
-        <article class="news-card" data-aos="fade-up" data-aos-delay="100">
-            <img src="../photos/1.jpg" alt="Compétition">
-            <div class="news-content">
-                <span class="badge">Événement</span>
-                <div class="date">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>15 Juin 2024</span>
-                </div>
-                <h3>Concours CSO - 15 Juin</h3>
-                <p>Participez à notre prochain concours de saut d'obstacles. Épreuves Club et Amateur au programme.</p>
-                <a href="competitions.php" class="read-more">Lire la suite</a>
-            </div>
-        </article>
-
-        <article class="news-card" data-aos="fade-up" data-aos-delay="200">
-            <img src="../photos/1.jpg" alt="Nouveau pensionnaire">
-            <div class="news-content">
-                <span class="badge">Nouveauté</span>
-                <div class="date">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>15 Juin 2024</span>
-                </div>
-                <h3>Nouveau Pensionnaire</h3>
-                <p>Découvrez notre nouvelle recrue : Éclair, un magnifique Pure-sang Espagnol qui rejoint notre cavalerie.</p>
-                <a href="cavalerie.php" class="read-more">Lire la suite</a>
-            </div>
-        </article>
+            </article>
+        <?php endforeach; ?>
     </div>
     <div class="text-center mt-4">
         <a href="evenements.php" class="btn btn-primary">Voir la suite</a>
     </div>
 </section>
-
-
-
-
-
-
 
     <!-- Modals -->
     <div class="modal fade" id="equitationModal" tabindex="-1" aria-labelledby="equitationModalLabel" aria-hidden="true">
@@ -906,7 +913,11 @@ $(document).ready(function () {
                     <div class="team-content">
                         <h5><?php echo htmlspecialchars($cavalier['nomcava']); ?></h5>
                         <p class="text-primary"><?php echo htmlspecialchars($cavalier['prenomcava']); ?></p>
-                        <p class="text-secondary"><?php echo htmlspecialchars($cavalier['libgalop']); ?></p>
+                        <?php if (isset($cavalier['lib_galop'])): ?>
+                            <p class="text-secondary"><?php echo htmlspecialchars($cavalier['lib_galop']); ?></p>
+                        <?php else: ?>
+                            <p class="text-secondary">N/A</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -917,6 +928,7 @@ $(document).ready(function () {
     </div>
 </div>
 <!-- Team End -->
+
 
 
     <!-- Appointment Start -->
@@ -1065,8 +1077,6 @@ $(document).ready(function () {
 </div>
 <!-- Footer End -->
 
-
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
 
@@ -1155,3 +1165,4 @@ $(document).ready(function () {
 </body>
 
 </html>
+
