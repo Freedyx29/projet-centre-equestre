@@ -73,6 +73,9 @@ if (isset($_GET['idcava'])) {
     $cavalier = $cavaliers->getCavalierById($idcava); // Ensure this method is implemented
 
     if ($cavalier) {
+        // Message de débogage
+        error_log("Email du cavalier: " . $cavalier['emailresp']);
+
         $pdf = new PDF('P', 'mm', 'A4'); // 'P' pour portrait
         $pdf->AliasNbPages();
         $pdf->AddPage();
@@ -80,6 +83,9 @@ if (isset($_GET['idcava'])) {
 
         // Récupérer le mot de passe en clair depuis la variable de session
         $clear_password = isset($_SESSION['clear_password'][$cavalier['emailresp']]) ? $_SESSION['clear_password'][$cavalier['emailresp']] : 'Mot de passe non trouvé';
+
+        // Message de débogage
+        error_log("Mot de passe en clair récupéré: " . $clear_password);
 
         $pdf->TableRow($cavalier['emailresp'], $clear_password); // Afficher le mot de passe en clair
         $pdf->Output();
