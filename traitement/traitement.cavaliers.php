@@ -20,11 +20,13 @@ if (isset($_POST['ajouter'])) {
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
 
-    // Stocker le mot de passe en clair dans une variable de session
+    // Stocker le mot de passe en clair dans la session
     $_SESSION['clear_password'][$emailresp] = $password;
 
-    $success = $ocavaliers->CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
-                                        $emailresp, password_hash($password, PASSWORD_DEFAULT), $assurance, $idgalop) ? 1 : 0;
+    // Message de débogage
+    error_log("Mot de passe en clair stocké pour l'email: $emailresp");
+
+    $success = $ocavaliers->CavaliersAjt($nomcava, $prenomcava, $datenacava, $numlic, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp, $emailresp, $password, $assurance, $idgalop) ? 1 : 0;
     header("Location: ../vue/vue.cavaliers.php?success=1&message=Cavalier ajouté avec succès");
 }
 
@@ -45,12 +47,13 @@ if (isset($_POST['modifier'])) {
     $assurance = $_POST['assurance'];
     $idgalop = $_POST['idgalop'];
 
-    // Stocker le mot de passe en clair dans une variable de session
+    // Stocker le mot de passe en clair dans la session
     $_SESSION['clear_password'][$emailresp] = $password;
 
-    $success = $ocavaliers->Modifier($idcava, $nomcava, $prenomcava, $datenacava, $numlic,
-    $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp,
-    $emailresp, password_hash($password, PASSWORD_DEFAULT), $assurance, $idgalop) ? 1 : 0;
+    // Message de débogage
+    error_log("Mot de passe en clair stocké pour l'email: $emailresp");
+
+    $success = $ocavaliers->Modifier($idcava, $nomcava, $prenomcava, $datenacava, $numlic, $nomresp, $prenomresp, $rueresp, $vilresp, $cpresp, $telresp, $emailresp, $password, $assurance, $idgalop) ? 1 : 0;
     header("Location: ../vue/vue.cavaliers.php?success=1&message=Cavalier modifié avec succès");
 }
 
