@@ -1,3 +1,12 @@
+<?php
+include_once '../class/class.evenements.php';
+
+// Création d'une instance de la classe Evenements
+$evenements = new Evenements();
+// Récupération de tous les événements depuis la base de données
+$evenementsList = $evenements->EvenementsAll();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -88,7 +97,158 @@
     <!-- Navbar End -->
 
     <style>
+        /* Styles pour la section Actualités */
+        .news {
+            padding: 30px 0;
+            background-color: #f8f9fa;
+            text-align: center; /* Centrer le texte */
+        }
 
+        .news h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #333;
+            font-family: 'Open Sans', sans-serif;
+            position: relative;
+        }
+
+        .news h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background: #e67e22;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+        }
+
+        .news-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Centrer les articles */
+            gap: 15px;
+        }
+
+        .news-card {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            max-width: 300px; /* Réduire la largeur maximale */
+            margin: 10px; /* Ajouter une marge pour espacer les cartes */
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 150px; /* Réduire la hauteur des images */
+            border-bottom: 2px solid #e67e22;
+            transition: transform 0.3s;
+            object-fit: cover; /* Assurer que l'image couvre toute la zone */
+        }
+
+        .news-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .news-content {
+            padding: 10px; /* Réduire le padding interne */
+        }
+
+        .news-content h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem; /* Réduire la taille du titre */
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            transition: color 0.3s;
+        }
+
+        .news-content h3:hover {
+            color: #e67e22;
+        }
+
+        .news-content p {
+            margin-bottom: 15px;
+            font-size: 0.9rem; /* Réduire la taille du texte */
+            color: #777;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .news-content .read-more {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            color: #e67e22; /* Changer la couleur du texte en orange */
+            border: none; /* Enlever la bordure */
+            background-color: transparent; /* Enlever le fond */
+            transition: transform 0.3s, color 0.3s;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none; /* Enlever le soulignement du lien */
+            font-size: 0.9rem; /* Réduire la taille du texte du bouton */
+        }
+
+        .news-content .read-more:hover {
+            transform: translateY(-2px);
+            color: #d35400; /* Changer la couleur du texte au survol */
+        }
+
+        .news-content .read-more::after {
+            content: '\2192'; /* Code Unicode pour la flèche droite */
+            margin-left: 8px; /* Espacement entre le texte et la flèche */
+            transition: margin-left 0.3s;
+            font-size: 0.9rem; /* Réduire la taille de l'icône de flèche */
+        }
+
+        .news-content .read-more:hover::after {
+            margin-left: 12px; /* Déplacer légèrement la flèche vers la droite au survol */
+        }
+
+        .news-content .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #e67e22;
+            color: #fff;
+            font-size: 0.8rem;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .news-content .date {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        .news-content .date i {
+            margin-right: 5px;
+        }
+
+        /* Styles pour le bouton "Voir la suite" */
+        .btn-primary {
+            background-color: #e67e22;
+            border-color: #e67e22;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+        }
     </style>
 
     <!-- Page Header Start -->
@@ -107,85 +267,55 @@
         <div class="container">
             <h2 class="text-center mb-4">Nos Actualités</h2>
             <div class="news-grid row">
-                <article class="news-card col-md-4 mb-4" data-aos="fade-up">
-                    <img src="../photos/1.jpg" alt="Stage d'été" class="img-fluid">
-                    <div class="news-content p-3">
-                        <span class="badge bg-primary">Nouveau</span>
-                        <div class="date mb-2">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>15 Juin 2024</span>
+                <?php foreach ($evenementsList as $e): ?>
+                    <article class="news-card col-md-4 mb-4" data-aos="fade-up">
+                        <?php
+                        $photos = $evenements->getPhotosByIdeve($e['ideve']);
+                        if (!empty($photos)):
+                            if (count($photos) > 1): ?>
+                                <div id="carousel-<?php echo $e['ideve']; ?>" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <?php foreach ($photos as $index => $photo):
+                                            $photoPath = '../uploads/' . basename($photo['lienphoto']);
+                                            if (file_exists($photoPath)): ?>
+                                                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                                                    <img src="<?php echo $photoPath; ?>" alt="<?php echo $e['titre']; ?>" class="d-block w-100">
+                                                </div>
+                                            <?php endif;
+                                        endforeach; ?>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-<?php echo $e['ideve']; ?>" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-<?php echo $e['ideve']; ?>" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            <?php else:
+                                $photoPath = '../uploads/' . basename($photos[0]['lienphoto']);
+                                if (file_exists($photoPath)): ?>
+                                    <img src="<?php echo $photoPath; ?>" alt="<?php echo $e['titre']; ?>" class="img-fluid">
+                                <?php else: ?>
+                                    <span>Photo introuvable : <?php echo basename($photos[0]['lienphoto']); ?></span>
+                                <?php endif;
+                            endif;
+                        else: ?>
+                            <img src="../photos/default.jpg" alt="Default Image" class="img-fluid">
+                        <?php endif; ?>
+                        <div class="news-content p-3">
+                            <span class="badge bg-primary">Nouveau</span>
+                            <div class="date mb-2">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>15 Juin 2024</span>
+                            </div>
+                            <h3><?php echo htmlspecialchars($e['titre']); ?></h3>
+                            <p><?php echo htmlspecialchars($e['commentaire']); ?></p>
                         </div>
-                        <h3>Stages d'été 2024</h3>
-                        <p>Découvrez notre programme complet de stages pour cet été. Du débutant au confirmé, il y en a pour tous les niveaux !</p>
-                    </div>
-                </article>
-
-                <article class="news-card col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
-                    <img src="../photos/1.jpg" alt="Compétition" class="img-fluid">
-                    <div class="news-content p-3">
-                        <span class="badge bg-primary">Événement</span>
-                        <div class="date mb-2">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>15 Juin 2024</span>
-                        </div>
-                        <h3>Concours CSO - 15 Juin</h3>
-                        <p>Participez à notre prochain concours de saut d'obstacles. Épreuves Club et Amateur au programme.</p>
-                    </div>
-                </article>
-
-                <article class="news-card col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
-                    <img src="../photos/1.jpg" alt="Nouveau pensionnaire" class="img-fluid">
-                    <div class="news-content p-3">
-                        <span class="badge bg-primary">Nouveauté</span>
-                        <div class="date mb-2">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>15 Juin 2024</span>
-                        </div>
-                        <h3>Nouveau Pensionnaire</h3>
-                        <p>Découvrez notre nouvelle recrue : Éclair, un magnifique Pure-sang Espagnol qui rejoint notre cavalerie.</p>
-                    </div>
-                </article>
-
-                <article class="news-card col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
-                    <img src="../photos/1.jpg" alt="Journée portes ouvertes" class="img-fluid">
-                    <div class="news-content p-3">
-                        <span class="badge bg-primary">Événement</span>
-                        <div class="date mb-2">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>20 Juin 2024</span>
-                        </div>
-                        <h3>Journée Portes Ouvertes</h3>
-                        <p>Venez découvrir notre centre équestre lors de notre journée portes ouvertes. Démonstrations et activités pour tous !</p>
-                    </div>
-                </article>
-
-                <article class="news-card col-md-4 mb-4" data-aos="fade-up" data-aos-delay="400">
-                    <img src="../photos/1.jpg" alt="Atelier de dressage" class="img-fluid">
-                    <div class="news-content p-3">
-                        <span class="badge bg-primary">Atelier</span>
-                        <div class="date mb-2">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>25 Juin 2024</span>
-                        </div>
-                        <h3>Atelier de Dressage</h3>
-                        <p>Participez à notre atelier de dressage pour améliorer vos compétences équestres. Ouvert à tous les niveaux.</p>
-                    </div>
-                </article>
-
-                <article class="news-card col-md-4 mb-4" data-aos="fade-up" data-aos-delay="500">
-                    <img src="../photos/1.jpg" alt="Randonnée équestre" class="img-fluid">
-                    <div class="news-content p-3">
-                        <span class="badge bg-primary">Événement</span>
-                        <div class="date mb-2">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>30 Juin 2024</span>
-                        </div>
-                        <h3>Randonnée Équestre</h3>
-                        <p>Rejoignez-nous pour une randonnée équestre à travers les magnifiques paysages de la région.</p>
-                    </div>
-                </article>
+                    </article>
+                <?php endforeach; ?>
             </div>
-
         </div>
     </section>
     <!-- Section Actualités End -->
