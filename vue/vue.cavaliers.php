@@ -134,6 +134,10 @@ $cavaliersList = $cavalier->CavaliersALL();
                                             <input type="date" name="datenacava" class="form-control" required>
                                         </div>
                                         <div class="form-group">
+                                            <label>Email Cavalier</label>
+                                            <input type="text" name="emailcava" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
                                             <label>Numéro de licence</label>
                                             <input type="text" name="numlic" class="form-control" required>
                                         </div>
@@ -235,6 +239,10 @@ $cavaliersList = $cavalier->CavaliersALL();
                                         <div class="form-group">
                                             <label>Date de naissance</label>
                                             <input type="date" name="datenacava" class="form-control" value="<?php echo $c['datenacava']; ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email Cavalier</label>
+                                            <input type="text" name="emailcava" class="form-control" value="<?php echo $c['emailcava']; ?>" required>
                                         </div>
                                         <div class="form-group">
                                             <label>Numéro de licence</label>
@@ -390,6 +398,11 @@ $cavaliersList = $cavalier->CavaliersALL();
                         <div class="detail-group">
                             <label>Assurance :</label>
                             <p><?php echo $c['assurance']; ?></p>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>Email Cavalier :</label>
+                            <p><?php echo $c['emailcava']; ?></p>
                         </div>
 
                         <div class="detail-group">
