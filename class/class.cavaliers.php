@@ -3,15 +3,32 @@
 include_once '../include/bdd.inc.php';
 
 class Cavaliers {
-    private $db; // Add this property to hold the database connection
+    private $idcava;
+    private $nomcava;
+    private $prenomcava;
+    private $datenacava;
+    private $emailcava;
+    private $numlic;
+    private $nomresp;
+    private $prenomresp;
+    private $rueresp;
+    private $vilresp;
+    private $cpresp;
+    private $telresp;
+    private $emailresp;
+    private $password;
+    private $assurance;
+    private $idgalop;
+    private $db;
 
-    public function __construct($idca = null, $nc = null, $pc = null, $dnc = null, $nl = null, 
+    public function __construct($idca = null, $nc = null, $pc = null, $dnc = null, $emc = null ,$nl = null, 
                                 $nr = null, $pr = null, $rr = null, $vr = null, $cpr = null, $tr = null, 
                                 $emr = null, $pw = null, $assu = null, $idga = null) {
         $this->idcava = $idca;
         $this->nomcava = $nc;
         $this->prenomcava = $pc;
         $this->datenacava = $dnc;
+        $this->emailcava = $emc;
         $this->numlic = $nl;
         $this->nomresp = $nr;
         $this->prenomresp = $pr;
@@ -29,7 +46,7 @@ class Cavaliers {
     }
 
    public function verifyCredentials($email, $password) {
-    $query = "SELECT * FROM cavaliers WHERE emailresp = :email";
+    $query = "SELECT * FROM cavaliers WHERE emailcava = :email";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':email', $email);
     $stmt->execute();
@@ -48,6 +65,7 @@ class Cavaliers {
                 nomcava: $this->nomcava,
                 prenomcava: $this->prenomcava,
                 datenacava: $this->datenacava,
+                emailcava: $this->emailcava,
                 numlic: $this->numlic,
                 nomresp: $this->nomresp,
                 prenomresp: $this->prenomresp,
@@ -75,6 +93,10 @@ class Cavaliers {
     
     public function getdatenacava() {
         return $this->datenacava;
+    }
+
+    public function getemailcava() {
+        return $this->emailcava;
     }
     
     public function getnumlic() {
@@ -133,6 +155,10 @@ class Cavaliers {
         $this->datenacava = $dnc;
     }
     
+    public function setemailcava($emc) {
+        $this->emailcava = $emc;
+    }
+
     public function setnumlic($nl) {
         $this->numlic = $nl;
     }
@@ -200,12 +226,13 @@ class Cavaliers {
     }
 
 
-  public function Modifier($id, $nc, $pc, $dnc, $nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
+  public function Modifier($id, $nc, $pc, $dnc, $emc,$nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
     $con = connexionPDO();
     $data = [
         ':nomcava' => $nc,
         ':prenomcava' => $pc,
         ':datenacava' => $dnc,
+        ':emailcava' => $emc,
         ':numlic' => $nl,
         ':nomresp' => $nr,
         ':prenomresp' => $pr,
@@ -221,7 +248,7 @@ class Cavaliers {
     ];
 
     $sql = "UPDATE cavaliers
-            SET nomcava = :nomcava, prenomcava = :prenomcava, datenacava = :datenacava, numlic = :numlic,
+            SET nomcava = :nomcava, prenomcava = :prenomcava, datenacava = :datenacava, emailcava = :emailcava, numlic = :numlic,
                 nomresp = :nomresp, prenomresp = :prenomresp, rueresp = :rueresp, vilresp = :vilresp, cpresp = :cpresp,
                 telresp = :telresp, emailresp = :emailresp, password = :password, assurance = :assurance, idgalop = :idgalop
             WHERE idcava = :id;";
@@ -265,12 +292,13 @@ class Cavaliers {
     }
 
 
-   public function CavaliersAjt($nc, $pc, $dnc, $nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
+   public function CavaliersAjt($nc, $pc, $dnc, $emc, $nl, $nr, $pr, $rr, $vr, $cpr, $tr, $emr, $pw, $assu, $idga) {
     $con = connexionPDO();
     $data = [
         ':nomcava' => $nc,
         ':prenomcava' => $pc,
         ':datenacava' => $dnc,
+        ':emailcava' => $emc,
         ':numlic' => $nl,
         ':nomresp' => $nr,
         ':prenomresp' => $pr,
@@ -284,8 +312,8 @@ class Cavaliers {
         ':idgalop' => $idga
     ];
 
-    $sql = "INSERT INTO cavaliers (nomcava, prenomcava, datenacava, numlic, nomresp, prenomresp, rueresp, vilresp, cpresp, telresp, emailresp, password, assurance, idgalop)
-            VALUES (:nomcava, :prenomcava, :datenacava, :numlic, :nomresp, :prenomresp, :rueresp, :vilresp, :cpresp, :telresp, :emailresp, :password, :assurance, :idgalop);";
+    $sql = "INSERT INTO cavaliers (nomcava, prenomcava, datenacava, emailcava, numlic, nomresp, prenomresp, rueresp, vilresp, cpresp, telresp, emailresp, password, assurance, idgalop)
+            VALUES (:nomcava, :prenomcava, :datenacava, :emailcava, :numlic, :nomresp, :prenomresp, :rueresp, :vilresp, :cpresp, :telresp, :emailresp, :password, :assurance, :idgalop);";
     $stmn = $con->prepare($sql);
 
     if ($stmn->execute($data)) {
