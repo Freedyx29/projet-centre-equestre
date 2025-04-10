@@ -4,41 +4,49 @@ include_once '../include/bdd.inc.php';
 
 include_once 'class.cours.php';
 
-class Inscrit {
+class Inscrit
+{
 
     private $refidcours;
     private $refidcava;
 
-    function __construct(string $ridco = null, string $ridca = null) {
+    function __construct(string $ridco = null, string $ridca = null)
+    {
         $this->refidcours = $ridco;
         $this->refidcava = $ridca;
     }
 
-    public function getInscrit() {
+    public function getInscrit()
+    {
         return "Ref idcours : $this->refidcours,
                 Ref idcava : $this->refidcava";
     }
 
 
-    public function getrefidcours() {
+    public function getrefidcours()
+    {
         return $this->refidcours;
     }
 
-    public function getrefidcava() {
+    public function getrefidcava()
+    {
         return $this->refidcava;
     }
 
 
-    public function setrefidcours($ridco) {
+    public function setrefidcours($ridco)
+    {
         $this->refidcours = $ridco;
     }
 
-    public function setrefidcava($ridca) {
+    public function setrefidcava($ridca)
+    {
         $this->refidcava = $ridca;
     }
 
 
-    public function InscritALL() {
+    public function InscritALL()
+    {
         $con = connexionPDO();
         $sql = "SELECT *
                 FROM inscrit";
@@ -48,7 +56,8 @@ class Inscrit {
         return $resultat;
     }
 
-    public function InscritCours($id) {
+    public function InscritCours($id)
+    {
         $con = connexionPDO();
         $sql = "SELECT libcours
                 FROM cours
@@ -60,7 +69,8 @@ class Inscrit {
         return $ligne['libcours'];
     }
 
-    public function InscritCava($id) {
+    public function InscritCava($id)
+    {
         $con = connexionPDO();
         $sql = "SELECT nomcava
                 FROM cavaliers
@@ -73,9 +83,10 @@ class Inscrit {
     }
 
 
-    public function Modifier($id_cours_first, $id_cava_first, $refidcours, $refidcava) {
+    public function Modifier($id_cours_first, $id_cava_first, $refidcours, $refidcava)
+    {
         $con = connexionPDO();
-        
+
         // Vérifiez si la nouvelle combinaison existe déjà
         $checkSql = "SELECT COUNT(*) FROM inscrit WHERE refidcours = :refidcours AND refidcava = :refidcava";
         $checkStmt = $con->prepare($checkSql);
@@ -118,27 +129,39 @@ class Inscrit {
     }
 
 
-    public function Supprimer($refidcours, $refidcava){
+    public function Supprimer($refidcours, $refidcava)
+    {
         try {
             $con = connexionPDO();
-            $data = [
+            $con->beginTransaction();
+
+            // 1. Marquer comme supprimé dans la table inscrit
+            $sqlInscrit = "UPDATE inscrit 
+                           SET supprime = 1 
+                           WHERE refidcours = :refidcours 
+                           AND refidcava = :refidcava";
+            $stmtInscrit = $con->prepare($sqlInscrit);
+            $stmtInscrit->execute([
                 ':refidcours' => $refidcours,
                 ':refidcava' => $refidcava
-            ];
-    
-        $sql = "UPDATE inscrit SET supprime = 1 WHERE refidcours = :refidcours AND refidcava = :refidcava;";
-        $stmt = $con->prepare($sql);
-    
-        if ($stmt->execute($data)) {
-            echo "Suppression réussie";
+            ]);
+
+            // 2. Mettre à jour la participation à 1 dans la table participe
+            $sqlParticipe = "UPDATE participe 
+                             SET participe = 1 
+                             WHERE refidcava = :refidcava 
+                             AND refidcoursbase = :refidcours";
+            $stmtParticipe = $con->prepare($sqlParticipe);
+            $stmtParticipe->execute([
+                ':refidcava' => $refidcava,
+                ':refidcours' => $refidcours
+            ]);
+
+            $con->commit();
             return true;
-        } else {
-            $errorInfo = $stmt->errorInfo();
-            echo "Erreur lors de la suppression : " . $errorInfo[2];
-                return false;
-            }
-        } catch (PDOException $e) {
-            echo "Erreur PDO : " . $e->getMessage();
+        } catch (Exception $e) {
+            $con->rollBack();
+            error_log("Erreur lors de la suppression : " . $e->getMessage());
             return false;
         }
     }
@@ -150,23 +173,26 @@ class Inscrit {
             ':refidcours' => $refidcours,
             ':refidcava' => $refidcava
         ];
-
+    
         $sql = "INSERT INTO inscrit (refidcours, refidcava) 
                 SELECT :refidcours, :refidcava
-                WHERE (SELECT COUNT(*) FROM inscrit WHERE refidcours = :refidcours AND refidcava = :refidcava) = 0";
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM inscrit WHERE refidcours = :refidcours AND refidcava = :refidcava
+                )";
         $stmt = $con->prepare($sql);
         
         if ($stmt->execute($data)) {
-            // Récupérer le jour du cours
-            $sqlJour = "SELECT jour FROM cours WHERE idcours = :idcours";
-            $stmtJour = $con->prepare($sqlJour);
-            $stmtJour->execute([':idcours' => $refidcours]);
-            $jour = $stmtJour->fetchColumn();
-
-            // Ajouter les participations après l'inscription
-            $cours = new Cours();
-            $seances = $cours->ajouterOccurrencesCalendrier($refidcours, $jour);
-            $cours->ajouterParticipations($refidcours, $seances, [$refidcava]);
+            // Récupérer les séances existantes au lieu de les recréer
+            $sqlSeances = "SELECT idcoursseance FROM calendrier 
+                           WHERE idcoursbase = :idcours AND supprime = 0";
+            $stmtSeances = $con->prepare($sqlSeances);
+            $stmtSeances->execute([':idcours' => $refidcours]);
+            $seances = $stmtSeances->fetchAll(PDO::FETCH_COLUMN);
+    
+            if (!empty($seances)) {
+                $cours = new Cours();
+                $cours->ajouterParticipations($refidcours, $seances, [$refidcava]);
+            }
             
             return $con->lastInsertId();
         } else {
@@ -176,31 +202,31 @@ class Inscrit {
     }
 
 
-    public function selectTypeCours(){
+    public function selectTypeCours()
+    {
         $con = connexionPDO();
-        $sql="SELECT * FROM idcours;";
-        $executesql = $con->query($sql);                   
+        $sql = "SELECT * FROM idcours;";
+        $executesql = $con->query($sql);
         return $executesql;
     }
 
-    public function selectTypeCava(){
+    public function selectTypeCava()
+    {
         $con = connexionPDO();
-        $sql="SELECT * FROM idcava;";
-        $executesql = $con->query($sql);                   
+        $sql = "SELECT * FROM idcava;";
+        $executesql = $con->query($sql);
         return $executesql;
     }
 
-    public function getCavaliersForCours($idcours) {
+    public function getCavaliersForCours($idcours)
+    {
         $con = connexionPDO();
-        $sql = "SELECT cavaliers.nomcava
-                FROM inscrit
-                JOIN cavaliers ON inscrit.refidcava = cavaliers.idcava
-                WHERE inscrit.refidcours = :idcours AND inscrit.supprime = 0";
-        $data = [':idcours' => $idcours];
-        $executesql = $con->prepare($sql);
-        $executesql->execute($data);
-        return $executesql->fetchAll();
+        $sql = "SELECT c.nomcava, c.idcava 
+                FROM cavaliers c 
+                JOIN inscrit i ON c.idcava = i.refidcava 
+                WHERE i.refidcours = :idcours AND i.supprime = 0";
+        $stmt = $con->prepare($sql);
+        $stmt->execute([':idcours' => $idcours]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
-?>
