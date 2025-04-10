@@ -15,7 +15,7 @@ try {
 }
 
 $query = "
-    SELECT
+    SELECT DISTINCT
         c.idcoursseance,
         c.datecours,
         cb.idcours,
