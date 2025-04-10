@@ -1,0 +1,58 @@
+/* Tableau des événements */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+/* En-têtes du tableau */
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Boutons Modifier et Supprimer */
+button {
+    padding: 8px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+}
+
+button.edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button.edit-btn:hover {
+    background-color: #45a049;
+}
+
+button.delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+button.delete-btn:hover {
+    background-color: #e53935;
+}
+
+button:focus {
+    outline: none;
+}
+
+/* Style des lignes du tableau au survol */
+tr:hover {
+    background-color: #f1f1f1;
+}
