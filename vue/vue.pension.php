@@ -15,6 +15,7 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Gestion des Pensions</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -24,15 +25,16 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../js/script_pension.js"></script>
 </head>
+
 <body>
     <div class="container mt-4">
         <h2>Liste des Pensions</h2>
 
         <!-- Section des messages d'alerte -->
         <?php
-        if(isset($_GET['success']) && isset($_GET['message'])) {
+        if (isset($_GET['success']) && isset($_GET['message'])) {
             $alertClass = $_GET['success'] == 1 ? 'alert-success' : 'alert-danger';
-            ?>
+        ?>
             <div class="alert <?php echo $alertClass; ?> alert-dismissible fade show">
                 <?php echo htmlspecialchars($_GET['message']); ?>
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -69,7 +71,7 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($listePensions as $p): ?>
+                <?php foreach ($listePensions as $p): ?>
                     <tr>
                         <td><?php echo $p['libpen']; ?></td>
                         <td><?php echo date('d/m/Y', strtotime($p['dateD'])); ?></td>
@@ -100,141 +102,147 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
             </tbody>
         </table>
 
-       <!-- Modal Ajout -->
-<div class="modal fade" id="ajoutModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Ajouter une pension</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <!-- Modal Ajout -->
+        <div class="modal fade" id="ajoutModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Ajouter une pension</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <form action="../traitement/traitement.pension.php" method="post">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Libellé</label>
+                                <input type="text" name="libpen" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date début</label>
+                                <input type="date" name="dateD" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date fin</label>
+                                <input type="date" name="dateF" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tarif en euro</label>
+                                <input type="number" name="tarif" class="form-control" step="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Cheval</label>
+                                <input type="text" id="nomche" class="form-control" onkeyup="autocompletPensionajout()" required>
+                                <input type="hidden" id="num_sire" name="numsire">
+                                <ul id="nom_list_pension_id"></ul>
+                            </div>
+                            <div class="form-group">
+                                <label>Nom Cavalier 1</label>
+                                <input type="text" id="nomcava1" class="form-control" onkeyup="autocompletCavalierajout1()" required>
+                                <input type="hidden" id="idcava1" name="idcava1">
+                                <ul id="nom_list_cavalier_id1"></ul>
+                            </div>
+                            <div class="form-group" id="cavalier2Group" style="display: none;">
+                                <label>Nom Cavalier 2</label>
+                                <input type="text" id="nomcava2" class="form-control" onkeyup="autocompletCavalierajout2()">
+                                <input type="hidden" id="idcava2" name="idcava2">
+                                <ul id="nom_list_cavalier_id2"></ul>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleCavalier2Ajout()">
+                                <i class="fas fa-plus"></i>
+                                <span>Ajouter un deuxième cavalier</span>
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" name="ajouter" class="btn btn-primary">
+                                <i class="fas fa-check"></i>
+                                <span>Ajouter</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                <i class="fas fa-times"></i>
+                                <span>Fermer</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <form action="../traitement/traitement.pension.php" method="post">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Libellé</label>
-                        <input type="text" name="libpen" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Date début</label>
-                        <input type="date" name="dateD" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Date fin</label>
-                        <input type="date" name="dateF" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Tarif en euro</label>
-                        <input type="number" name="tarif" class="form-control" step="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Cheval</label>
-                        <input type="text" id="nomche" class="form-control" onkeyup="autocompletPensionajout()" required>
-                        <input type="hidden" id="num_sire" name="numsire">
-                        <ul id="nom_list_pension_id"></ul>
-                    </div>
-                    <div class="form-group">
-                        <label>Nom Cavalier 1</label>
-                        <input type="text" id="nomcava1" class="form-control" onkeyup="autocompletCavalierajout1()" required>
-                        <input type="hidden" id="idcava1" name="idcava1">
-                        <ul id="nom_list_cavalier_id1"></ul>
-                    </div>
-                    <div class="form-group" id="cavalier2Group" style="display: none;">
-                        <label>Nom Cavalier 2</label>
-                        <input type="text" id="nomcava2" class="form-control" onkeyup="autocompletCavalierajout2()">
-                        <input type="hidden" id="idcava2" name="idcava2">
-                        <ul id="nom_list_cavalier_id2"></ul>
-                    </div>
-                    <button type="button" class="btn btn-link" onclick="toggleCavalier2Ajout()">Ajouter un deuxième cavalier</button>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" name="ajouter" class="btn btn-primary">
-                        <i class="fas fa-check"></i>
-                        <span>Ajouter</span>
-                    </button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="fas fa-times"></i>
-                        <span>Fermer</span>
-                    </button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
 
-<!-- Modal Modification -->
-<?php foreach($listePensions as $p): ?>
-    <div class="modal fade" id="modifModal<?php echo $p['idpen']; ?>">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Modifier la pension</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <!-- Modal Modification -->
+        <?php foreach ($listePensions as $p): ?>
+            <div class="modal fade" id="modifModal<?php echo $p['idpen']; ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Modifier la pension</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <form action="../traitement/traitement.pension.php" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="idpen" value="<?php echo $p['idpen']; ?>">
+                                <div class="form-group">
+                                    <label>Libellé</label>
+                                    <input type="text" name="libpen" class="form-control" value="<?php echo $p['libpen']; ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date début</label>
+                                    <input type="date" name="dateD" class="form-control" value="<?php echo $p['dateD']; ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date fin</label>
+                                    <input type="date" name="dateF" class="form-control" value="<?php echo $p['dateF']; ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tarif en euro</label>
+                                    <input type="number" name="tarif" class="form-control" step="1" value="<?php echo $p['tarif']; ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Cheval</label>
+                                    <input type="text" id="nomche<?php echo $p['idpen']; ?>" class="form-control"
+                                        value="<?php echo $pension->PensionNumsire($p['numsire']); ?>"
+                                        onkeyup="autocompletPension(<?php echo $p['idpen']; ?>)" required>
+                                    <input type="hidden" id="num_sire<?php echo $p['idpen']; ?>" name="numsire" value="<?php echo $p['numsire']; ?>">
+                                    <ul id="nom_list_pension_id<?php echo $p['idpen']; ?>"></ul>
+                                </div>
+                                <?php
+                                $cavaliers = $pension->getCavaliersForPension($p['idpen']);
+                                $nomcava1 = isset($cavaliers[0]['nomcava']) ? $cavaliers[0]['nomcava'] : '';
+                                $nomcava2 = isset($cavaliers[1]['nomcava']) ? $cavaliers[1]['nomcava'] : '';
+                                ?>
+                                <div class="form-group">
+                                    <label>Nom Cavalier 1</label>
+                                    <input type="text" id="nomcava3" class="form-control"
+                                        value="<?php echo $nomcava1; ?>"
+                                        onkeyup="autocompletCavaliermodif1(<?php echo $p['idpen']; ?>)" required>
+                                    <input type="hidden" id="idcava3" name="idcava3" value="<?php echo isset($cavaliers[0]['idcava']) ? $cavaliers[0]['idcava'] : ''; ?>">
+                                    <ul id="nom_list_cavalier_id3"></ul>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nom Cavalier 2</label>
+                                    <input type="text" id="nomcava4" class="form-control"
+                                        value="<?php echo $nomcava2; ?>"
+                                        onkeyup="autocompletCavaliermodif2(<?php echo $p['idpen']; ?>)">
+                                    <input type="hidden" id="idcava4" name="idcava4" value="<?php echo isset($cavaliers[1]['idcava']) ? $cavaliers[1]['idcava'] : ''; ?>">
+                                    <ul id="nom_list_cavalier_id4"></ul>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleCavalier2Modif(<?php echo $p['idpen']; ?>)">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Ajouter un deuxième cavalier</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="modifier" class="btn btn-warning">
+                                    <i class="fas fa-check"></i>
+                                    <span>Modifier</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                    <i class="fas fa-times"></i>
+                                    <span>Fermer</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <form action="../traitement/traitement.pension.php" method="post">
-                    <div class="modal-body">
-                        <input type="hidden" name="idpen" value="<?php echo $p['idpen']; ?>">
-                        <div class="form-group">
-                            <label>Libellé</label>
-                            <input type="text" name="libpen" class="form-control" value="<?php echo $p['libpen']; ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Date début</label>
-                            <input type="date" name="dateD" class="form-control" value="<?php echo $p['dateD']; ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Date fin</label>
-                            <input type="date" name="dateF" class="form-control" value="<?php echo $p['dateF']; ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Tarif en euro</label>
-                            <input type="number" name="tarif" class="form-control" step="1" value="<?php echo $p['tarif']; ?>" required>
-                        </div>
-                        <div class="form-group">
-                          <label>Cheval</label>
-                            <input type="text" id="nomche<?php echo $p['idpen']; ?>" class="form-control"
-                                   value="<?php echo $pension->PensionNumsire($p['numsire']); ?>"
-                                   onkeyup="autocompletPension(<?php echo $p['idpen']; ?>)" required>
-                            <input type="hidden" id="num_sire<?php echo $p['idpen']; ?>" name="numsire" value="<?php echo $p['numsire']; ?>">
-                            <ul id="nom_list_pension_id<?php echo $p['idpen']; ?>"></ul>
-                        </div>
-                        <?php
-                        $cavaliers = $pension->getCavaliersForPension($p['idpen']);
-                        $nomcava1 = isset($cavaliers[0]['nomcava']) ? $cavaliers[0]['nomcava'] : '';
-                        $nomcava2 = isset($cavaliers[1]['nomcava']) ? $cavaliers[1]['nomcava'] : '';
-                        ?>
-                        <div class="form-group">
-                            <label>Nom Cavalier 1</label>
-                            <input type="text" id="nomcava3" class="form-control"
-                                   value="<?php echo $nomcava1; ?>"
-                                   onkeyup="autocompletCavaliermodif1(<?php echo $p['idpen']; ?>)" required>
-                            <input type="hidden" id="idcava3" name="idcava3" value="<?php echo isset($cavaliers[0]['idcava']) ? $cavaliers[0]['idcava'] : ''; ?>">
-                            <ul id="nom_list_cavalier_id3"></ul>
-                        </div>
-                        <div class="form-group">
-                            <label>Nom Cavalier 2</label>
-                            <input type="text" id="nomcava4" class="form-control"
-                                   value="<?php echo $nomcava2; ?>"
-                                   onkeyup="autocompletCavaliermodif2(<?php echo $p['idpen']; ?>)" >
-                            <input type="hidden" id="idcava4" name="idcava4" value="<?php echo isset($cavaliers[1]['idcava']) ? $cavaliers[1]['idcava'] : ''; ?>">
-                            <ul id="nom_list_cavalier_id4"></ul>
-                        </div>
-                        <button type="button" class="btn btn-link" onclick="toggleCavalier2Modif(<?php echo $p['idpen']; ?>)">Ajouter un deuxième cavalier</button>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="modifier" class="btn btn-warning">
-                            <i class="fas fa-check"></i>
-                            <span>Modifier</span>
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            <i class="fas fa-times"></i>
-                            <span>Fermer</span>
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
-    </div>
- <!-- Modal Suppression -->
+            <!-- Modal Suppression -->
             <div class="modal fade" id="suppModal<?php echo $p['idpen']; ?>">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -333,37 +341,37 @@ $autre_nom_cavalier = isset($_SESSION['autre_nom_cavalier']) ? $_SESSION['autre_
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-$(document).ready(function(){
-    // Variables de base
-    var $rows = $("#pensionTable tbody tr");
-    var page = 1;
-    var limit = 5;
-    var total = Math.ceil($rows.length / limit);
+        $(document).ready(function() {
+            // Variables de base
+            var $rows = $("#pensionTable tbody tr");
+            var page = 1;
+            var limit = 5;
+            var total = Math.ceil($rows.length / limit);
 
-    // Fonction pour afficher les lignes
-    function showRows() {
-        $rows.hide().slice((page-1)*limit, page*limit).show();
-        $("#pageNum").text(`Page ${page}/${total}`);
-    }
+            // Fonction pour afficher les lignes
+            function showRows() {
+                $rows.hide().slice((page - 1) * limit, page * limit).show();
+                $("#pageNum").text(`Page ${page}/${total}`);
+            }
 
-    // Modification de la fonction de recherche
-    $("#searchInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        if(value === "") {
-            // Réinitialiser la pagination quand le champ est vide
-            page = 1;
-            $rows.hide();
-            showRows();
-        } else {
-            // Pendant la recherche, afficher uniquement les résultats filtrés
-            $("#pensionTable tbody tr").each(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            // Modification de la fonction de recherche
+            $("#searchInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                if (value === "") {
+                    // Réinitialiser la pagination quand le champ est vide
+                    page = 1;
+                    $rows.hide();
+                    showRows();
+                } else {
+                    // Pendant la recherche, afficher uniquement les résultats filtrés
+                    $("#pensionTable tbody tr").each(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                }
             });
-        }
-    });
 
-    // Ajoute les boutons et le numéro de page
-    $("#pensionTable").after(`
+            // Ajoute les boutons et le numéro de page
+            $("#pensionTable").after(`
         <div class="text-center mt-3">
             <button id="prev" class="btn btn-brown"><i class="fas fa-chevron-left"></i></button>
             <span id="pageNum" class="mx-3">Page ${page}/${total}</span>
@@ -371,13 +379,24 @@ $(document).ready(function(){
         </div>
     `);
 
-    // Clics sur les boutons
-    $("#next").click(() => { if(page < total) { page++; showRows(); }});
-    $("#prev").click(() => { if(page > 1) { page--; showRows(); }});
+            // Clics sur les boutons
+            $("#next").click(() => {
+                if (page < total) {
+                    page++;
+                    showRows();
+                }
+            });
+            $("#prev").click(() => {
+                if (page > 1) {
+                    page--;
+                    showRows();
+                }
+            });
 
-    showRows();
-});
-</script>
+            showRows();
+        });
+    </script>
 
 </body>
+
 </html>
