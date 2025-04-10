@@ -2,9 +2,9 @@
 session_start();
 
 // Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['iduti'])) {
+if (!isset($_SESSION['idadmin'])) {
     $current_page = urlencode($_SERVER['PHP_SELF']);
-    header("Location: ../utilisateurs/vue.login.php?redirect_to=" . $current_page);
+    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
     exit();
 }
 include_once '../include/haut.inc.php';
