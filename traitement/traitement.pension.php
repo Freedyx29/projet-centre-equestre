@@ -50,20 +50,20 @@ if (isset($_POST['ajouter'])) {
         if ($idpen) {
             $data = [
                 ':refidcava' => $idcava1,
-                ':redifpen' => $idpen
+                ':refidpen' => $idpen
             ];
 
-            $sql = "INSERT INTO prend (refidcava, redifpen) VALUES (:refidcava, :redifpen);";
+            $sql = "INSERT INTO prend (refidcava, refidpen) VALUES (:refidcava, :refidpen);";
             $stmn = $con->prepare($sql);
 
             if ($stmn->execute($data)) {
                 if ($idcava2) {
                     $data = [
                         ':refidcava' => $idcava2,
-                        ':redifpen' => $idpen
+                        ':refidpen' => $idpen
                     ];
 
-                    $sql = "INSERT INTO prend (refidcava, redifpen) VALUES (:refidcava, :redifpen);";
+                    $sql = "INSERT INTO prend (refidcava, refidpen) VALUES (:refidcava, :refidpen);";
                     $stmn = $con->prepare($sql);
 
                     if ($stmn->execute($data)) {
