@@ -1,13 +1,13 @@
 <?php
-include '../include/haut.inc.php';
-session_start(); // Ensure session is started
+session_start();
 
-// Display the welcome message if it exists
-if (isset($_SESSION['welcome_message'])) {
-    echo "<div class='alert alert-success'>" . $_SESSION['welcome_message'] . "</div>";
-    // Unset the welcome message after displaying it
-    unset($_SESSION['welcome_message']);
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['idadmin'])) {
+  $current_page = urlencode($_SERVER['PHP_SELF']);
+  header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
+  exit();
 }
+include '../include/haut.inc.php';
 ?>
 
 <!DOCTYPE html>
