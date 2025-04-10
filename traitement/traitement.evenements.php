@@ -16,7 +16,7 @@ if (isset($_POST['ajouter'])) {
             $check = getimagesize($_FILES["photo"]["tmp_name"]);
             if ($check !== false) {
                 if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
-                    $oevenements->ajouterPhoto($ideve, $target_file);
+                    $oevenements->ajouterPhotoEve($ideve, $target_file);
                 } else {
                     echo "Désolé, il y a eu une erreur lors du téléchargement de votre fichier.";
                 }
@@ -50,7 +50,7 @@ if (isset($_POST['modifier'])) {
             $check = getimagesize($_FILES["photo"]["tmp_name"]);
             if ($check !== false) {
                 if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
-                    $oevenements->ajouterPhoto($ideve, $target_file);
+                    $oevenements->ajouterPhotoEve($ideve, $target_file);
                 } else {
                     echo "Désolé, il y a eu une erreur lors du téléchargement de votre fichier.";
                 }
