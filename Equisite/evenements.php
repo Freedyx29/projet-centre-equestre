@@ -1,389 +1,194 @@
 <?php
-include_once '../class/class.evenements.php';
+require_once '../include/bdd.inc.php';
 
-// Création d'une instance de la classe Evenements
-$evenements = new Evenements();
-// Récupération de tous les événements depuis la base de données
-$evenementsList = $evenements->EvenementsAll();
+// Nombre d'événements par page
+$evenementsParPage = 6;
+
+// Récupérer la page actuelle depuis l'URL, par défaut 1
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1; // Empêche les pages négatives ou zéro
+
+// Calculer l'offset pour la requête SQL
+$offset = ($page - 1) * $evenementsParPage;
+
+// Connexion à la base de données
+$pdo = connexionPDO();
+
+// Compter le nombre total d'événements non supprimés
+$stmtTotal = $pdo->prepare("SELECT COUNT(*) as total FROM evenements WHERE supprime = 0");
+$stmtTotal->execute();
+$totalEvenements = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
+// Calculer le nombre total de pages
+$totalPages = ceil($totalEvenements / $evenementsParPage);
+if ($totalPages < 1) $totalPages = 1; // Toujours au moins 1 page
+
+// S'assurer que la page demandée ne dépasse pas le total
+if ($page > $totalPages) $page = $totalPages;
+
+// Récupérer les événements pour la page actuelle avec leurs photos
+$stmt = $pdo->prepare("
+    SELECT e.*, p.lienphoto 
+    FROM evenements e 
+    LEFT JOIN photos p ON e.ideve = p.ideve 
+    WHERE e.supprime = 0 
+    LIMIT :offset, :limit
+");
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':limit', $evenementsParPage, PDO::PARAM_INT);
+$stmt->execute();
+$evenements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
-    <meta charset="utf-8">
-    <title>Equihorizon - Centre Équestre</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Événements - Centre Équestre EquiHorizon</title>
+    <link rel="stylesheet" href="../Equisite/css/evenements.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
+<nav class="navbar">
+        <div class="logo">
+            <a href="index.php">
+                <img src="../photos/equip.png" alt="EquiHorizon Logo">
+            </a>
         </div>
-    </div>
-    <!-- Spinner End -->
-
-    <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container-fluid">
-            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Centered logo -->
-            <a href="index.php" class="navbar-brand d-flex justify-content-center position-absolute start-50 translate-middle-x" style="top: -10px;"> <!-- Added top property -->
-                <img src="../photos/equip.png" alt="Logo" class="m-0" style="height: 100px;">
-            </a>
-
-            <!-- Links on the left -->
-            <div class="collapse navbar-collapse justify-content-center" id="navbarCollapse">
-                <div class="navbar-nav p-4 p-lg-0">
-                    <a href="index.php" class="nav-item nav-link me-2" style="font-size: 15px !important;">Accueil</a>
-                    <a href="propos.php" class="nav-item nav-link me-3" style="font-size: 15px !important; white-space: nowrap;">À propos</a>
-                    <a href="cavaliers.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavaliers</a>
-                    <a href="evenements.php" class="nav-item nav-link active me-3" style="font-size: 15px !important;">Événements</a>
-                    <a href="cours.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cours</a>
-                    <a href="cavalerie.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavalerie</a>
-                    <a href="contact.php" class="nav-item nav-link" style="font-size: 15px !important;">Contact</a>
-                </div>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="index.php">Accueil</a></li>
+                <li><a href="propos.php">À propos</a></li>
+                <li><a href="cavaliers.php">Cavaliers</a></li>
+                <li><a href="cavalerie.php">Cavalerie</a></li>
+                <li><a href="cours.php">Cours</a></li>
+                <li><a href="evenements.php">Événements</a></li>
+                <li><a href="contact.php">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="vue.utilisateurs.php" class="btn-auth login">
+                    <i class="fas fa-user"></i>
+                    <span>Connexion</span>
+                </a>
             </div>
-
-            <!-- Topbar content on the right -->
-            <div class="col-lg-5 px-5 text-end">
-                <div class="h-100 d-inline-flex align-items-center py-3 me-4">
-                    <small class="fa fa-phone-alt text-primary me-2"></small>
-                    <small>+33 1 23 45 67 89</small>
-                </div>
-                <div class="h-100 d-inline-flex align-items-center">
-                    <a class="btn btn-sm-square rounded-circle bg-white text-primary me-1" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-sm-square rounded-circle bg-white text-primary me-1" href=""><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-sm-square rounded-circle bg-white text-primary me-0" href=""><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-
-            <!-- Appointment button on the right -->
-            <a href="vue.utilisateurs.php" class="login-button">
-                <i class="fas fa-user"></i> Espace Utilisateur
-            </a>
         </div>
     </nav>
-    <!-- Navbar End -->
 
-    <style>
-        /* Styles pour la section Actualités */
-        .news {
-            padding: 30px 0;
-            background-color: #f8f9fa;
-            text-align: center; /* Centrer le texte */
-        }
-
-        .news h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
-            color: #333;
-            font-family: 'Open Sans', sans-serif;
-            position: relative;
-        }
-
-        .news h2::after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 3px;
-            background: #e67e22;
-            left: 50%;
-            bottom: -15px;
-            transform: translateX(-50%);
-        }
-
-        .news-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center; /* Centrer les articles */
-            gap: 15px;
-        }
-
-        .news-card {
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            max-width: 300px; /* Réduire la largeur maximale */
-            margin: 10px; /* Ajouter une marge pour espacer les cartes */
-        }
-
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .news-card img {
-            width: 100%;
-            height: 150px; /* Réduire la hauteur des images */
-            border-bottom: 2px solid #e67e22;
-            transition: transform 0.3s;
-            object-fit: cover; /* Assurer que l'image couvre toute la zone */
-        }
-
-        .news-card:hover img {
-            transform: scale(1.05);
-        }
-
-        .news-content {
-            padding: 10px; /* Réduire le padding interne */
-        }
-
-        .news-content h3 {
-            margin-bottom: 10px;
-            font-size: 1.2rem; /* Réduire la taille du titre */
-            color: #333;
-            font-family: 'Roboto', sans-serif;
-            transition: color 0.3s;
-        }
-
-        .news-content h3:hover {
-            color: #e67e22;
-        }
-
-        .news-content p {
-            margin-bottom: 15px;
-            font-size: 0.9rem; /* Réduire la taille du texte */
-            color: #777;
-            font-family: 'Open Sans', sans-serif;
-        }
-
-        .news-content .read-more {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 15px;
-            color: #e67e22; /* Changer la couleur du texte en orange */
-            border: none; /* Enlever la bordure */
-            background-color: transparent; /* Enlever le fond */
-            transition: transform 0.3s, color 0.3s;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none; /* Enlever le soulignement du lien */
-            font-size: 0.9rem; /* Réduire la taille du texte du bouton */
-        }
-
-        .news-content .read-more:hover {
-            transform: translateY(-2px);
-            color: #d35400; /* Changer la couleur du texte au survol */
-        }
-
-        .news-content .read-more::after {
-            content: '\2192'; /* Code Unicode pour la flèche droite */
-            margin-left: 8px; /* Espacement entre le texte et la flèche */
-            transition: margin-left 0.3s;
-            font-size: 0.9rem; /* Réduire la taille de l'icône de flèche */
-        }
-
-        .news-content .read-more:hover::after {
-            margin-left: 12px; /* Déplacer légèrement la flèche vers la droite au survol */
-        }
-
-        .news-content .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            background-color: #e67e22;
-            color: #fff;
-            font-size: 0.8rem;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .news-content .date {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            color: #999;
-            font-size: 0.8rem;
-        }
-
-        .news-content .date i {
-            margin-right: 5px;
-        }
-
-        /* Styles pour le bouton "Voir la suite" */
-        .btn-primary {
-            background-color: #e67e22;
-            border-color: #e67e22;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .btn-primary:hover {
-            background-color: #d35400;
-            transform: translateY(-2px);
-        }
-    </style>
-
-    <!-- Page Header Start -->
-    <div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s" style="background-image: url('../photos/bubbles.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative;">
-        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1;"></div>
-        <div class="container py-5" style="position: relative; z-index: 2;">
-            <h1 class="display-3 text-white mb-3 animated slideInDown text-start">Évènement</h1>
-            <nav aria-label="breadcrumb animated slideInDown">
-            </nav>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Nos Événements</h1>
+            <p>Participez à nos événements équestres et vivez des moments inoubliables</p>
+            <a href="#evenements-list" class="btn-hero">Découvrir</a>
         </div>
-    </div>
-    <!-- Page Header End -->
+    </section>
 
-    <!-- Section Actualités -->
-    <section class="news py-5">
+    <section class="intro">
         <div class="container">
-            <h2 class="text-center mb-4">Nos Actualités</h2>
-            <div class="news-grid row">
-                <?php foreach ($evenementsList as $e): ?>
-                    <article class="news-card col-md-4 mb-4" data-aos="fade-up">
-                        <?php
-                        $photos = $evenements->getPhotosByIdeve($e['ideve']);
-                        if (!empty($photos)):
-                            if (count($photos) > 1): ?>
-                                <div id="carousel-<?php echo $e['ideve']; ?>" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner">
-                                        <?php foreach ($photos as $index => $photo):
-                                            $photoPath = '../uploads/' . basename($photo['lienphoto']);
-                                            if (file_exists($photoPath)): ?>
-                                                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                                                    <img src="<?php echo $photoPath; ?>" alt="<?php echo $e['titre']; ?>" class="d-block w-100">
-                                                </div>
-                                            <?php endif;
-                                        endforeach; ?>
-                                    </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-<?php echo $e['ideve']; ?>" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-<?php echo $e['ideve']; ?>" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </button>
-                                </div>
-                            <?php else:
-                                $photoPath = '../uploads/' . basename($photos[0]['lienphoto']);
-                                if (file_exists($photoPath)): ?>
-                                    <img src="<?php echo $photoPath; ?>" alt="<?php echo $e['titre']; ?>" class="img-fluid">
-                                <?php else: ?>
-                                    <span>Photo introuvable : <?php echo basename($photos[0]['lienphoto']); ?></span>
-                                <?php endif;
-                            endif;
-                        else: ?>
-                            <img src="../photos/default.jpg" alt="Default Image" class="img-fluid">
-                        <?php endif; ?>
-                        <div class="news-content p-3">
-                            <span class="badge bg-primary">Nouveau</span>
-                            <div class="date mb-2">
-                                <i class="fas fa-calendar-alt"></i>
-                                <span>15 Juin 2024</span>
-                            </div>
-                            <h3><?php echo htmlspecialchars($e['titre']); ?></h3>
-                            <p><?php echo htmlspecialchars($e['commentaire']); ?></p>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
+            <h2>Nos Événements à Venir</h2>
+            <p>Rejoignez-nous pour des concours, stages, randonnées et bien plus encore. Chaque événement est une occasion de partager notre passion pour les chevaux et de créer des souvenirs mémorables.</p>
+        </div>
+    </section>
+
+    <section id="evenements-list" class="evenements-list">
+        <div class="container">
+            <h2>Liste des Événements</h2>
+            <div class="evenements-grid">
+                <?php
+                if (count($evenements) > 0) {
+                    foreach ($evenements as $evenement) {
+                        echo '<div class="evenement-card reveal">';
+                        if ($evenement['lienphoto']) {
+                            echo '<img src="' . htmlspecialchars($evenement['lienphoto']) . '" alt="' . htmlspecialchars($evenement['titre']) . '" class="evenement-photo">';
+                        } else {
+                            echo '<i class="fas fa-calendar-alt evenement-icon"></i>';
+                        }
+                        echo '<h3>' . htmlspecialchars($evenement['titre']) . '</h3>';
+                        echo '<div class="evenement-info">';
+                        echo '<p>' . htmlspecialchars($evenement['commentaire']) . '</p>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo '<p class="no-evenements">Aucun événement trouvé dans la base de données.</p>';
+                }
+                ?>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?= $page - 1 ?>" class="pagination-btn"><i class="fas fa-chevron-left"></i> Précédent</a>
+                <?php else: ?>
+                    <span class="pagination-btn disabled"><i class="fas fa-chevron-left"></i> Précédent</span>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?= $i ?>" class="pagination-btn <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <a href="?page=<?= $page + 1 ?>" class="pagination-btn">Suivant <i class="fas fa-chevron-right"></i></a>
+                <?php else: ?>
+                    <span class="pagination-btn disabled">Suivant <i class="fas fa-chevron-right"></i></span>
+                <?php endif; ?>
             </div>
         </div>
     </section>
-    <!-- Section Actualités End -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Adresse</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Rue, Paris, France</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+33 1 23 45 67 890</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>equi@herizon.fr</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Services</h5>
-                    <p><i class="fas fa-horse me-3"></i>Équitation</p>
-                    <p><i class="fas fa-horse-head me-3"></i>Dressage</p>
-                    <p><i class="fas fa-horse me-3"></i>Saut d'obstacles</p>
-                    <p><i class="fas fa-child me-3"></i>Cours pour enfants</p>
-                    <p><i class="fas fa-user me-3"></i>Cours pour adultes</p>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Newsletter</h5>
-                    <div class="position-relative mx-auto" style="max-width: 400px;">
-                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Votre email">
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">S'inscrire</button>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 text-center">
-                    <img src="../photos/equi.png" alt="Logo" class="img-fluid" style="max-width: 150px;">
-                </div>
-            </div>
-        </div>
+    <section class="join-us">
         <div class="container">
-            <div class="copyright text-center">
-                <div class="row">
-                    <div class="col-12">
-                        &copy; Equihorizon, Tous Droits Réservés.
-                    </div>
+            <h2>Participez à Nos Événements</h2>
+            <p>Que vous soyez cavalier ou simple visiteur, nos événements sont ouverts à tous. Inscrivez-vous dès maintenant pour vivre des expériences uniques avec nos chevaux.</p>
+            <a href="contact.php" class="btn-join">Nous Contacter</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>EquiHorizon</h3>
+                <p>Centre équestre de qualité depuis 1990</p>
+            </div>
+            <div class="footer-section">
+                <h3>Horaires</h3>
+                <p>Lundi - Samedi : 9h - 18h</p>
+                <p>Dimanche : 9h - 12h</p>
+            </div>
+            <div class="footer-section social-media">
+                <h3>Suivez-nous</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Footer End -->
+        <div class="footer-bottom">
+            <p>© 2024 EquiHorizon - Tous droits réservés</p>
+        </div>
+    </footer>
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <script>
+        const observerOptions = {
+            threshold: 0.1
+        };
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/counterup/counterup.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+        document.querySelectorAll('.reveal').forEach((element) => {
+            observer.observe(element);
+        });
+    </script>
 </body>
 
 </html>
