@@ -2,8 +2,9 @@
 session_start();
 
 // Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['iduti'])) {
-    header("Location: ../utilisateurs/vue.login.php");
+if (!isset($_SESSION['idadmin'])) {
+    $current_page = urlencode($_SERVER['PHP_SELF']);
+    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
     exit();
 }
 include_once '../class/class.robe.php';
