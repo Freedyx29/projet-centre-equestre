@@ -2,9 +2,9 @@
 session_start();
 
 // Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['iduti'])) {
+if (!isset($_SESSION['idadmin'])) {
     $current_page = urlencode($_SERVER['PHP_SELF']);
-    header("Location: ../utilisateurs/vue.login.php?redirect_to=" . $current_page);
+    header("Location: ../vue/vue.index.php?redirect_to=" . $current_page);
     exit();
 }
 include_once '../include/haut.inc.php';
@@ -74,7 +74,7 @@ $listeEvenements = $evenements->EvenementsAll();
                             <td><?php echo htmlspecialchars($e['commentaire']); ?></td>
                             <td>
                                 <?php
-                                $singlePhoto = $evenements->getSinglePhotoByIdeve($e['ideve']);
+                                $singlePhoto = $evenements->getSinglePhotoByIEve($e['ideve']);
                                 if ($singlePhoto):
                                     $photoPath = '../uploads/' . basename($singlePhoto);
                                     if (file_exists($photoPath)): ?>
@@ -175,7 +175,7 @@ $listeEvenements = $evenements->EvenementsAll();
                                     <div class="form-group">
                                         <label>Photos existantes</label>
                                         <?php
-                                        $photos = $evenements->getPhotosByIdeve($e['ideve']);
+                                        $photos = $evenements->getPhotosByIdEve($e['ideve']);
                                         if (!empty($photos)):
                                             foreach ($photos as $photo):
                                                 $photoPath = '../uploads/' . basename($photo['lienphoto']);
