@@ -87,38 +87,76 @@ class Cours {
         $stmt->execute([':idcours' => $idcours]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+    
     //Modèle UPDATE : modifier
-    public function Modifier($id, $libc, $hd, $hf, $j){
+    public function Modifier($id, $l, $hd, $hf, $j) {
         try {
             $con = connexionPDO();
             $con->beginTransaction();
-
-            // 1. Mettre à jour le cours
+    
+            // 1. Récupérer les anciennes informations du cours
+            $sqlOld = "SELECT jour, hdebut, hfin FROM cours WHERE idcours = :id";
+            $stmtOld = $con->prepare($sqlOld);
+            $stmtOld->execute([':id' => $id]);
+            $oldData = $stmtOld->fetch(PDO::FETCH_ASSOC);
+            $oldDay = $oldData['jour'];
+            $oldHdebut = $oldData['hdebut'];
+            $oldHfin = $oldData['hfin'];
+    
+            // 2. Mettre à jour le cours
+            $sql = "UPDATE cours 
+                    SET libcours = :lib, 
+                        hdebut = :hd, 
+                        hfin = :hf, 
+                        jour = :j
+                    WHERE idcours = :id";
             $data = [
-                ':libc' => $libc,
+                ':lib' => $l,
                 ':hd' => $hd,
                 ':hf' => $hf,
                 ':j' => $j,
                 ':id' => $id
             ];
+            $stmt = $con->prepare($sql);
+            $stmt->execute($data);
     
-            $sql = "UPDATE cours 
-                    SET libcours = :libc, hdebut =:hd, hfin = :hf, jour =:j
-                    WHERE idcours = :id";
-            $stmn = $con->prepare($sql);
-            $stmn->execute($data);
-
-            // 2. Supprimer les anciennes occurrences dans le calendrier
-            $sqlDelete = "DELETE FROM calendrier WHERE idcoursbase = :id";
-            $stmnDelete = $con->prepare($sqlDelete);
-            $stmnDelete->execute([':id' => $id]);
-            error_log("Anciennes occurrences supprimées pour le cours ID: $id");
-
-            // 3. Ajouter les nouvelles occurrences
-            $this->ajouterOccurrencesCalendrier($id, $j);
-
+            // 3. Si le jour a changé, ajuster les dates dans calendrier
+            if ($oldDay !== $j) {
+                // Tableau de correspondance des jours (1 = Lundi, 7 = Dimanche)
+                $joursEn = [
+                    'LUNDI' => 1,
+                    'MARDI' => 2,
+                    'MERCREDI' => 3,
+                    'JEUDI' => 4,
+                    'VENDREDI' => 5,
+                    'SAMEDI' => 6,
+                    'DIMANCHE' => 7
+                ];
+    
+                // Convertir les jours en nombres
+                $oldDayNum = $joursEn[strtoupper($oldDay)];
+                $newDayNum = $joursEn[strtoupper($j)];
+                $dayDiff = $newDayNum - $oldDayNum;
+    
+                // Mettre à jour les dates dans calendrier
+                $sqlUpdateCalendrier = "UPDATE calendrier 
+                                        SET datecours = DATE_ADD(datecours, INTERVAL :dayDiff DAY) 
+                                        WHERE idcoursbase = :id AND supprime = 0";
+                $stmtUpdateCalendrier = $con->prepare($sqlUpdateCalendrier);
+                $stmtUpdateCalendrier->execute([
+                    ':dayDiff' => $dayDiff,
+                    ':id' => $id
+                ]);
+            }
+    
+            // 4. Si les heures ont changé, elles sont déjà mises à jour dans cours
+            // FullCalendar récupérera les nouvelles heures via getEvents.php, pas besoin d'action supplémentaire ici
+    
             $con->commit();
             return true;
+    
         } catch (Exception $e) {
             $con->rollBack();
             error_log("Erreur lors de la modification : " . $e->getMessage());
@@ -191,10 +229,9 @@ class Cours {
     
 
     public function ajouterOccurrencesCalendrier($idcours, $jour): array {
-        $con = connexionPDO(); // Établit une connexion à la base de données
-        $year = date('Y'); // Récupère l'année actuelle
-
-        // Tableau de correspondance entre les jours en français et en anglais
+        $con = connexionPDO();
+        $year = date('Y');
+    
         $joursEn = [
             'LUNDI' => 'Monday',
             'MARDI' => 'Tuesday',
@@ -204,47 +241,52 @@ class Cours {
             'SAMEDI' => 'Saturday',
             'DIMANCHE' => 'Sunday'
         ];
-
-        $jour = strtoupper($jour); // Convertit le jour en majuscules
-        // Vérifie si le jour fourni est valide
+    
+        $jour = strtoupper($jour);
         if (!isset($joursEn[$jour])) {
             throw new Exception("Jour invalide : $jour");
         }
-        $jourEn = $joursEn[$jour]; // Récupère le jour en anglais
-
-        // Définit la date de début comme le premier jour du jour spécifié de l'année
+        $jourEn = $joursEn[$jour];
+    
         $startDate = new DateTime("first $jourEn of January $year");
-        // Définit la date de fin comme le dernier jour de l'année
         $endDate = new DateTime("last day of December $year");
-
-        // Vérifie si le cours existe avant d'ajouter des occurrences
+    
         $stmtCours = $con->prepare("SELECT COUNT(*) FROM cours WHERE idcours = :idcours");
         $stmtCours->execute([':idcours' => $idcours]);
         if ($stmtCours->fetchColumn() == 0) {
             throw new Exception("Cours ID $idcours n'existe pas.");
         }
-
-        $seances = []; // Tableau pour stocker les ID des séances créées
-
-        // Créer les occurrences dans le calendrier
+    
+        $seances = [];
+    
         while ($startDate <= $endDate) {
-            $data = [
-                ':idcoursbase' => $idcours,
-                ':datecours' => $startDate->format('Y-m-d'), // Formate la date pour l'insertion
-            ];
-
-            // Insère une nouvelle occurrence dans la table calendrier
-            $sql = "INSERT INTO calendrier (idcoursbase, datecours)
-                    VALUES (:idcoursbase, :datecours)";
-            $stmn = $con->prepare($sql);
-            $stmn->execute($data);
-
-            $seances[] = $con->lastInsertId(); // Ajoute l'ID de la séance créée au tableau
-
-            $startDate->modify('+1 week'); // Passe à la semaine suivante
+            $datecours = $startDate->format('Y-m-d');
+    
+            // Vérifier si la séance existe déjà
+            $checkSql = "SELECT idcoursseance FROM calendrier 
+                         WHERE idcoursbase = :idcoursbase AND datecours = :datecours AND supprime = 0";
+            $checkStmt = $con->prepare($checkSql);
+            $checkStmt->execute([':idcoursbase' => $idcours, ':datecours' => $datecours]);
+            $existingSeance = $checkStmt->fetchColumn();
+    
+            if ($existingSeance) {
+                $seances[] = $existingSeance; // Réutiliser la séance existante
+            } else {
+                $data = [
+                    ':idcoursbase' => $idcours,
+                    ':datecours' => $datecours,
+                ];
+                $sql = "INSERT INTO calendrier (idcoursbase, datecours)
+                        VALUES (:idcoursbase, :datecours)";
+                $stmn = $con->prepare($sql);
+                $stmn->execute($data);
+                $seances[] = $con->lastInsertId(); // Ajouter la nouvelle séance
+            }
+    
+            $startDate->modify('+1 week');
         }
-
-        return $seances; // Retourne le tableau des ID des séances créées
+    
+        return $seances;
     }
     
     
@@ -272,62 +314,34 @@ class Cours {
     
 
     public function ajouterParticipations($idcours, $seances, $cavaliers): void {
-        $con = connexionPDO(); // Établit une connexion à la base de données
+        $con = connexionPDO();
 
-        // Parcourt chaque séance pour ajouter des participations
         foreach ($seances as $seanceId) {
             foreach ($cavaliers as $cavalierId) {
                 // Vérifiez si la participation existe déjà
-                $checkSql = "SELECT COUNT(*) FROM participe WHERE refidcava = :refidcava AND refidcoursbase = :refidcoursbase AND refidcoursseance = :refidcoursseance";
+                $checkSql = "SELECT COUNT(*) FROM participe WHERE refidcava = :refidcava AND refidcoursseance = :refidcoursseance";
                 $checkStmt = $con->prepare($checkSql);
                 $checkStmt->execute([
                     ':refidcava' => $cavalierId,
-                    ':refidcoursbase' => $idcours,
                     ':refidcoursseance' => $seanceId
                 ]);
 
                 if ($checkStmt->fetchColumn() == 0) { // Si la participation n'existe pas
                     $data = [
-                        ':refidcava' => $cavalierId, // ID du cavalier
-                        ':refidcoursbase' => $idcours, // ID du cours
-                        ':refidcoursseance' => $seanceId, // ID de la séance
-                        ':participe' => 1, // Indique que le cavalier participe
+                        ':refidcava' => $cavalierId,
+                        ':refidcoursbase' => $idcours,
+                        ':refidcoursseance' => $seanceId,
+                        ':participe' => 0,
                     ];
 
-                    // Insère une nouvelle participation dans la table participe
                     $sql = "INSERT INTO participe (refidcava, refidcoursbase, refidcoursseance, participe)
                             VALUES (:refidcava, :refidcoursbase, :refidcoursseance, :participe)";
                     $stmn = $con->prepare($sql);
-                    $stmn->execute($data); // Exécute la requête
+                    $stmn->execute($data);
                 }
             }
         }
     }
-
-    public function SupprimerCavalier($idcavalier, $idcours) {
-        try {
-            $con = connexionPDO();
-            $con->beginTransaction();
-
-            // 1. Supprimer le cavalier de la table inscrit
-            $sqlInscriptions = "DELETE FROM inscrit WHERE refidcava = :idcavalier AND refidcours = :idcours";
-            $stmtInscriptions = $con->prepare($sqlInscriptions);
-            $stmtInscriptions->execute([':idcavalier' => $idcavalier, ':idcours' => $idcours]);
-
-            // 2. Supprimer les participations associées dans la table participe
-            $sqlParticipe = "DELETE FROM participe WHERE refidcava = :idcavalier AND refidcoursbase = :idcours";
-            $stmtParticipe = $con->prepare($sqlParticipe);
-            $stmtParticipe->execute([':idcavalier' => $idcavalier, ':idcours' => $idcours]);
-
-            $con->commit();
-            return true;
-        } catch (Exception $e) {
-            $con->rollBack();
-            error_log("Erreur lors de la suppression du cavalier : " . $e->getMessage());
-            return false;
-        }
-    }
-
 }
 
 ?>
