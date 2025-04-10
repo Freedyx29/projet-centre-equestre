@@ -1,401 +1,309 @@
+<?php
+require_once '../include/bdd.inc.php';
+
+// Connexion à la base de données
+$pdo = connexionPDO();
+
+// Récupérer les filtres
+$searchNom = isset($_GET['search_nom']) ? trim($_GET['search_nom']) : '';
+$searchJour = isset($_GET['jour']) ? trim($_GET['jour']) : '';
+
+// Construire la requête SQL pour les cours avec les filtres
+$sql = "SELECT c.*, 
+        (SELECT COUNT(*) FROM inscrit i WHERE i.refidcours = c.idcours AND i.supprime = 0) as nb_inscrits 
+        FROM cours c 
+        WHERE c.supprime = 0";
+$params = [];
+
+if ($searchNom !== '') {
+    $sql .= " AND c.libcours LIKE :search_nom";
+    $params[':search_nom'] = '%' . $searchNom . '%';
+}
+
+if ($searchJour !== '' && $searchJour !== 'Tous') {
+    $sql .= " AND c.jour = :jour";
+    $params[':jour'] = $searchJour;
+}
+
+$sql .= " ORDER BY c.jour, c.hdebut";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$cours = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Récupérer les cavaliers inscrits pour chaque cours
+$coursAvecInscrits = [];
+foreach ($cours as $c) {
+    $stmtInscrits = $pdo->prepare("
+        SELECT ca.nomcava, ca.prenomcava 
+        FROM inscrit i 
+        JOIN cavaliers ca ON i.refidcava = ca.idcava 
+        WHERE i.refidcours = :idcours AND i.supprime = 0
+    ");
+    $stmtInscrits->execute([':idcours' => $c['idcours']]);
+    $inscrits = $stmtInscrits->fetchAll(PDO::FETCH_ASSOC);
+    $c['inscrits'] = $inscrits;
+    $coursAvecInscrits[] = $c;
+}
+
+// Liste des jours pour le filtre
+$jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+?>
+
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>Klinik - Clinic Website Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet"> 
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours - Centre Équestre EquiHorizon</title>
+    <link rel="stylesheet" href="../Equisite/css/cours.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.php">
+                <img src="../photos/equip.png" alt="EquiHorizon Logo">
+            </a>
         </div>
-    </div>
-    <!-- Spinner End -->
-
-
-    
-
- <!-- Navbar Start -->
-<nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn" data-wow-delay="0.1s">
-    <div class="container-fluid">
-        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Centered logo -->
-        <a href="index.html" class="navbar-brand d-flex justify-content-center position-absolute start-50 translate-middle-x" style="top: -10px;"> <!-- Added top property -->
-            <img src="../photos/equip.png" alt="Logo" class="m-0" style="height: 100px;">
-        </a>
-
-        <!-- Links on the left -->
-        <div class="collapse navbar-collapse justify-content-center" id="navbarCollapse">
-            <div class="navbar-nav p-4 p-lg-0">
-                <a href="index.php" class="nav-item nav-link me-2" style="font-size: 15px !important;">Accueil</a>
-                <a href="propos.php" class="nav-item nav-link me-3" style="font-size: 15px !important; white-space: nowrap;">À propos</a>
-                <a href="cavaliers.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavaliers</a>
-                <a href="evenements.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Événements</a>
-                <a href="cours.php" class="nav-item nav-link active me-3" style="font-size: 15px !important;">Cours</a>
-                <a href="cavalerie.php" class="nav-item nav-link me-3" style="font-size: 15px !important;">Cavalerie</a>
-                <a href="contact.php" class="nav-item nav-link" style="font-size: 15px !important;">Contact</a>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="index.php">Accueil</a></li>
+                <li><a href="propos.php">À propos</a></li>
+                <li><a href="cavaliers.php">Cavaliers</a></li>
+                <li><a href="cavalerie.php">Cavalerie</a></li>
+                <li><a href="cours.php">Cours</a></li>
+                <li><a href="evenements.php">Événements</a></li>
+                <li><a href="contact.php">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="vue.utilisateurs.php" class="btn-auth login">
+                    <i class="fas fa-user"></i>
+                    <span>Connexion</span>
+                </a>
             </div>
         </div>
+    </nav>
 
-        <!-- Topbar content on the right -->
-        <div class="col-lg-5 px-5 text-end">
-            <div class="h-100 d-inline-flex align-items-center py-3 me-4">
-                <small class="fa fa-phone-alt text-primary me-2"></small>
-                <small>+33 1 23 45 67 89</small>
-            </div>
-            <div class="h-100 d-inline-flex align-items-center">
-                <a class="btn btn-sm-square rounded-circle bg-white text-primary me-1" href=""><i class="fab fa-facebook-f"></i></a>
-                <a class="btn btn-sm-square rounded-circle bg-white text-primary me-1" href=""><i class="fab fa-linkedin-in"></i></a>
-                <a class="btn btn-sm-square rounded-circle bg-white text-primary me-0" href=""><i class="fab fa-instagram"></i></a>
-            </div>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Nos Cours</h1>
+            <p>Participez à nos cours d’équitation adaptés à tous les niveaux</p>
+            <a href="#cours-list" class="btn-hero">Découvrir</a>
         </div>
+    </section>
 
-        <!-- Appointment button on the right -->
-        <a href="vue.utilisateurs.php" class="login-button">
-            <i class="fas fa-user"></i> Espace Utilisateur
-        </a>
-    </div>
-</nav>
-<!-- Navbar End -->
-
-<style>
-    body {
-        overflow-x: hidden; /* Empêche le défilement horizontal */
-        margin: 0; /* Supprime les marges par défaut du body */
-    }
-    .container-fluid {
-        width: 100%; /* Assure que le conteneur prend toute la largeur */
-        padding: 0; /* Supprime les paddings qui pourraient causer un débordement */
-    }
-
-    /* Bouton de connexion */
-    .login-button {
-        padding: 0.6rem 1.4rem;
-        background: var(--secondary-color);
-        color: white;
-        border-radius: 25px;
-        text-decoration: none;
-        font-size: 0.95rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(230, 126, 34, 0.2);
-        display: flex;
-        align-items: center;
-        white-space: nowrap; /* Empêche le texte de se diviser en plusieurs lignes */
-    }
-
-    .login-button:hover {
-        background: var(--secondary-color); /* Garder la même couleur de fond */
-        color: white; /* Garder la même couleur de texte */
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
-    }
-
-    .login-button i {
-        margin-right: 8px; /* Ajuster l'espacement entre l'icône et le texte */
-    }
-
-    :root {
-        --secondary-color: #e67e22; /* Exemple de couleur secondaire */
-        --accent-color: #d35400; /* Exemple de couleur d'accent */
-    }
-    /* Ajouter une bordure jaune à certains éléments */
-    .border-yellow {
-        border: 2px solid #f6ae2d !important;
-    }
-
-    /* Changer la couleur de fond de certains éléments */
-    .bg-yellow {
-        background-color: #f6ae2d !important;
-    }
-
-    /* Ajouter des effets de survol jaune */
-    .hover-yellow:hover {
-        background-color: #f6ae2d !important;
-        color: white !important;
-    }
-
-    /* Ajouter une couleur jaune aux icônes */
-    .text-yellow {
-        color: #f6ae2d !important;
-    }
-
-    /* Ajouter une couleur jaune aux boutons */
-    .btn-yellow {
-        background-color: #f6ae2d !important;
-        border-color: #f6ae2d !important;
-    }
-
-    .btn-yellow:hover {
-        background-color: #e09f24 !important;
-        border-color: #e09f24 !important;
-    }
-</style>
-
-
-    <!-- Page Header Start -->
-    <div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <h1 class="display-3 text-white mb-3 animated slideInDown">Cavaliers</h1>
-            <nav aria-label="breadcrumb animated slideInDown">
-            </nav>
-        </div>
-    </div>
-    <!-- Page Header End -->
-
-
-    <!-- Team Start -->
-    <div class="container-xxl py-5">
+    <section class="intro">
         <div class="container">
-            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                <p class="d-inline-block border rounded-pill py-1 px-4">Cavaliers</p>
-                <h1>Our Experience Doctors</h1>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-1.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-2.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-3.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-4.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-2.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-3.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-4.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="team-item position-relative rounded overflow-hidden">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-1.jpg" alt="">
-                        </div>
-                        <div class="team-text bg-light text-center p-4">
-                            <h5>Doctor Name</h5>
-                            <p class="text-primary">Department</p>
-                            <div class="team-social text-center">
-                                <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <h2>Planning des Cours</h2>
+            <p>Consultez notre planning hebdomadaire et trouvez le cours qui vous convient. Utilisez les filtres pour affiner votre recherche et voir les détails de chaque cours, y compris les participants inscrits.</p>
         </div>
-    </div>
-    <!-- Team End -->
-        
+    </section>
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Address</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Services</h5>
-                    <a class="btn btn-link" href="">Cardiology</a>
-                    <a class="btn btn-link" href="">Pulmonary</a>
-                    <a class="btn btn-link" href="">Neurology</a>
-                    <a class="btn btn-link" href="">Orthopedics</a>
-                    <a class="btn btn-link" href="">Laboratory</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Quick Links</h5>
-                    <a class="btn btn-link" href="">About Us</a>
-                    <a class="btn btn-link" href="">Contact Us</a>
-                    <a class="btn btn-link" href="">Our Services</a>
-                    <a class="btn btn-link" href="">Terms & Condition</a>
-                    <a class="btn btn-link" href="">Support</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-light mb-4">Newsletter</h5>
-                    <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                    <div class="position-relative mx-auto" style="max-width: 400px;">
-                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <section id="cours-list" class="cours-list">
         <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved.
+            <h2>Liste des Cours</h2>
+
+            <!-- Filtres -->
+            <div class="filters">
+                <div class="filter-container">
+                    <div class="filter-group">
+                        <label for="search_nom">Rechercher par nom :</label>
+                        <input type="text" id="search_nom" value="<?= htmlspecialchars($searchNom) ?>" placeholder="Nom du cours" class="filter-input">
                     </div>
-                    <div class="col-md-6 text-center text-md-end">
-                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                    <div class="filter-group">
+                        <label for="filter_jour">Filtrer par jour :</label>
+                        <select id="filter_jour" class="filter-select">
+                            <option value="Tous" <?= $searchJour === 'Tous' || $searchJour === '' ? 'selected' : '' ?>>Tous les jours</option>
+                            <?php foreach ($jours as $jour): ?>
+                                <option value="<?= $jour ?>" <?= $searchJour === $jour ? 'selected' : '' ?>><?= $jour ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
             </div>
+
+            <!-- Tableau des cours -->
+            <div class="cours-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom du Cours</th>
+                            <th>Jour</th>
+                            <th>Heure de Début</th>
+                            <th>Heure de Fin</th>
+                            <th>Inscrits</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cours-tbody">
+                        <?php if (count($coursAvecInscrits) > 0): ?>
+                            <?php foreach ($coursAvecInscrits as $c): ?>
+                                <tr class="reveal">
+                                    <td><?= htmlspecialchars($c['libcours']) ?></td>
+                                    <td><?= htmlspecialchars($c['jour']) ?></td>
+                                    <td><?= htmlspecialchars($c['hdebut']) ?></td>
+                                    <td><?= htmlspecialchars($c['hfin']) ?></td>
+                                    <td><?= $c['nb_inscrits'] ?> cavalier(s)</td>
+                                    <td>
+                                        <button class="btn-details" 
+                                                data-nom="<?= htmlspecialchars($c['libcours']) ?>" 
+                                                data-jour="<?= htmlspecialchars($c['jour']) ?>" 
+                                                data-hdebut="<?= htmlspecialchars($c['hdebut']) ?>" 
+                                                data-hfin="<?= htmlspecialchars($c['hfin']) ?>" 
+                                                data-inscrits='<?= json_encode($c['inscrits']) ?>'>Détails</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr id="no-cours">
+                                <td colspan="6" class="no-cours">Aucun cours trouvé.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modale pour les détails -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>Détails du Cours</h2>
+            <div id="modal-details">
+                <p><strong>Nom :</strong> <span id="modal-nom"></span></p>
+                <p><strong>Jour :</strong> <span id="modal-jour"></span></p>
+                <p><strong>Heure de début :</strong> <span id="modal-hdebut"></span></p>
+                <p><strong>Heure de fin :</strong> <span id="modal-hfin"></span></p>
+                <h3>Cavaliers Inscrits</h3>
+                <ul id="modal-inscrits"></ul>
+            </div>
         </div>
     </div>
-    <!-- Footer End -->
 
+    <section class="join-us">
+        <div class="container">
+            <h2>Rejoignez Nos Cours</h2>
+            <p>Que vous soyez débutant ou cavalier confirmé, nos cours sont conçus pour vous faire progresser tout en vous amusant. Inscrivez-vous dès maintenant !</p>
+            <a href="contact.php" class="btn-join">Nous Contacter</a>
+        </div>
+    </section>
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>EquiHorizon</h3>
+                <p>Centre équestre de qualité depuis 1990</p>
+            </div>
+            <div class="footer-section">
+                <h3>Horaires</h3>
+                <p>Lundi - Samedi : 9h - 18h</p>
+                <p>Dimanche : 9h - 12h</p>
+            </div>
+            <div class="footer-section social-media">
+                <h3>Suivez-nous</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 EquiHorizon - Tous droits réservés</p>
+        </div>
+    </footer>
 
+    <script>
+        // Animation au défilement (comme dans ton original)
+        const observerOptions = {
+            threshold: 0.1
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/counterup/counterup.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+        document.querySelectorAll('.reveal').forEach((element) => {
+            observer.observe(element);
+        });
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+        // Gestion simplifiée des filtres et de la modale
+        const searchNom = document.getElementById('search_nom');
+        const filterJour = document.getElementById('filter_jour');
+        const rows = document.querySelectorAll('.reveal');
+        const noCours = document.getElementById('no-cours');
+        const modal = document.getElementById('modal');
+        const closeModal = document.querySelector('.close');
+
+        // Filtrage sans rechargement
+        function filterCourses() {
+            const nomValue = searchNom.value.trim().toLowerCase();
+            const jourValue = filterJour.value === 'Tous' ? '' : filterJour.value;
+            let hasVisibleRows = false;
+
+            rows.forEach(row => {
+                const nom = row.cells[0].textContent.toLowerCase();
+                const jour = row.cells[1].textContent;
+
+                if (nom.includes(nomValue) && (!jourValue || jour === jourValue)) {
+                    row.style.display = '';
+                    hasVisibleRows = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (noCours) noCours.style.display = hasVisibleRows ? 'none' : '';
+        }
+
+        searchNom.addEventListener('input', filterCourses);
+        filterJour.addEventListener('change', filterCourses);
+
+        // Gestion de la modale (exactement comme dans ton original)
+        document.querySelectorAll('.btn-details').forEach(button => {
+            button.addEventListener('click', () => {
+                document.getElementById('modal-nom').textContent = button.getAttribute('data-nom');
+                document.getElementById('modal-jour').textContent = button.getAttribute('data-jour');
+                document.getElementById('modal-hdebut').textContent = button.getAttribute('data-hdebut');
+                document.getElementById('modal-hfin').textContent = button.getAttribute('data-hfin');
+
+                const inscrits = JSON.parse(button.getAttribute('data-inscrits'));
+                const modalInscrits = document.getElementById('modal-inscrits');
+                modalInscrits.innerHTML = '';
+                if (inscrits.length > 0) {
+                    inscrits.forEach(cavalier => {
+                        const li = document.createElement('li');
+                        li.textContent = cavalier.nomcava + ' ' + cavalier.prenomcava; // Erreur ici dans ton original
+                        modalInscrits.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'Aucun cavalier inscrit.';
+                    modalInscrits.appendChild(li);
+                }
+
+                modal.style.display = 'block';
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Filtrer au chargement
+        filterCourses();
+    </script>
 </body>
-
 </html>
