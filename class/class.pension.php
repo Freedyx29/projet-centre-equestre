@@ -97,7 +97,7 @@ class Pension {
                     FROM
                         pension p
                     LEFT JOIN
-                        prend pr ON p.idpen = pr.redifpen
+                        prend pr ON p.idpen = pr.refidpen
                     LEFT JOIN
                         cavaliers c ON pr.refidcava = c.idcava
                     WHERE
@@ -122,7 +122,7 @@ class Pension {
             $sql = "SELECT c.*
                     FROM cavaliers c
                     JOIN prend p ON c.idcava = p.refidcava
-                    WHERE p.redifpen = :idpen
+                    WHERE p.refidpen = :idpen
                     AND (p.supprime = 0 OR p.supprime IS NULL)";
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':idpen', $idpen, PDO::PARAM_INT);
@@ -181,20 +181,20 @@ class Pension {
     ];
 
     // Supprimer les anciens cavaliers associés à cette pension
-    $sqlDelete = "DELETE FROM prend WHERE redifpen = :idpen;";
+    $sqlDelete = "DELETE FROM prend WHERE refidpen = :idpen;";
     $stmnDelete = $con->prepare($sqlDelete);
     $stmnDelete->execute([':idpen' => $idpen]);
 
     // Ajouter les nouveaux cavaliers
     if ($idcava1) {
-        $sqlInsert1 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava1, :idpen);";
+        $sqlInsert1 = "INSERT INTO prend (refidcava, refidpen) VALUES (:idcava1, :idpen);";
         $stmnInsert1 = $con->prepare($sqlInsert1);
         $stmnInsert1->execute([':idcava1' => $idcava1, ':idpen' => $idpen]);
         error_log("Cavalier 1 ajouté : $sqlInsert1");
     }
 
     if ($idcava2) {
-        $sqlInsert2 = "INSERT INTO prend (refidcava, redifpen) VALUES (:idcava2, :idpen);";
+        $sqlInsert2 = "INSERT INTO prend (refidcava, refidpen) VALUES (:idcava2, :idpen);";
         $stmnInsert2 = $con->prepare($sqlInsert2);
         $stmnInsert2->execute([':idcava2' => $idcava2, ':idpen' => $idpen]);
         error_log("Cavalier 2 ajouté : $sqlInsert2");
